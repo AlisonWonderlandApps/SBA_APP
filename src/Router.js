@@ -64,7 +64,15 @@ class RouterComponent extends Component {
     />
 
     <Scene
-      hideNavBar="true"
+      hideNavBar={false}
+      navigationBarStyle={{
+          backgroundColor: PRIMARY_COLOUR,
+          height: HEADER.height,
+          padding: 15,
+          shadowColor: SHADOW_COLOUR,
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.2, }}
+      renderTitle={() => <Header />}
       key="photos"
       component={Photos}
     />
