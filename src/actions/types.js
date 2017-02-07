@@ -3,17 +3,13 @@
 * used by reducer/actions in this. Like a strings file
 */
 
-//RouterActions
-export const NAVBAR_LEFT_RENDER = 'left_navbar_render';
-export const NAVBAR_RIGHT_RENDER = 'right_navbar_render';
-
-//AuthActions
-export const AUTH_USER = 'auth_user';
+//AuthActions ??? should this be in login or probably user??
+//export const AUTH_USER = 'auth_user';
 export const UNAUTH_USER = 'unauth_user';
 export const AUTH_ERROR = 'auth_error';
 export const FETCH_MESSAGE = 'fetch_message';
 export const USER_LOGGED_IN = 'user_logged_in';
-export const TOKEN_FETCHED = 'token_fetched';
+//export const TOKEN_FETCHED = 'token_fetched';
 
 //LoginActions
 export const EMAIL_CHANGED = 'email_changed';
@@ -45,10 +41,23 @@ export const SIGNUP_USER_SUCCESS = 'signup_user_success';
 export const SIGNUP_USER_FAIL = 'signup_user_fail';
 export const RESET_SU = 'reset_to_inital_state_su';
 
+//UserActions
+export const USER_NAME_FETCH = 'set_user_name';
+export const USER_INFO_FETCH = 'fetch_user_info';
+export const USER_INFO_FETCH_SUCCESS = 'user_info_fetch_success';
+export const USER_INFO_FETCH_FAIL = 'user_info_fetch_fail';
+export const USER_SETTINGS_FETCH = 'fetch_user_settings';
+export const USER_SETTING_FETCH_SUCCESS = 'settings_fetch_success';
+export const USER_SETTINGS_FETCH_FAIL = 'settings_fetch_fail';
+export const USER_PLAN_FETCH = 'plan_fetch';
+export const USER_PLAN_FETCH_SUCCESS = 'plan_fetch_success';
+export const USER_PLAN_FETCH_FAIL = 'plan_fetch_fail';
+
 //AccountActions
 export const ACCOUNTS_LOAD = 'load_accounts';
 export const LABELS_LOAD = 'load_labels';
 export const SET_CUR_ACCOUNT = 'set_current_account';
+export const SET_CUR_ACCOUNT_NAME = 'set_cur_acc_name';
 export const ACCOUNTS_FETCH = 'accounts_fetch_all';
 export const ACCOUNTS_FETCH_SUCCESS = 'accounts_fetch_success';
 export const ACCOUNTS_FETCH_FAIL = 'accounts_fetch_fail';
@@ -64,6 +73,12 @@ export const ACCOUNT_ADD_USER = 'accounts_add_user';
 export const ACCOUNT_ADD_USER_SUCCESS = 'accounts_add_user_success';
 export const ACCOUNT_UPDATE_INFO = 'accounts_edit';
 export const ACCOUNT_DELETE = 'account_delete';
+export const PLAN_FETCH = 'fetch_plan';
+export const PLAN_FETCH_SUCCESS = 'fetch_plan_success';
+export const PLAN_FETCH_FAIL = 'fetch_plan_fail';
+export const PLAN_SET = 'set_plan';
+export const PLANTYPE_SET = 'set_plantype';
+export const DBEMAIL_SET = 'dbemail_set';
 
 //ReceiptsActions
 export const RECEIPTS_FETCH = 'receipts_fetch_all';
@@ -102,8 +117,3 @@ export const TRIPS_START = '';
 //MainNavActions
 export const GET_AUTH_TOKEN = 'get_auth_token';
 export const SET_AUTH_TOKEN = 'set_auth_token';
-
-//SettingsActions
-export const SETTINGS_FETCH = 'settings_fetch_all';
-export const SETTINGS_FETCH_SUCCESS = 'settings_fetch_success';
-export const SETTINGS_FETCH_FAIL = 'settings_fetch_fail';

@@ -13,11 +13,11 @@ class TripsListItem extends Component {
     return (
       <TouchableWithoutFeedback onPress={this.props.onPress.bind(this)} index={this.props.index}>
         <View style={{ paddingLeft: 20, paddingRight: 20 }}>
-          <CardSection style={styles.card}>
             <Text style={styles.titleStyle}>
               {this.props.titleLabel}
             </Text>
-          </CardSection>
+            <Text> date here </Text>
+            <Text> $$$$$ here </Text>
         </View>
       </TouchableWithoutFeedback>
     );

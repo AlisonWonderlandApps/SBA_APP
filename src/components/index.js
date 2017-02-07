@@ -7,3 +7,4 @@ export * from './mainComponents';
 export * from './menuComponents';
 export * from './formComponents';
 export * from './popUpComponents';
+export * from './sectionComponents';

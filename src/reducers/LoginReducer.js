@@ -15,10 +15,7 @@ import {
   LOGIN_USER_FAIL,
   NEXT_PAGE,
   RESET_PW,
-  RESET,
-  //LOAD_ACCOUNTS_FAIL,
-//LOAD_ACCOUNTS_SUCCESS,
-  //NEXT_PAGE
+  RESET
 } from '../actions/types';
 
 // note: undefined cannot be returned from a reducer

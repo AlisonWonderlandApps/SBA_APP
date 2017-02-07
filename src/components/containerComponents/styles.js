@@ -2,7 +2,7 @@ import { HEADER } from '../../global/margins';
 
 import {
   PRIMARY_COLOUR,
-  PRIMARY_HIGHLIGHT_COLOUR,
+  BACKGROUND_COLOUR,
   BORDER_COLOUR,
   SHADOW_COLOUR,
   CARD_BACKGROUND_COLOUR
@@ -16,6 +16,13 @@ export const containerStyles = {
     paddingBottom: 0,
     justifyContent: 'space-around'
     //paddingBottom: (Platform.OS === 'ios') ? 0 : 0
+  },
+  bgview: {
+    flex: 1,
+    backgroundColor: BACKGROUND_COLOUR,
+    padding: 10,
+    paddingBottom: 0,
+    justifyContent: 'space-around'
   },
   header: {
     flex: 1,

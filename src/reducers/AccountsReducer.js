@@ -3,24 +3,31 @@
 import {
   LOAD_ACCOUNTS,
   SET_CUR_ACCOUNT,
+  SET_CUR_ACCOUNT_NAME,
   LOAD_ACCOUNTS_SUCCESS,
   LOAD_ACCOUNTS_FAIL,
   LABELS_LOAD,
   ACCOUNT_CREATE_NEW,
   ACCOUNT_CHANGE_PLAN,
   ACCOUNT_ADD_USER,
+  PLAN_SET,
+  PLANTYPE_SET,
+  DBEMAIL_SET
 } from '../actions/types';
 
 const INITIAL_STATE = {
    curAccount: '',
+   curAccName: '',
    isLoading: false,
    accountsArr: [],
    labelsArr: [],
    done: false,
+   plan: [],
+   planType: '',
+   dropBoxEmail: '',
    //////////
    status: '',
    error: '',
-   plan: '',
    accountName: '',
    newUser: ''
  };
@@ -40,6 +47,12 @@ export default (state = INITIAL_STATE, action) => {
           curAccount: action.payload
         };
 
+        case SET_CUR_ACCOUNT_NAME:
+          return {
+            ...state,
+            curAccName: action.payload
+          };
+
       case LOAD_ACCOUNTS_SUCCESS:
         return {
           ...state,
@@ -56,22 +69,31 @@ export default (state = INITIAL_STATE, action) => {
           reset: true
         };
 
+      case PLAN_SET:
+        return { ...state, plan: action.payload };
+
+      case PLANTYPE_SET:
+        return { ...state, planType: action.payload };
+
+      case DBEMAIL_SET:
+        return { ...state, dropBoxEmail: action.payload };
+
       case LOAD_ACCOUNTS_FAIL:
         return {
           ...state,
           isLoading: false
         };
 
-    case ACCOUNT_ADD_USER:
-      return { ...state };
-
-    case ACCOUNT_CREATE_NEW:
-       return { ...state };
-
-    case ACCOUNT_CHANGE_PLAN:
+      case ACCOUNT_ADD_USER:
         return { ...state };
 
-    default:
-      return state;
+      case ACCOUNT_CREATE_NEW:
+         return { ...state };
+
+      case ACCOUNT_CHANGE_PLAN:
+          return { ...state };
+
+      default:
+        return state;
   }
 };

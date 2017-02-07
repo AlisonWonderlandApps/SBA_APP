@@ -121,32 +121,6 @@ export const loginGoogleUser = () => {
   };
 };
 
-/*
-const loadAccounts = (dispatch, token) => {
-  console.log('load');
-  const AuthStr = 'Bearer '.concat(token);
-  console.log(AuthStr);
-
-  axios.get(ssApiQueryURL.userAccounts, { headers: { Authorization: AuthStr } })
-      .then(response => {
-            console.log(response.data.accounts);
-            console.log('length', response.data.accounts.length);
-        dispatch({
-            type: LOAD_ACCOUNTS_SUCCESS,
-            payload: response.data.accounts
-          });
-        dispatch({
-          type: NEXT_PAGE,
-          payload: (response.data.accounts.length > 1)
-        });
-        return;
-      }).catch((error) => {
-          console.log('error etf ', error);
-          loadAccountsFail(dispatch, error);
-        });
-};
-*/
-
 const loginUserFail = () => {
   return function (dispatch) {
     console.log('fail');

@@ -12,20 +12,62 @@ import { ssApiQueryURL } from '../config/auth';
 import {
   ACCOUNTS_LOAD,
   SET_CUR_ACCOUNT,
+  SET_CUR_ACCOUNT_NAME,
   LOAD_ACCOUNTS_SUCCESS,
   LOAD_ACCOUNTS_FAIL,
   RESET_PW,
   LABELS_LOAD,
+  PLAN_SET,
+  PLANTYPE_SET,
+  DBEMAIL_SET
 //  ACCOUNT_CREATE_NEW,
 //  ACCOUNT_CHANGE_PLAN,
 //  ACCOUNT_ADD_USER,
 } from './types';
 
-export const setCurAccount = (id) => {
-  console.log('curAccount');
+export const setCurAccount = (accObj, id) => {
+  console.log('curAccount', accObj);
+  return function (dispatch) {
+    dispatch(setCurAccountName(accObj.label));
+    dispatch(setPlan(accObj.plan));
+    dispatch(setPlanType(accObj.plan.planType));
+    dispatch(setDBEmail(accObj.dropboxEmail));
+    dispatch({
+      type: SET_CUR_ACCOUNT,
+      payload: id
+    });
+  };
+};
+
+export const setCurAccountName = (name) => {
+  console.log('curAccountName', name);
   return {
-    type: SET_CUR_ACCOUNT,
-    payload: id
+    type: SET_CUR_ACCOUNT_NAME,
+    payload: name
+  };
+};
+
+export const setPlan = (plan) => {
+  console.log('curPlan', plan);
+  return {
+    type: PLAN_SET,
+    payload: plan
+  };
+};
+
+export const setPlanType = (ptype) => {
+  console.log('curPlanName', ptype);
+  return {
+    type: PLANTYPE_SET,
+    payload: ptype
+  };
+};
+
+export const setDBEmail = (email) => {
+  console.log('curPlanName', email);
+  return {
+    type: DBEMAIL_SET,
+    payload: email
   };
 };
 
@@ -38,9 +80,10 @@ export const loadAccounts = (AuthStr) => {
   console.log('load');
   axios.get(ssApiQueryURL.userAccounts, { headers: { Authorization: AuthStr } })
       .then(response => {
-        console.log(response.data.accounts);
+        console.log(response.data);
         //console.log('length', response.data.accounts.length);
         loadLabels(response.data.accounts);
+        //loadPlan(response.data.plan);
         dispatch(loadAccountsSuccess(response.data.accounts));
       }).catch((error) => {
           console.log('error etf ', error);

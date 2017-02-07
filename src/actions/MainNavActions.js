@@ -23,10 +23,10 @@ import {
   PROCESSED_FETCH_SUCCESS,
   PROCESSED_FETCH_FAIL,
   SET_REIMBURSEABLE_NUM,
-  SET_PROCESSED_NUM,
-  SETTINGS_FETCH,
-  SETTINGS_FETCH_SUCCESS,
-  SETTINGS_FETCH_FAIL
+  PLAN_FETCH_SUCCESS,
+  PLAN_FETCH_FAIL,
+  PLANTYPE_SET,
+  SET_PROCESSED_NUM
 } from './types';
 
 export const getAccountInfo = () => {
@@ -74,6 +74,7 @@ const updateToken = (accountID, token) => {
         const AuthStr = 'Bearer '.concat(response.data.access_token);
         console.log(AuthStr);
         console.log(accountID, 'this');
+      //  dispatch(loadPlan(AuthStr, accountID));
         dispatch(fetchTrips(AuthStr, accountID));
         dispatch(fetchReceipts(AuthStr, accountID));
         dispatch(fetchProcessed(AuthStr, accountID));
@@ -83,6 +84,43 @@ const updateToken = (accountID, token) => {
       console.log('no auth token', err);
       return err;
     });
+  };
+};
+
+
+const loadPlan = (AuthStr, accountId) => {
+  console.log('fetch trips', AuthStr, accountId);
+  return function (dispatch) {
+  const planURL = 'https://api.sbaustralia.com:443/v2/accounts/'.concat(accountId).concat('/plan');
+
+  axios.get(planURL, { headers: { Authorization: AuthStr } })
+    .then(response => {
+      console.log('plan', response.data);
+      console.log('planT', response.data.planType);
+      dispatch(planFetchSuccess(response.data));
+      dispatch(planSet(response.data.planType));
+    })
+    .catch((er) => {
+      console.log('no trips fetched', er);
+      dispatch({
+        type: PLAN_FETCH_FAIL,
+        payload: er
+      });
+    });
+  };
+};
+
+const planFetchSuccess = (plan) => {
+  return {
+    type: PLAN_FETCH_SUCCESS,
+    payload: plan
+  };
+};
+
+const planSet = (planType) => {
+  return {
+    type: PLANTYPE_SET,
+    payload: planType
   };
 };
 

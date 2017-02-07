@@ -37,4 +37,4 @@ class MyMapView extends Component {
  }
 }
 
-export { MyMapView }
+export { MyMapView };

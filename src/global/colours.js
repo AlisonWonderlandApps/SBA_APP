@@ -14,6 +14,7 @@ export const BRAND_COLOUR_YELLOW = '#f7ee7f';
 export const APP_BLACK = '#000000';
 export const APP_WHITE = '#ffffff';
 export const APP_GREY = 'grey';
+export const BACKGROUND_COLOUR = '#f0eeec';
 export const IOS_BUTTON_COLOUR = '#007aff';
 export const LINK_COLOUR = PRIMARY_HIGHLIGHT_COLOUR;
 export const ERROR_COLOUR = BRAND_COLOUR_RED;

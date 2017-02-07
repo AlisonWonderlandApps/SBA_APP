@@ -3,13 +3,16 @@ import { View, ListView } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
-import { AccountListItem, TitleText } from '../components';
+import { BackgroundView, AccountListItem, TitleText, FAB } from '../components';
 import { HEADER } from '../global/margins';
 
 import {
   setCurAccount,
+  setCurAccountName,
   getAccountInfo,
-  getToken
+  getToken,
+  setPlan,
+  setPlanType
 } from '../actions';
 
 const AccountArray = [];
@@ -61,7 +64,7 @@ class AccountsList extends Component {
   onRowPress(rowID) {
     console.log(this.props);
     console.log(rowID);
-    this.props.setCurAccount(AccountArray[rowID].id);
+    this.props.setCurAccount(AccountArray[rowID], AccountArray[rowID].id);
     this.getAccountInfo(AccountArray[rowID].id);
   }
 
@@ -88,7 +91,7 @@ class AccountsList extends Component {
 
   render() {
     return (
-      <View style={{ justifyContent: 'center', paddingTop: HEADER.height, flex: 1 }}>
+      <BackgroundView style={{ justifyContent: 'center', paddingTop: HEADER.height, flex: 1 }}>
       <TitleText style={{ alignSelf: 'center', paddingTop: 30 }}> Choose Account </TitleText>
         <ListView
           style={{ flex: 1, marginTop: 20 }}
@@ -100,8 +103,15 @@ class AccountsList extends Component {
           textContent={'Loading...'}
           textStyle={{ color: 'white' }}
         />
-      </View>
+        <FAB
+          onPress={this.addAccount}
+        />
+      </BackgroundView>
     );
+  }
+
+  addAccount() {
+    console.log('add account FAB pressed');
   }
 }
 
@@ -140,5 +150,5 @@ const mapStateToProps = ({ accounts, main }) => {
 
 
 export default connect(mapStateToProps, {
- setCurAccount, getAccountInfo, getToken
+ setCurAccount, setCurAccountName, getAccountInfo, getToken, setPlan, setPlanType
 })(AccountsList);

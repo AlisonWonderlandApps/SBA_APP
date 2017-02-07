@@ -12,6 +12,7 @@ import { receiptsFetch } from '../actions';
 import { layoutStyles } from './styles';
 
 import {
+  BackgroundView,
   NavListSection,
   NavListSectionTrips,
   NavListSectionTools,
@@ -30,13 +31,22 @@ import {
 
 class MainNavigationList extends Component {
 
-  componentWillMount() {
+  componentWillMount(nextProps) {
     console.log('props', this.props);
+    console.log('nextProps', nextProps);
   }
 
   componentWillReceiveProps(nextProps) {
     console.log('props0', this.props);
     console.log('nprops0', nextProps);
+  }
+
+  shouldComponentUpdate(nextProps) {
+    console.log('update', this.props.userName, nextProps.userName);
+    if (this.props.userName !== nextProps.userName) {
+      return true;
+    }
+    return false;
   }
 
   componentWillUpdate(nextProps) {
@@ -51,7 +61,7 @@ class MainNavigationList extends Component {
 
   render() {
     return (
-      <View style={layoutStyles.mainListView}>
+      <BackgroundView style={layoutStyles.mainListView}>
         <Banner> Advert Banner </Banner>
         <View style={{ flexDirection: 'row', width: null }}>
           <TouchableHighlight
@@ -111,7 +121,7 @@ class MainNavigationList extends Component {
         <FAB
           onPress={this.onPressFAB}
         />
-      </View>
+      </BackgroundView>
     );
   }
 
@@ -200,11 +210,15 @@ s
 
   toolsPressed() {
     console.log('toolsPressed');
+    Actions.tools();
   }
 
 }//end class
 
-const mapStateToProps = ({ accounts, main }) => {
+const mapStateToProps = ({ user, accounts, main }) => {
+  const {
+    userName
+  } = user;
   const {
     accountsArr,
     curAccount
@@ -221,6 +235,7 @@ const mapStateToProps = ({ accounts, main }) => {
     latestTrip
   } = main;
   return {
+    userName,
     accountsArr,
     curAccount,
     isFetching,

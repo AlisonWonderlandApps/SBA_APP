@@ -13,6 +13,7 @@ import {
 const INITIAL_STATE = {
   authenticated: false,
   isLoading: true,
+  goToLogin: false,
   error: '',
   message: ''
 };
@@ -24,7 +25,7 @@ export default (state = INITIAL_STATE, action) => {
     case AUTH_USER:
       return { ...state, error: '', authenticated: action.payload };
     case UNAUTH_USER:
-      return { ...state, authenticated: false };
+      return { ...state, goToLogin: true, isLoading: false, authenticated: false };
     case AUTH_ERROR:
       return { ...state, error: action.payload };
     case FETCH_MESSAGE:

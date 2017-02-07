@@ -3,7 +3,7 @@ import { View, ListView } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
-import { AccountListItem, Button, MyMapView } from '../components';
+import { BackgroundView, TripsListItem, Button, MyMapView } from '../components';
 import { HEADER } from '../global/margins';
 
 import {
@@ -73,7 +73,7 @@ class TripsList extends Component {
 
   renderRow(rowData, sectionID, rowID) {
     return (
-      <AccountListItem
+      <TripsListItem
         onPress={this.onRowPress.bind(this, rowID)}
         index={rowID}
         titleLabel={rowData}
@@ -84,12 +84,11 @@ class TripsList extends Component {
 
   render() {
     return (
-      <View
+      <BackgroundView
         style={{
           paddingTop: HEADER.height + 10,
-          padding: 10,
-          justifyContent: 'center',
-          flex: 1 }}
+          justifyContent: 'center'
+         }}
       >
       <MyMapView />
       <View style={{ paddingTop: 20 }}>
@@ -105,7 +104,7 @@ class TripsList extends Component {
           textContent={'Loading...'}
           textStyle={{ color: 'white' }}
         />
-      </View>
+      </BackgroundView>
     );
   }
 }

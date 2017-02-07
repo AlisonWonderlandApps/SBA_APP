@@ -16,7 +16,11 @@ import {
   SET_LATEST_TRIP,
   SETTINGS_FETCH,
   SETTINGS_FETCH_SUCCESS,
-  SETTINGS_FETCH_FAIL
+  SETTINGS_FETCH_FAIL,
+  PLAN_FETCH,
+  PLAN_FETCH_SUCCESS,
+  PLAN_FETCH_FAIL,
+  PLANTYPE_SET
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -33,7 +37,9 @@ const INITIAL_STATE = {
   reimburseableCount: 0,
   latestReceipt: {},
   latestTrip: {},
-  nextPage: false
+  nextPage: false,
+  //plan: [],
+//  planType: ''
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -99,6 +105,16 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
 
       };
+
+
+    case PLAN_FETCH:
+        return { ...state };
+
+    case PLAN_FETCH_SUCCESS:
+        return { ...state, plan: action.payload };
+
+    case PLAN_FETCH_FAIL:
+        return { ...state, error: action.payload };
 
     case SET_LATEST_TRIP:
       return {

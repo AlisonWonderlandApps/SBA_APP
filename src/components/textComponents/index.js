@@ -9,3 +9,4 @@ export * from './ButtonText';
 export * from './FormText';
 export * from './BannerText';
 export * from './ColourText';
+export * from './CentreText';

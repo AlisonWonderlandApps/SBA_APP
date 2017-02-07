@@ -28,8 +28,12 @@ import {
 class SplashScreen extends Component {
 
   componentWillMount() {
+    this.props.isUserLoggedIn();
+  }
+
+  componentDidMount() {
     //AsyncStorage.clear();
-    console.log('will', this.props);
+    //Check network connectivity
     if (!this.haveNetworkConnectivity) {
       Alert.alert(
         AlertErrorTitleStr,
@@ -42,19 +46,29 @@ class SplashScreen extends Component {
     }
   }
 
-  componentDidMount() {
-  //  this.props.isUserLoggedIn();
-    if (!this.props.isUserLoggedIn()) {
-        Actions.login();
+  shouldComponentUpdate(nextProps) {
+    console.log('should', this.props.goToLogin, nextProps.goToLogin);
+    if (this.props.goToLogin !== nextProps.goToLogin) {
+    //  console.log('gotologin');
+      return true;
     }
-  }
-
-  componentWillUpdate() {
-    console.log('receive');
+    if (this.props.userName !== nextProps.userName) {
+    //  console.log('gotologin');
+      return true;
+    }
+    console.log(this.props.done, nextProps.done);
+    if (this.props.done !== nextProps.done) {
+    //  console.log('gotoaccounts');
+      return true;
+    }
+    return false;
   }
 
   componentDidUpdate() {
-    console.log('didupdate', this.props);
+    console.log('did update', this.props);
+    if (this.props.goToLogin) {
+        Actions.login();
+    }
     if (this.props.done) {
       Actions.accountslist({
         accList: this.props.accountsArr,
@@ -95,18 +109,22 @@ class SplashScreen extends Component {
   }
 }
 
-const mapStateToProps = ({ auth, accounts }) => {
+const mapStateToProps = ({ user, auth, accounts }) => {
   const {
-    authenticated,
-    isLoading
+    userName
+  } = user;
+  const {
+    isLoading,
+    goToLogin
   } = auth;
   const {
     accountsArr,
     done
   } = accounts;
   return {
-    authenticated,
+    userName,
     isLoading,
+    goToLogin,
     accountsArr,
     done
   };

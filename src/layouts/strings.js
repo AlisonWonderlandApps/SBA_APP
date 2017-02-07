@@ -6,6 +6,7 @@ export const loadingStr = 'Loading....';
 export const helpURL = 'https://id.sbaustralia.com/reset';
 export const termsURL = 'https://id.sbaustralia.com/terms-of-service';
 export const privacyURL = 'https://id.sbaustralia.com/privacy';
+export const faqURL = 'https://id.sbaustralia.com/reset';
 
 export const helpString = 'Need Help?';
 export const termsString = 'Terms & Conditions';
@@ -32,7 +33,6 @@ export const okStr = 'OK';
 export const noNetworkStr = 'No network connectivity found :(\n Login cannot occur right now';
 export const loginFailedStr = 'Please check your email and password';
 
-
 //Main Screen strings
 export const ProcessingStr = 'Processing';
 export const ReimburseStr = 'Reimbursable';
@@ -40,3 +40,11 @@ export const NoReceiptsStr = 'Waiting for your receipts';
 export const ReceiptsStr = 'Receipts';
 export const TripsStr = 'Trips';
 export const ToolsStr = 'Tools';
+export const DeductStr = 'Deductible';
+export const NotSureStr = 'I\'m not sure';
+
+//Settings strings
+export const FAQStr = 'Frequently Asked Questions';
+export const likeAppStr = 'Do you like this App?';
+export const cameraStr = 'Open Camera with App';
+export const imagesStr = 'Save images to library';

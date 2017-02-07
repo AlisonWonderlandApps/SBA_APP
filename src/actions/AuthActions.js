@@ -1,6 +1,5 @@
 //import axios from 'axios';
 import { AsyncStorage } from 'react-native';
-import { Actions } from 'react-native-router-flux';
 import axios from 'axios';
 import Querystring from 'querystring';
 import { ssAuthConfig } from '../config/auth';
@@ -9,35 +8,33 @@ import {
   USER_LOGGED_IN,
   //AUTH_USER,
   UNAUTH_USER,
-  AUTH_ERROR,
+  //AUTH_ERROR,
   //FETCH_MESSAGE
 } from './types';
 
 import {
-  loadAccounts
+  loadAccounts,
+  loadUserInfo
 } from '../actions';
 
-//return true if their is a token found in storage
+//return true if there is a token found in storage
 export const isUserLoggedIn = () => {
-  console.log('islogged in?');
   return dispatch => {
-  try {
-    AsyncStorage.getItem('refreshToken').then((value) => {
-      if (value !== null) {
-        console.log('rToken', value);
-        dispatch(getNewToken(value));
-      } else {
-        dispatch({
-          type: USER_LOGGED_IN,
-          payload: false
-        });
-        return false;
-      }
+    try {
+      AsyncStorage.getItem('refreshToken').then((value) => {
+        if (value !== null) {
+          console.log('rToken', value);
+          dispatch(getNewToken(value));
+        } else {
+          dispatch({
+            type: UNAUTH_USER
+          });
+        }
     });
-  } catch (err) {
-    console.log('no refresh token gotten');
-    return err;
-  }
+    } catch (err) {
+        console.log('no refresh token gotten');
+        return err;
+    }
   };
 };
 
@@ -61,6 +58,7 @@ export const getNewToken = (refresher) => {
     .then(response => {
         console.log(response.data.access_token);
         const AuthStr = 'Bearer '.concat(response.data.access_token);
+        dispatch(loadUserInfo(AuthStr));
         dispatch(loadAccounts(AuthStr));
         dispatch({
           type: USER_LOGGED_IN,
@@ -87,7 +85,7 @@ export function signUpAUser({ email, password }) {
   };
 }
 */
-
+/*
 export function authError(error) {
   return {
     type: AUTH_ERROR,
@@ -100,3 +98,4 @@ export function signoutUser() {
 
   return { type: UNAUTH_USER };
 }
+*/

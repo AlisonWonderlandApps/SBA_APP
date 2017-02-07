@@ -1,31 +1,24 @@
 
 
-import React, {Component} from 'react';
-import { View, Image, TouchableHighlight } from 'react-native';
-import { Actions } from 'react-native-router-flux';
-import { menuStyles } from './styles';
-import { FormText } from '../../components';
+import React, { Component } from 'react';
+import { View, Image } from 'react-native';
 import { HEADER } from '../../global/margins';
-import { PRIMARY_COLOUR, SHADOW_COLOUR } from '../../global/colours';
+import { SHADOW_COLOUR } from '../../global/colours';
 
 
 class Header extends Component {
-
-  constructor(props) {
-    super(props);
-  }
 
     render() {
       const icon =
         require('../../assets/images/roundLogoPNG/SquirrelStreet_Roundel-Device_pos_RGB.png');
 
-    return (
-          <View style={[Styles.iconContainer, this.props.iconContainerStyle]}>
-            <Image source={icon} style={[Styles.icon, this.props.iconStyle]} />
-          </View>
-    );
+      return (
+            <View style={[Styles.iconContainer, this.props.iconContainerStyle]}>
+              <Image source={icon} style={[Styles.icon, this.props.iconStyle]} />
+            </View>
+      );
   }
-};
+}
 
 export const Styles = {
   view: {
