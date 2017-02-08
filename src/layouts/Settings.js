@@ -22,7 +22,8 @@ import {
   SettingsSectionName,
   SettingsSectionSwitch,
   SettingsSectionPlan,
-  SettingsSectionUsage
+  SettingsSectionUsage,
+  Banner
  } from '../components';
 
 import {
@@ -41,6 +42,8 @@ class Settings extends Component {
   render() {
     return (
       <BackgroundView style={layoutStyles.settingsView}>
+        <Banner style={{ height: 40, width: null }}> Settings </Banner>
+
         <CardView>
           <SettingsSectionName
             name={this.props.userInfo.name}

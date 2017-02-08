@@ -15,6 +15,7 @@ const ButtonText = (props) => {
 const styles = {
   text: {
     color: PRIMARY_HIGHLIGHT_COLOUR,
+    backgroundColor: 'rgba(0,0,0,0)',
     fontFamily: APP_FONT,
     alignSelf: 'center',
     fontSize: FONT_SIZE_MEDIUM,

@@ -100,6 +100,8 @@ export const PROCESSED_FETCH = 'processed_fetch';
 export const SET_PROCESSED_NUM = 'set_processed_num';
 export const SET_REIMBURSEABLE_NUM = 'set_reimburseable_num';
 
+export const PHOTO_ADD = 'add_a_photo';
+
 //TripsActions (nb: trips are basically a category of
 //    receipt with some additional functionality).
 export const TRIPS_FETCH = 'trips_fetch_all';

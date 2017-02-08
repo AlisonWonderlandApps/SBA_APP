@@ -27,6 +27,8 @@ import CameraPic from './layouts/Camera';
 import Settings from './layouts/Settings';
 import Tools from './layouts/Tools';
 import SaveDoc from './layouts/SaveDoc';
+import Processing from './layouts/Processing';
+import Reimbursables from './layouts/Reimbursables';
 
 class RouterComponent extends Component {
 /*  shouldComponentUpdate(nextProps) {
@@ -141,7 +143,7 @@ class RouterComponent extends Component {
           shadowOpacity: 0.2, }}
       renderTitle={() => <Header />}
       rightTitle='Add'
-      onRight={() => console.log('add this photo yea')}
+      onRight={() => Actions.save()}
     />
 
     <Scene
@@ -224,7 +226,7 @@ class RouterComponent extends Component {
     />
 
     <Scene
-      key="Save"
+      key="save"
       component={SaveDoc}
       hideNavBar={false}
       navigationBarStyle={{
@@ -237,6 +239,40 @@ class RouterComponent extends Component {
       renderTitle={() => <Header />}
       onRight={() => console.log('save it')}
       rightTitle='Save'
+      //initial
+    />
+
+    <Scene
+      key="processing"
+      component={Processing}
+      hideNavBar={false}
+      navigationBarStyle={{
+          backgroundColor: PRIMARY_COLOUR,
+          height: HEADER.height,
+          padding: 15,
+          shadowColor: SHADOW_COLOUR,
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.2, }}
+      renderTitle={() => <Header />}
+      onRight={() => console.log('filter it')}
+      rightTitle='Filters'
+      //initial
+    />
+
+    <Scene
+      key="reimbursables"
+      component={Reimbursables}
+      hideNavBar={false}
+      navigationBarStyle={{
+          backgroundColor: PRIMARY_COLOUR,
+          height: HEADER.height,
+          padding: 15,
+          shadowColor: SHADOW_COLOUR,
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.2, }}
+      renderTitle={() => <Header />}
+      onRight={() => console.log('filter it')}
+      rightTitle='Filters'
       //initial
     />
 

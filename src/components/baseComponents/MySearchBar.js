@@ -7,7 +7,7 @@ import { baseStyles } from './styles';
 const MySearchBar = ({ onPress }) => {
 
 return (
-      <View style={{ height: 30, paddingTop: 5 }}>
+      <View style={{ flexGrow: 1, height: 35, paddingTop: 5 }}>
         <TouchableHighlight
           onPress={console.log('hi')}
           style={baseStyles.searchStyle}

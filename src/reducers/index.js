@@ -8,6 +8,7 @@ import AccountsReducer from './AccountsReducer';
 import MainReducer from './MainReducer';
 import TripReducer from './TripsReducer';
 import UserReducer from './UserReducer';
+import ReceiptsReducer from './ReceiptsReducer';
 
   //'wire up' the reducer
 export default combineReducers({
@@ -17,5 +18,6 @@ export default combineReducers({
   accounts: AccountsReducer,
   main: MainReducer,
   myTrips: TripReducer,
-  user: UserReducer
+  user: UserReducer,
+  receipts: ReceiptsReducer
 });

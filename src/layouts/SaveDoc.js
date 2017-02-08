@@ -4,6 +4,7 @@
 
 import React, { Component } from 'react';
 import {
+  TouchableOpacity,
   TouchableHighlight,
   Text,
   View,
@@ -26,10 +27,15 @@ import {
 import { HEADER } from '../global/margins';
 import { PRIMARY_HIGHLIGHT_COLOUR } from '../global/colours';
 
+let imgUri = '';
+
 class SaveDoc extends Component {
   constructor(props) {
     super(props);
     this.state = { text: '' };
+    console.log('propsphoto', this.props);
+    console.log('uri', this.props.photoObj[0].uri);
+    imgUri = this.props.photoObj[0].uri;
   }
 
   render() {
@@ -44,12 +50,13 @@ class SaveDoc extends Component {
             placeholder='+ tap to add note'
             onChangeText={(text) => this.setState({ text })}
             value={this.state.text}
+            multiline
           />
           <View style={{ padding: 5, flexDirection: 'row', width: null }}>
             <CardSection style={{ borderWidth: 1, flex: 1 }}>
-              <TouchableHighlight
+              <TouchableOpacity
                 style={{ flex: 1 }}
-                onPress={this.onContactAddClick.bind(this)}
+                onPress={this.onReimburseClick.bind(this)}
               >
                 <Text
                   style={{
@@ -60,12 +67,12 @@ class SaveDoc extends Component {
                 >
                   {ReimburseStr}
                 </Text>
-              </TouchableHighlight>
+              </TouchableOpacity>
             </CardSection>
             <CardSection style={{ borderWidth: 1, flex: 1 }}>
-              <TouchableHighlight
+              <TouchableOpacity
                 style={{ flex: 1 }}
-                onPress={this.onContactAddClick.bind(this)}
+                onPress={this.onDeductClick.bind(this)}
               >
                 <Text
                   style={{
@@ -76,12 +83,12 @@ class SaveDoc extends Component {
                 >
                   {DeductStr}
                 </Text>
-              </TouchableHighlight>
+              </TouchableOpacity>
             </CardSection>
             <CardSection style={{ borderWidth: 1, flex: 1 }}>
-              <TouchableHighlight
+              <TouchableOpacity
                 style={{ flex: 1 }}
-                onPress={this.onContactAddClick.bind(this)}
+                onPress={this.onNotSureClick.bind(this)}
               >
                 <Text
                   style={{
@@ -92,37 +99,48 @@ class SaveDoc extends Component {
                 >
                   {NotSureStr}
                 </Text>
-              </TouchableHighlight>
+              </TouchableOpacity>
             </CardSection>
           </View>
         </View>
-        <View>
-          <Image />
+        <View style={{ flex: 1, padding: 20 }} >
+          <Image
+            style={{ flex: 1, resizeMode: 'cover' }}
+            source={{ uri: imgUri }}
+          />
         </View>
       </BackgroundView>
     );
   }
 
-  onContactAddClick() {
-    console.log('contactAdd');
-    Alert.alert(
-      'Squirrel Street',
-      'Add Contact',
-      [
-        { text: 'Yes', onPress: () => console.log('ok') },
-        { text: 'Cancel' }
-      ]
-    );
+  onReimburseClick() {
+    console.log('reimburseables');
   }
+
+  onDeductClick() {
+    console.log('DeductStr');
+  }
+
+  onNotSureClick() {
+    console.log('NotSureStr');
+  }
+
 }
 
-const mapStateToProps = ({ accounts }) => {
+const mapStateToProps = ({ accounts, receipts }) => {
   const {
     dropBoxEmail
   } = accounts;
+  const {
+    photoObj
+  } = receipts;
   return {
-    dropBoxEmail
+    dropBoxEmail,
+    photoObj
   };
 };
 
 export default connect(mapStateToProps, {})(SaveDoc);
+
+
+//saving a receipt

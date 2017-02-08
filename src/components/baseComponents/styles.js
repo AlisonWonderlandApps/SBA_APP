@@ -26,6 +26,8 @@ export const baseStyles = {
   buttonStyle: {
     flexGrow: 1,
     alignSelf: 'stretch',
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: CARD_BACKGROUND_COLOUR,
     borderRadius: 5,
     borderWidth: 1,

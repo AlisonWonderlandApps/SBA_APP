@@ -178,21 +178,15 @@ class MainNavigationList extends Component {
       ]
     );
   }
-s
-  onCameraPressed() {
-    console.log('camera');
-  }
-
-  onPhotoPressed() {
-    console.log('photo');
-  }
 
   processingPressed() {
     console.log('processingPressed');
+    Actions.processing();
   }
 
   reimburseablePressed() {
     console.log('reimburseablePressed');
+    Actions.reimbursables();
   }
 
   receiptsPressed() {
