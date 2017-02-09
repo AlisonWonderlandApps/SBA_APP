@@ -101,6 +101,11 @@ export const SET_PROCESSED_NUM = 'set_processed_num';
 export const SET_REIMBURSEABLE_NUM = 'set_reimburseable_num';
 
 export const PHOTO_ADD = 'add_a_photo';
+export const SET_RECEIPT_CATEGORY = 'set_receipt_category';
+export const SET_RECEIPT_NOTE = 'set_receipt_note';
+export const SAVE_RECEIPT_LOCAL = 'save_receipt_locally';
+export const ADD_RECEIPT_SUCCESS = 'add_receipt_success';
+export const USE_PICTURE = 'use_picture';
 
 //TripsActions (nb: trips are basically a category of
 //    receipt with some additional functionality).

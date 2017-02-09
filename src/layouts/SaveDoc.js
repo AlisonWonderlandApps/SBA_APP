@@ -5,19 +5,19 @@
 import React, { Component } from 'react';
 import {
   TouchableOpacity,
-  TouchableHighlight,
+  Alert,
   Text,
   View,
   Image,
   TextInput,
-  Alert
 } from 'react-native';
 import { connect } from 'react-redux';
+import { Actions } from 'react-native-router-flux';
 import {
   BackgroundView,
-  CardView,
   CardSection,
-  Banner
+  Banner,
+  Button
 } from '../components';
 import {
   NotSureStr,
@@ -26,16 +26,28 @@ import {
 } from './strings';
 import { HEADER } from '../global/margins';
 import { PRIMARY_HIGHLIGHT_COLOUR } from '../global/colours';
+import {
+  setReceiptCategory,
+  noteChanged,
+  saveReceipt
+ } from '../actions';
 
 let imgUri = '';
 
 class SaveDoc extends Component {
   constructor(props) {
     super(props);
-    this.state = { text: '' };
     console.log('propsphoto', this.props);
-    console.log('uri', this.props.photoObj[0].uri);
+  //  console.log('uri', this.props.photoObj[0].uri);
     imgUri = this.props.photoObj[0].uri;
+  }
+
+  shouldComponentUpdate(nextProps) {
+    console.log('should', this.props, nextProps);
+    if (this.props !== nextProps) {
+      return true;
+    }
+    return false;
   }
 
   render() {
@@ -48,99 +60,214 @@ class SaveDoc extends Component {
           <TextInput
             style={{ alignItems: 'flex-start', padding: 5, height: 80 }}
             placeholder='+ tap to add note'
-            onChangeText={(text) => this.setState({ text })}
-            value={this.state.text}
+            onChangeText={this.onNoteChanged.bind(this)}
+            value={this.props.note}
             multiline
           />
           <View style={{ padding: 5, flexDirection: 'row', width: null }}>
-            <CardSection style={{ borderWidth: 1, flex: 1 }}>
-              <TouchableOpacity
-                style={{ flex: 1 }}
-                onPress={this.onReimburseClick.bind(this)}
-              >
-                <Text
-                  style={{
-                    color: PRIMARY_HIGHLIGHT_COLOUR,
-                    alignSelf: 'center',
-                    paddingTop: 5,
-                    paddingBottom: 5 }}
-                >
-                  {ReimburseStr}
-                </Text>
-              </TouchableOpacity>
-            </CardSection>
-            <CardSection style={{ borderWidth: 1, flex: 1 }}>
-              <TouchableOpacity
-                style={{ flex: 1 }}
-                onPress={this.onDeductClick.bind(this)}
-              >
-                <Text
-                  style={{
-                    color: PRIMARY_HIGHLIGHT_COLOUR,
-                    alignSelf: 'center',
-                    paddingTop: 5,
-                    paddingBottom: 5 }}
-                >
-                  {DeductStr}
-                </Text>
-              </TouchableOpacity>
-            </CardSection>
-            <CardSection style={{ borderWidth: 1, flex: 1 }}>
-              <TouchableOpacity
-                style={{ flex: 1 }}
-                onPress={this.onNotSureClick.bind(this)}
-              >
-                <Text
-                  style={{
-                    color: PRIMARY_HIGHLIGHT_COLOUR,
-                    alignSelf: 'center',
-                    paddingTop: 5,
-                    paddingBottom: 5 }}
-                >
-                  {NotSureStr}
-                </Text>
-              </TouchableOpacity>
-            </CardSection>
+            <TouchableOpacity
+              style={{ flex: 1, height: 40 }}
+              onPress={this.onReimburseClick.bind(this)}
+            >
+              {this.renderReimbursables()}
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{ flex: 1, height: 40 }}
+              onPress={this.onDeductClick.bind(this)}
+            >
+              {this.renderDeductibles()}
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{ flex: 1, height: 40 }}
+              onPress={this.onNotSureClick.bind(this)}
+            >
+              {this.renderNotSure()}
+            </TouchableOpacity>
           </View>
         </View>
-        <View style={{ flex: 1, padding: 20 }} >
+        <View style={{ flex: 1, paddingBottom: 15, padding: 20, justifyContent: 'space-between' }} >
           <Image
-            style={{ flex: 1, resizeMode: 'cover' }}
+            style={{ borderWidth: 1, flex: 1, resizeMode: 'cover', paddingBottom: 10 }}
             source={{ uri: imgUri }}
           />
+          <Text />
+          <Button
+            style={{ height: 30, width: 100 }}
+            onPress={this.onSavePress.bind(this)}
+          >
+            Save
+          </Button>
         </View>
       </BackgroundView>
     );
   }
 
+  onPress() {
+    console.log('header save');
+  }
+
+  onSavePress() {
+    console.log('save', this.props);
+    if (this.props.category === '') {
+      Alert.alert(
+        'Oops!!',
+        'Please choose a category for your receipt!',
+        [
+          { text: 'OK' }
+        ]
+      );
+    } else {
+      this.props.saveReceipt(this.props);
+      Alert.alert(
+        'Squirrel Street',
+        'Receipt Saved!',
+        [
+          { text: 'OK', onPress: () => Actions.main() }
+        ]
+      );
+      console.log(this.props.newReceipt);
+    }
+  }
+
+  onNoteChanged(input) {
+    console.log(input);
+    this.props.noteChanged(input);
+  }
+
   onReimburseClick() {
-    console.log('reimburseables');
+    this.props.setReceiptCategory('Reimbursable');
+    console.log('reimburseables', this.props.category);
+  }
+
+  renderReimbursables() {
+    if (this.props.category === 'Reimbursable') {
+      return (
+        <CardSection style={{ justifyContent: 'center', backgroundColor: PRIMARY_HIGHLIGHT_COLOUR, borderWidth: 1, flex: 1 }}>
+            <Text
+              style={{
+                color: 'white',
+                alignSelf: 'center',
+                paddingTop: 5,
+                paddingBottom: 5 }}
+            >
+              {ReimburseStr}
+            </Text>
+        </CardSection>
+      );
+    }
+    return (
+      <CardSection style={{ justifyContent: 'center', borderWidth: 1, flex: 1 }}>
+          <Text
+            style={{
+              color: PRIMARY_HIGHLIGHT_COLOUR,
+              alignSelf: 'center',
+              paddingTop: 5,
+              paddingBottom: 5 }}
+          >
+            {ReimburseStr}
+          </Text>
+      </CardSection>
+    );
   }
 
   onDeductClick() {
-    console.log('DeductStr');
+    this.props.setReceiptCategory('Deductible');
+    console.log('DeductStr', this.props.category);
+  }
+
+  renderDeductibles() {
+    if (this.props.category === 'Deductible') {
+      return (
+        <CardSection style={{ justifyContent: 'center',backgroundColor: PRIMARY_HIGHLIGHT_COLOUR, borderWidth: 1, flex: 1 }}>
+            <Text
+              style={{
+                color: 'white',
+                alignSelf: 'center',
+                paddingTop: 5,
+                paddingBottom: 5 }}
+            >
+              {DeductStr}
+            </Text>
+        </CardSection>
+      );
+    }
+    return (
+      <CardSection style={{ justifyContent: 'center', borderWidth: 1, flex: 1 }}>
+          <Text
+            style={{
+              color: PRIMARY_HIGHLIGHT_COLOUR,
+              alignSelf: 'center',
+              paddingTop: 5,
+              paddingBottom: 5 }}
+          >
+            {DeductStr}
+          </Text>
+      </CardSection>
+    );
   }
 
   onNotSureClick() {
-    console.log('NotSureStr');
+    this.props.setReceiptCategory('Not Sure');
+    console.log('NotSureStr', this.props.category);
+  }
+
+  renderNotSure() {
+    if (this.props.category === 'Not Sure') {
+      return (
+        <CardSection style={{ justifyContent: 'center', backgroundColor: PRIMARY_HIGHLIGHT_COLOUR, borderWidth: 1, flex: 1 }}>
+            <Text
+              style={{
+                color: 'white',
+                alignSelf: 'center',
+                paddingTop: 5,
+                paddingBottom: 5 }}
+            >
+              {NotSureStr}
+            </Text>
+        </CardSection>
+      );
+    }
+    return (
+      <CardSection style={{ justifyContent: 'center', borderWidth: 1, flex: 1 }}>
+          <Text
+            style={{
+              color: PRIMARY_HIGHLIGHT_COLOUR,
+              alignSelf: 'center',
+              paddingTop: 5,
+              paddingBottom: 5 }}
+          >
+            {NotSureStr}
+          </Text>
+      </CardSection>
+    );
   }
 
 }
 
 const mapStateToProps = ({ accounts, receipts }) => {
   const {
+    curAccount,
     dropBoxEmail
   } = accounts;
   const {
-    photoObj
+    photoObj,
+    category,
+    note,
+    newReceipt
   } = receipts;
   return {
+    curAccount,
     dropBoxEmail,
-    photoObj
+    photoObj,
+    category,
+    note,
+    newReceipt
   };
 };
 
-export default connect(mapStateToProps, {})(SaveDoc);
+export default connect(mapStateToProps, {
+  setReceiptCategory, noteChanged, saveReceipt
+})(SaveDoc);
 
 
 //saving a receipt

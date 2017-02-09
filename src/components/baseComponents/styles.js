@@ -24,8 +24,8 @@ export const baseStyles = {
     paddingTop: 5
   },
   buttonStyle: {
-    flexGrow: 1,
-    alignSelf: 'stretch',
+  //  flexGrow: 1,
+    alignSelf: 'center',
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: CARD_BACKGROUND_COLOUR,
@@ -38,6 +38,8 @@ export const baseStyles = {
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
+    height: 40,
+  //  width: null
   },
   errorStyle: {
     flex: 1,

@@ -24,6 +24,7 @@ import TripsList from './layouts/TripsList';
 import ReceiptsList from './layouts/ReceiptsList';
 import Photos from './layouts/Photos';
 import CameraPic from './layouts/Camera';
+import CameraStill from './layouts/CameraStill';
 import Settings from './layouts/Settings';
 import Tools from './layouts/Tools';
 import SaveDoc from './layouts/SaveDoc';
@@ -158,6 +159,22 @@ class RouterComponent extends Component {
           shadowOffset: { width: 0, height: 2 },
           shadowOpacity: 0.2, }}
       renderTitle={() => <Header />}
+      //initial
+    />
+
+    <Scene
+      key="cameraPic"
+      component={CameraStill}
+      hideNavBar={false}
+      navigationBarStyle={{
+          backgroundColor: PRIMARY_COLOUR,
+          height: HEADER.height,
+          padding: 15,
+          shadowColor: SHADOW_COLOUR,
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.2, }}
+      renderTitle={() => <Header />}
+      //initial
     />
 
     <Scene
@@ -237,8 +254,8 @@ class RouterComponent extends Component {
           shadowOffset: { width: 0, height: 2 },
           shadowOpacity: 0.2, }}
       renderTitle={() => <Header />}
-      onRight={() => console.log('save it')}
-      rightTitle='Save'
+      //onRight={() => SaveDoc.onPress.bind(SaveDoc)}
+      //rightTitle='Save'
       //initial
     />
 

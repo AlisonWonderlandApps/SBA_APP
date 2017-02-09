@@ -12,7 +12,12 @@ import {
 //  RECEIPTS_FETCH_FAIL,
 //  RECEIPT_ADD,
 //RECEIPT_UPDATE,
-  PHOTO_ADD
+  PHOTO_ADD,
+  SET_RECEIPT_CATEGORY,
+  SET_RECEIPT_NOTE,
+  SAVE_RECEIPT_LOCAL,
+  ADD_RECEIPT_SUCCESS,
+  USE_PICTURE
 } from './types';
 
 //0. Fetch all receipts
@@ -25,20 +30,60 @@ export const getPhoto = (photo) => {
 };
 
 //1. Add a receipts
+export const setReceiptCategory = (cat) => {
+  return {
+    type: SET_RECEIPT_CATEGORY,
+    payload: cat
+  };
+};
+
+export const noteChanged = (note) => {
+  return {
+    type: SET_RECEIPT_NOTE,
+    payload: note
+  };
+};
+
+export const usePicture = (bool) => {
+  return {
+    type: USE_PICTURE,
+    payload: bool
+  };
+};
+
+export const saveReceipt = (theProps) => {
+  const receipt = {
+    account: theProps.curAccount,
+    email: theProps.dropBoxEmail,
+    note: theProps.note,
+    category: theProps.category,
+    attachment: theProps.photoObj
+  };
+  console.log('receipt', receipt);
+  return {
+    type: SAVE_RECEIPT_LOCAL,
+    payload: receipt
+  };
+};
+
 export const addReceipt = (AuthStr) => {
   console.log('addreceipt');
   return function (dispatch) {
   axios.post(ssApiQueryURL.userAccounts, { headers: { Authorization: AuthStr } })
       .then(response => {
         console.log(response.data);
-        //console.log('length', response.data.accounts.length);
-        //loadLabels(response.data.accounts);
-        //loadPlan(response.data.plan);
-        dispatch(loadAccountsSuccess(response.data.accounts));
+        dispatch(addReceiptSuccess(response.data));
       }).catch((error) => {
           console.log('error etf ', error);
-          loadAccountsFail(error);
+          //loadAccountsFail(error);
         });
+  };
+};
+
+const addReceiptSuccess = (receipt) => {
+  return {
+    type: ADD_RECEIPT_SUCCESS,
+    payload: receipt
   };
 };
 

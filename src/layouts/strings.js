@@ -48,3 +48,8 @@ export const FAQStr = 'Frequently Asked Questions';
 export const likeAppStr = 'Do you like this App?';
 export const cameraStr = 'Open Camera with App';
 export const imagesStr = 'Save images to library';
+
+//Save Receipt strings
+export const ReimCatStr = 'Reimbursable';
+export const DeducCatStr = 'Deductible';
+export const NotSureCatStr = 'Not Sure';

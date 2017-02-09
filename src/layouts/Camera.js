@@ -1,33 +1,80 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, StyleSheet } from 'react-native';
-//import CameraRollPicker from 'react-native-camera-roll-picker';
+import { View, Dimensions, StyleSheet } from 'react-native';
 import Camera from 'react-native-camera';
+import { connect } from 'react-redux';
+import { Actions } from 'react-native-router-flux';
+import { Button } from '../components';
+import { getPhoto } from '../actions';
 import { HEADER } from '../global/margins';
+import { BACKGROUND_COLOUR } from '../global/colours';
 
 class CameraPic extends Component {
+  shouldComponentUpdate(nextProps) {
+    if (this.props !== nextProps) {
+      return true;
+    }
+    return false;
+  }
+
   render() {
     return (
-      <View style={{ flex: 1, paddingTop: HEADER.height }}>
+      <View
+        style={{ flex: 1, paddingTop: HEADER.height }}
+      >
         <Camera
           ref={(cam) => {
             this.camera = cam;
           }}
           style={styles.preview}
+          flashmode={Camera.constants.FlashMode.auto}
+          captureAudio={false}
+          captureTarget={Camera.constants.CaptureTarget.disk}
+        />
+        <View
+          style={{
+            paddingLeft: 30,
+            paddingRight: 30,
+            justifyContent: 'space-around',
+            flexDirection: 'row',
+            backgroundColor: BACKGROUND_COLOUR,
+            height: 80,
+            padding: 20 }}
         >
-          <Text style={styles.capture} onPress={this.takePicture.bind(this)}>OK</Text>
-        </Camera>
+          <Button
+              style={{ width: 100 }}
+              onPress={this.takePicture.bind(this)}
+          >
+              OK
+          </Button>
+          <Button
+            style={{ width: 100 }}
+            onPress={this.cancel}
+          >
+              Cancel
+          </Button>
+        </View>
       </View>
     );
   }
 
   takePicture() {
     this.camera.capture()
-      .then((data) => console.log(data))
+      .then((data) => this.savePicture(data))
       .catch(err => console.error(err));
   }
 
-  savePicture() {
-    //go to save screen with data.
+  savePicture(data) {
+    const photo = [{
+      uri: data.path,
+      type: 'image/jpeg'
+    }];
+    console.log('photodata', data);
+    this.props.getPhoto(photo);
+    Actions.cameraPic();
+  }
+
+  cancel() {
+    Actions.main();
   }
 }
 
@@ -52,7 +99,9 @@ const styles = StyleSheet.create({
   }
 });
 
-export default CameraPic;
+export default connect(null, {
+  getPhoto
+})(CameraPic);
 
 /*
 <CameraRollPicker
