@@ -29,10 +29,13 @@ export const layoutStyles = {
     flex: 1
   },
   settingsView: {
-    paddingTop: HEADER.height,
+    paddingTop: HEADER.height + 5,
     paddingBottom: 20,
     padding: 0,
+    paddingLeft: 5,
+    paddingRight: 5,
     flex: 1,
+    flexGrow: 1,
     justifyContent: 'space-between'
   },
   tab: {

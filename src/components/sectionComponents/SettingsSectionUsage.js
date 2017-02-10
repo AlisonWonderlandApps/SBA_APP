@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react';
 import { Text, View } from 'react-native';
-import { CardSection, SmallText } from '../../components';
+import { CardSection, SettingsText, SmallText } from '../../components';
 //import { mainStyles } from './styles';
 
 let Accountname = '';
@@ -16,8 +16,8 @@ class SettingsSectionUsage extends Component {
   render() {
     return (
       <CardSection>
-        <View style={{ flex: 1, paddingTop: 5, paddingBottom: 5 }}>
-          <Text> {Accountname} </Text>
+        <View style={{ flex: 1, padding: 5 }}>
+          <SettingsText> {Accountname} </SettingsText>
           <SmallText style={{ paddingLeft: 2, paddingTop: 10 }}> Usage </SmallText>
         </View>
       </CardSection>

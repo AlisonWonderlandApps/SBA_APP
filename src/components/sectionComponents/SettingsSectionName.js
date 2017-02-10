@@ -2,8 +2,8 @@
 import React, { Component } from 'react';
 import { Text, TextInput, View } from 'react-native';
 //import { connect } from 'react-redux';
-import { CardSection, SmallText } from '../../components';
-//import { mainStyles } from './styles';
+import { CardSection, TitleText, SmallText } from '../../components';
+import { PRIMARY_HIGHLIGHT_COLOUR } from '../../global/colours';
 
 let name = '';
 let email = '';
@@ -20,8 +20,8 @@ class SettingsSectionName extends Component {
     return (
       <CardSection>
         <View style={styles.name}>
-          <Text> {name} </Text>
-          <SmallText style={{ paddingTop: 5, paddingLeft: 2 }}> {email} </SmallText>
+          <TitleText style={{ paddingLeft: 3, color: PRIMARY_HIGHLIGHT_COLOUR }}> {name} </TitleText>
+          <Text style={{ paddingTop: 5, paddingLeft: 2 }}> {email} </Text>
         </View>
       </CardSection>
     );
@@ -34,7 +34,8 @@ const styles = {
     flexDirection: 'column',
     justifyContent: 'space-between',
     paddingTop: 5,
-    paddingBottom: 5
+    paddingBottom: 5,
+    padding: 5
   }
 };
 

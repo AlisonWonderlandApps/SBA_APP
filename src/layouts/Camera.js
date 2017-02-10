@@ -27,8 +27,12 @@ class CameraPic extends Component {
           }}
           style={styles.preview}
           flashmode={Camera.constants.FlashMode.auto}
+          type={Camera.constants.Type.back}
           captureAudio={false}
           captureTarget={Camera.constants.CaptureTarget.disk}
+          defaultOnFocusComponent
+          onZoomChanged={() => console.log('zoom')}
+          onFocusChanged={() => console.log('focus')}
         />
         <View
           style={{

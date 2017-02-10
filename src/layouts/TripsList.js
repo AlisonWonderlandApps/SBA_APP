@@ -87,6 +87,7 @@ class TripsList extends Component {
       <BackgroundView
         style={{
           paddingTop: HEADER.height + 10,
+          paddingBottom: 10,
           justifyContent: 'center'
          }}
       >
@@ -94,11 +95,7 @@ class TripsList extends Component {
       <View style={{ paddingTop: 20 }}>
         <Button> Start Trip </Button>
       </View>
-        <ListView
-          style={{ flex: 1, marginTop: 20 }}
-          dataSource={this.state.dataSource}
-          renderRow={this.renderRow.bind(this)}
-        />
+
         <Spinner
           visible={this.props.isFetching}
           textContent={'Loading...'}

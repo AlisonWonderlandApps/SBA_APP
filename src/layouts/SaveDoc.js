@@ -16,7 +16,6 @@ import { Actions } from 'react-native-router-flux';
 import {
   BackgroundView,
   CardSection,
-  Banner,
   Button
 } from '../components';
 import {
@@ -25,7 +24,7 @@ import {
   DeductStr
 } from './strings';
 import { HEADER } from '../global/margins';
-import { PRIMARY_HIGHLIGHT_COLOUR } from '../global/colours';
+import { PRIMARY_COLOUR, PRIMARY_HIGHLIGHT_COLOUR } from '../global/colours';
 import {
   setReceiptCategory,
   noteChanged,
@@ -55,10 +54,17 @@ class SaveDoc extends Component {
       <BackgroundView
         style={{ padding: 0, flex: 1, justifyContent: 'flex-start', paddingTop: HEADER.height }}
       >
-        <Banner style={{ height: 40, width: null }}> This is a receipt </Banner>
+        <View style={{ backgroundColor: PRIMARY_HIGHLIGHT_COLOUR, height: 50, width: null, justifyContent: 'center', alignItems: 'center' }} >
+          <Button
+              style={{ borderColor: PRIMARY_COLOUR, height: 30, width: 100 }}
+              onPress={this.onSavePress.bind(this)}
+          >
+            Save
+          </Button>
+        </View>
         <View style={{ backgroundColor: 'white', padding: 5 }}>
           <TextInput
-            style={{ alignItems: 'flex-start', padding: 5, height: 80 }}
+            style={{ fontSize: 16, alignItems: 'flex-start', padding: 5, height: 80 }}
             placeholder='+ tap to add note'
             onChangeText={this.onNoteChanged.bind(this)}
             value={this.props.note}
@@ -90,13 +96,6 @@ class SaveDoc extends Component {
             style={{ borderWidth: 1, flex: 1, resizeMode: 'cover', paddingBottom: 10 }}
             source={{ uri: imgUri }}
           />
-          <Text />
-          <Button
-            style={{ height: 30, width: 100 }}
-            onPress={this.onSavePress.bind(this)}
-          >
-            Save
-          </Button>
         </View>
       </BackgroundView>
     );

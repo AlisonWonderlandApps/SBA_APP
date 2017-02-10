@@ -4,8 +4,10 @@
 
 import React, { Component } from 'react';
 import {
+  ScrollView,
   TouchableHighlight,
   Text,
+  View,
   Linking,
   AsyncStorage,
   Alert
@@ -15,6 +17,7 @@ import { connect } from 'react-redux';
 import Communications from 'react-native-communications';
 
 import { layoutStyles } from './styles';
+import { BACKGROUND_COLOUR } from '../global/colours';
 import {
   BackgroundView,
   CardView,
@@ -23,7 +26,7 @@ import {
   SettingsSectionSwitch,
   SettingsSectionPlan,
   SettingsSectionUsage,
-  Banner
+  FormText
  } from '../components';
 
 import {
@@ -41,9 +44,8 @@ import {
 class Settings extends Component {
   render() {
     return (
+      <ScrollView style={{ backgroundColor: BACKGROUND_COLOUR, flex: 1 }}>
       <BackgroundView style={layoutStyles.settingsView}>
-        <Banner style={{ height: 40, width: null }}> Settings </Banner>
-
         <CardView>
           <SettingsSectionName
             name={this.props.userInfo.name}
@@ -57,11 +59,13 @@ class Settings extends Component {
               style={{ flex: 1 }}
               onPress={this.onRateClick.bind(this)}
             >
-              <Text
-                style={{ alignSelf: 'center', paddingTop: 5, paddingBottom: 5 }}
+            <View>
+              <FormText
+                style={{ alignSelf: 'center', paddingTop: 10, paddingBottom: 5 }}
               >
                 {likeAppStr}
-              </Text>
+              </FormText>
+            </View>
             </TouchableHighlight>
           </CardSection>
         </CardView>
@@ -82,7 +86,7 @@ class Settings extends Component {
               style={{ flex: 1, paddingTop: 5, paddingLeft: 5 }}
               onPress={this.onTermsClick.bind(this)}
             >
-              <Text> {termsString} </Text>
+              <View><FormText> {termsString} </FormText></View>
             </TouchableHighlight>
           </CardSection>
           <CardSection>
@@ -90,7 +94,7 @@ class Settings extends Component {
               style={{ flex: 1, paddingTop: 5, paddingLeft: 5 }}
               onPress={this.onFAQClick.bind(this)}
             >
-              <Text> {FAQStr} </Text>
+              <View><FormText> {FAQStr} </FormText></View>
             </TouchableHighlight>
           </CardSection>
           <CardSection>
@@ -98,10 +102,12 @@ class Settings extends Component {
               style={{ flex: 1, paddingTop: 5, paddingLeft: 5 }}
               onPress={this.onPrivacyClick.bind(this)}
             >
-              <Text> {privacyString} </Text>
+              <View><FormText> {privacyString} </FormText></View>
             </TouchableHighlight>
           </CardSection>
         </CardView>
+
+        <Text />
 
         <CardView>
           <CardSection style={{ justifyContent: 'center' }}>
@@ -109,16 +115,19 @@ class Settings extends Component {
               style={{ flex: 1 }}
               onPress={this.onLogoutClick.bind(this)}
             >
-              <Text
-                style={{ alignSelf: 'center', color: 'red', paddingBottom: 5, paddingTop: 5 }}
+              <View>
+              <FormText
+                style={{ fontWeight: 'bold', alignSelf: 'center', color: 'red', paddingBottom: 5, paddingTop: 10 }}
               >
-                Logout
-              </Text>
+                LOGOUT
+              </FormText>
+              </View>
             </TouchableHighlight>
           </CardSection>
         </CardView>
 
       </BackgroundView>
+      </ScrollView>
     );
   }
 

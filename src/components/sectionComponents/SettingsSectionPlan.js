@@ -1,7 +1,8 @@
 
 import React, { Component } from 'react';
 import { Text, View } from 'react-native';
-import { CardSection } from '../../components';
+import { CardSection, SettingsText } from '../../components';
+import { PRIMARY_HIGHLIGHT_COLOUR } from '../../global/colours';
 
 let planType = '';
 
@@ -17,10 +18,16 @@ class SettingsSectionPlan extends Component {
     return (
       <CardSection>
         <View style={styles.view}>
-          <Text> Plan Type </Text>
+          <SettingsText> Plan Type </SettingsText>
         </View>
         <View style={styles.switch}>
-          <Text> {planType} </Text>
+          <SettingsText
+            style={{
+              fontWeight: 'bold',
+              color: PRIMARY_HIGHLIGHT_COLOUR }}
+          >
+            {planType}
+           </SettingsText>
         </View>
       </CardSection>
     );
@@ -31,14 +38,16 @@ class SettingsSectionPlan extends Component {
 const styles = {
   view: {
     paddingTop: 5,
-    paddingBottom: 5
+    paddingBottom: 5,
+    padding: 5
   },
   switch: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-end',
     paddingTop: 5,
-    paddingBottom: 5
+    paddingBottom: 5,
+    paddingRight: 5
   }
 };
 

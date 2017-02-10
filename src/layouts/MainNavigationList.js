@@ -190,8 +190,15 @@ class MainNavigationList extends Component {
   }
 
   receiptsPressed() {
-    console.log('receiptsPressed', this.props.receipts);
-    Actions.receipts();
+    //console.log('receiptsPressed', this.props.receipts);
+    Alert.alert(
+      'Sorry',
+      'This feature not functional yet :(',
+      [
+        { text: 'OK' }
+      ]
+    );
+  //  Actions.receipts();
   }
 
   tripsPressed() {

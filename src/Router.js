@@ -207,7 +207,7 @@ class RouterComponent extends Component {
           shadowOffset: { width: 0, height: 2 },
           shadowOpacity: 0.2, }}
       renderTitle={() => <Header />}
-      renderRightButton={() => <Icon name="ellipsis-v" size={25} color="#ffffff" />}
+    //  renderRightButton={() => <Icon name="ellipsis-v" size={25} color="#ffffff" />}
       //hideBackImage
     />
 

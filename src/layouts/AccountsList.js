@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, ListView } from 'react-native';
+import { Alert, ListView } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -112,6 +112,13 @@ class AccountsList extends Component {
 
   addAccount() {
     console.log('add account FAB pressed');
+    Alert.alert(
+      'Sorry',
+      'This feature not functional yet :(',
+      [
+        { text: 'OK' }
+      ]
+    );
   }
 }
 

@@ -185,12 +185,15 @@ class Login extends Component {
                 </FloatingLabel>
                 </View>
             </CardSection>
-            <CardSection>
-              <Button
-                onPress={this.onLoginButtonPress.bind(this)}
-              >
-                {LoginButtonText}
-              </Button>
+            <CardSection >
+            <View style={{ flex: 1, width: null, alignItems: 'center', justifyContent: 'center' }}>
+                <Button
+                  style={{ alignSelf: 'center', width: 120 }}
+                  onPress={this.onLoginButtonPress.bind(this)}
+                >
+                  {LoginButtonText}
+                </Button>
+              </View>
             </CardSection>
           </CardView>
           <View style={socialButtonContainer}>
@@ -283,11 +286,11 @@ onEmailChange(text) {
   }
   //check if its a valid password (strong enough)
   isValidPassword(text) {
-    if (text.match(PASSWORD_REGEX)) {
+  //  if (text.match(PASSWORD_REGEX)) {
       this.props.isPasswordValid(1);
-    } else {
-      this.props.isPasswordValid(2);
-    }
+  //  } else {
+  //    this.props.isPasswordValid(2);
+  //  }
   }
   renderPasswordLabelStyle() {
     if (this.props.passwordValid === 0) {

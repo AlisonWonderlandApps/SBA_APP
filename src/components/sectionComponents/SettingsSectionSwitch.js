@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { Text, TextInput, View } from 'react-native';
 import { Switch } from 'react-native-switch';
-import { CardSection, SmallText } from '../../components';
+import { CardSection, SettingsText } from '../../components';
 //import { mainStyles } from './styles';
 
 let label = '';
@@ -18,7 +18,7 @@ class SettingsSectionSwitch extends Component {
     return (
       <CardSection>
         <View style={styles.view}>
-          <Text> {label} </Text>
+          <SettingsText> {label} </SettingsText>
         </View>
         <View style={styles.switch}>
           <Switch
@@ -42,12 +42,16 @@ class SettingsSectionSwitch extends Component {
 const styles = {
   view: {
     paddingTop: 5,
-    paddingBottom: 5
+    paddingBottom: 5,
+    padding: 5,
+    paddingRight: 10
   },
   switch: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
+    paddingTop: 2,
+    paddingRight: 2
   }
 };
 
