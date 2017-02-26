@@ -1,4 +1,4 @@
-
+/*
 import {
   GET_AUTH_TOKEN,
   SET_AUTH_TOKEN,
@@ -172,3 +172,4 @@ export default (state = INITIAL_STATE, action) => {
       return state;
   }
 };
+*/

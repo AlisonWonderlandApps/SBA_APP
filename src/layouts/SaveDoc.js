@@ -38,7 +38,7 @@ class SaveDoc extends Component {
     super(props);
     console.log('propsphoto', this.props);
   //  console.log('uri', this.props.photoObj[0].uri);
-    imgUri = this.props.photoObj[0].uri;
+    imgUri = this.props.attachment.uri;
   }
 
   shouldComponentUpdate(nextProps) {
@@ -54,7 +54,14 @@ class SaveDoc extends Component {
       <BackgroundView
         style={{ padding: 0, flex: 1, justifyContent: 'flex-start', paddingTop: HEADER.height }}
       >
-        <View style={{ backgroundColor: PRIMARY_HIGHLIGHT_COLOUR, height: 50, width: null, justifyContent: 'center', alignItems: 'center' }} >
+        <View
+        style={{
+          backgroundColor: PRIMARY_HIGHLIGHT_COLOUR,
+          height: 50,
+          width: null,
+          justifyContent: 'center',
+          alignItems: 'center' }}
+        >
           <Button
               style={{ borderColor: PRIMARY_COLOUR, height: 30, width: 100 }}
               onPress={this.onSavePress.bind(this)}
@@ -243,21 +250,23 @@ class SaveDoc extends Component {
 
 }
 
-const mapStateToProps = ({ accounts, receipts }) => {
+const mapStateToProps = ({ accounts, receipts, photos }) => {
   const {
     curAccount,
     dropBoxEmail
   } = accounts;
   const {
-    photoObj,
     category,
     note,
     newReceipt
   } = receipts;
+  const {
+    attachment
+  } = photos;
   return {
     curAccount,
     dropBoxEmail,
-    photoObj,
+    attachment,
     category,
     note,
     newReceipt

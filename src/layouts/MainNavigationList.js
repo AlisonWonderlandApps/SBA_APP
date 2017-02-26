@@ -4,21 +4,24 @@
 */
 
 import React, { Component } from 'react';
-import { Alert, View, TouchableHighlight } from 'react-native';
+import { Alert, Text, View, TouchableHighlight, TouchableWithoutFeedback } from 'react-native';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
-
+import Icon from 'react-native-vector-icons/Ionicons';
 import { receiptsFetch } from '../actions';
 import { layoutStyles } from './styles';
+import { PRIMARY_HIGHLIGHT_COLOUR } from '../global/colours';
 
 import {
   BackgroundView,
-  NavListSection,
-  NavListSectionTrips,
+  CardSection,
   NavListSectionTools,
   Tab,
   FAB,
-  Banner
+  Banner,
+  TitleText,
+  ColourText,
+  FormText
 } from '../components';
 
 import {
@@ -31,32 +34,12 @@ import {
 
 class MainNavigationList extends Component {
 
-  componentWillMount(nextProps) {
-    console.log('props', this.props);
-    console.log('nextProps', nextProps);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    console.log('props0', this.props);
-    console.log('nprops0', nextProps);
-  }
-
   shouldComponentUpdate(nextProps) {
-    console.log('update', this.props.userName, nextProps.userName);
-    if (this.props.userName !== nextProps.userName) {
+    console.log('update', this.props, nextProps);
+    if (this.props !== nextProps) {
       return true;
     }
     return false;
-  }
-
-  componentWillUpdate(nextProps) {
-    console.log('props1', this.props);
-    console.log('nprops1', nextProps);
-  }
-
-  componentDidUpdate(nextProps) {
-    console.log('props2', this.props);
-    console.log('nprops2', nextProps);
   }
 
   render() {
@@ -69,10 +52,7 @@ class MainNavigationList extends Component {
             style={{ flex: 1, width: null, height: 50 }}
           >
             <View style={{ flexGrow: 1 }}>
-              <Tab
-                title={ProcessingStr}
-                count={this.props.processingCount}
-              />
+              {this.renderProcessingTab()}
             </View>
           </TouchableHighlight>
 
@@ -81,10 +61,7 @@ class MainNavigationList extends Component {
             style={{ flex: 1, width: null, height: 50 }}
           >
             <View style={{ flexGrow: 1 }}>
-              <Tab
-                title={ReimburseStr}
-                count={this.props.reimburseableCount}
-              />
+              {this.renderReimbursableTab()}
             </View>
           </TouchableHighlight>
         </View>
@@ -92,31 +69,17 @@ class MainNavigationList extends Component {
         <TouchableHighlight
           onPress={this.receiptsPressed}
         >
-          <View>
-            <NavListSection
-              title={ReceiptsStr}
-              subtitle={this.renderMostRecentReceiptCost()}
-              data={this.renderMostRecentReceiptData()}
-            />
-          </View>
+          {this.renderReceiptsBar()}
         </TouchableHighlight>
         <TouchableHighlight
           onPress={this.tripsPressed.bind(this)}
         >
-        <View>
-          <NavListSectionTrips
-            title={TripsStr}
-            subtitle={this.renderMostRecentTripDate()}
-            data={this.renderMostRecentTripData()}
-          />
-          </View>
+          {this.renderTripsBar()}
         </TouchableHighlight>
         <TouchableHighlight
           onPress={this.toolsPressed}
         >
-          <View>
-            <NavListSectionTools title={ToolsStr} />
-          </View>
+          {this.renderToolsBar()}
         </TouchableHighlight>
         <FAB
           onPress={this.onPressFAB}
@@ -125,45 +88,80 @@ class MainNavigationList extends Component {
     );
   }
 
-  renderMostRecentTripDate() {
-    if (this.props.trips.length < 1) {
-      //no trips
-      return 'Waiting on ';
-    } else {
-      const date = this.props.latestTrip.issued;
-      //const date = '2017-01-12T00:24:35Z';
-      const formattedDate = new Date(date).toString();
-      const dateStr = formattedDate.substring(4, 10);
-      return dateStr;
-    }
+  renderReceiptsBar() {
+    return (
+      <View>
+        <CardSection style={mainStyles.cardSection}>
+          <View style={{ justifyContent: 'space-around', paddingTop: 10, paddingLeft: 5 }}>
+            <TitleText>{ReceiptsStr}</TitleText>
+            <ColourText style={mainStyles.text}>{this.props.rCost}</ColourText>
+            <ColourText style={mainStyles.text}>{this.props.rCategory}</ColourText>
+          </View>
+          <View style={{ alignSelf: 'flex-end', paddingRight: 10 }} >
+            <Icon name='ios-arrow-forward' size={50} />
+          </View>
+        </CardSection>
+      </View>
+    );
   }
 
-  renderMostRecentTripData() {
-    if (this.props.trips.length < 1) {
-      return 'your trips';
-    }
-    return (this.props.latestTrip.total + ' kms');
+  renderTripsBar() {
+    return (
+      <View>
+      <CardSection style={mainStyles.cardSection}>
+        <View style={{ justifyContent: 'space-around', paddingTop: 10, paddingLeft: 5 }}>
+          <TitleText>{TripsStr}</TitleText>
+          <ColourText style={mainStyles.text}>{this.props.tDate}</ColourText>
+          <ColourText style={mainStyles.text}>{this.props.tCost}</ColourText>
+        </View>
+        <View style={{ alignSelf: 'flex-end', paddingRight: 10 }} >
+          <Icon name='ios-arrow-forward' size={50} />
+        </View>
+      </CardSection>
+      </View>
+    );
   }
 
-  renderMostRecentReceiptCost() {
-  //  if (this.props.receipts.length < 1) {
-      return 'Waiting on ';
-  //  } else {
-    //  const date = this.props.latestReceipt.issued;
-      //const date = '2017-01-12T00:24:35Z';
-  //    const formattedDate = new Date(date).toString();
-  //    const dateStr = formattedDate.substring(4, 10);
-    //  return dateStr;
-  //    return 'hi';
-  //  }
+  renderToolsBar() {
+    return (
+      <View>
+        <NavListSectionTools title={ToolsStr} />
+      </View>
+    );
   }
 
-  renderMostRecentReceiptData() {
-    //renders the place / name of receipt
-  //  if (this.props.receipts.length < 1) {
-      return 'your receipts';
-  //  }
-  //  return ('Place');
+  renderProcessingTab() {
+    return (
+      <CardSection style={tabStyles.cardContainer}>
+        <FormText
+          style={{ alignSelf: 'center', paddingRight: 10 }}
+        >
+          {this.props.processingCount}
+        </FormText>
+        <TouchableWithoutFeedback
+          style={tabStyles.tabContainer}
+        >
+          <FormText> {ProcessingStr} </FormText>
+        </TouchableWithoutFeedback>
+      </CardSection>
+    );
+  }
+
+  renderReimbursableTab() {
+    return (
+      <CardSection style={tabStyles.cardContainer}>
+        <FormText
+          style={{ alignSelf: 'center', paddingRight: 10 }}
+        >
+          {this.props.reimbursableCount}
+        </FormText>
+        <TouchableWithoutFeedback
+          style={tabStyles.tabContainer}
+        >
+          <FormText> {ReimburseStr} </FormText>
+        </TouchableWithoutFeedback>
+      </CardSection>
+    );
   }
 
   onPressFAB() {
@@ -191,22 +189,12 @@ class MainNavigationList extends Component {
 
   receiptsPressed() {
     //console.log('receiptsPressed', this.props.receipts);
-    Alert.alert(
-      'Sorry',
-      'This feature not functional yet :(',
-      [
-        { text: 'OK' }
-      ]
-    );
-  //  Actions.receipts();
+    Actions.receipts();
   }
 
   tripsPressed() {
-    //console.log('tripsPressed', this.props.trips);
     console.log('trips', this.props);
-    Actions.trips();//({
-    //  tripsList: this.props.trips,
-    //});
+    Actions.trips();
   }
 
   toolsPressed() {
@@ -216,38 +204,82 @@ class MainNavigationList extends Component {
 
 }//end class
 
-const mapStateToProps = ({ user, accounts, main }) => {
+const mainStyles = {
+  cardSection: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 10,
+  },
+  text: {
+    alignSelf: 'flex-start',
+    paddingLeft: 0
+  }
+};
+
+const tabStyles = {
+  cardContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    borderRightWidth: 1,
+    borderLeftWidth: 1
+  },
+  tabContainer: {
+    borderWidth: 1,
+    borderColor: PRIMARY_HIGHLIGHT_COLOUR,
+    justifyContent: 'space-around',
+    padding: 10
+  },
+};
+
+const mapStateToProps = ({ user, accounts, receipts, trips }) => {
   const {
     userName
   } = user;
   const {
-    accountsArr,
-    curAccount
+    accountsArray,
+    curAccountID
   } = accounts;
   const {
     isFetching,
-    trips,
-    receipts,
-    processing,
+    myReceipts,
+    processingReceipts,
     processingCount,
-    reimburseables,
-    reimburseableCount,
+    reimbursableReceipts,
+    reimbursableCount,
     latestReceipt,
-    latestTrip
-  } = main;
+    rVendor,
+    rDate,
+    rCategory,
+    rCost
+  } = receipts;
+  const {
+    myTrips,
+    latestTrip,
+    tVendor,
+    tDate,
+    tCost
+  } = trips;
   return {
     userName,
-    accountsArr,
-    curAccount,
+    accountsArray,
+    curAccountID,
     isFetching,
-    trips,
-    receipts,
-    processing,
+    myTrips,
+    myReceipts,
+    processingReceipts,
     processingCount,
-    reimburseables,
-    reimburseableCount,
+    reimbursableReceipts,
+    reimbursableCount,
     latestReceipt,
-    latestTrip
+    latestTrip,
+    rVendor,
+    rDate,
+    rCategory,
+    rCost,
+    tVendor,
+    tDate,
+    tCost
   };
 };
 
@@ -261,4 +293,24 @@ export default connect(mapStateToProps, {
 <View style={{ paddingBottom: 50 }}>
   <LogoSection />
 </View>
+*/
+
+/*
+renderMostRecentReceiptCost() {
+  if (this.props.numOfReceipts < 1) {
+    return 'Waiting on';
+  }
+  console.log('total', this.props.latestReceipt.total);
+  const cost = '$ '.concat(this.props.latestReceipt.total);
+  console.log(cost);
+  return (cost);
+}
+
+renderMostRecentReceiptData() {
+  //renders the place / name of receipt
+  if (this.props.numOfReceipts < 1) {
+    return 'your receipts';
+  }
+  return ('Place');
+}
 */

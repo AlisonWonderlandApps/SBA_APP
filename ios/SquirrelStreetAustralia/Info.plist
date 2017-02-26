@@ -4,8 +4,6 @@
   <dict>
     <key>CFBundleDevelopmentRegion</key>
     <string>en</string>
-    <key>CFBundleDisplayName</key>
-    <string>Squirrel Street Australia</string>
     <key>CFBundleExecutable</key>
     <string>$(EXECUTABLE_NAME)</string>
     <key>CFBundleIdentifier</key>
@@ -21,7 +19,7 @@
     <key>CFBundleSignature</key>
     <string>????</string>
     <key>CFBundleVersion</key>
-    <string>6</string>
+    <string>8</string>
     <key>LSRequiresIPhoneOS</key>
     <true/>
     <key>NSAppTransportSecurity</key>
@@ -36,11 +34,11 @@
       </dict>
     </dict>
     <key>NSCameraUsageDescription</key>
-    <string>Allow Squirrel Street to access you camera?</string>
+    <string>Allow Squirrel Street access to camera?</string>
     <key>NSLocationWhenInUseUsageDescription</key>
     <string/>
     <key>NSPhotoLibraryUsageDescription</key>
-    <string>Allow Squirrel Street to access your camera roll?</string>
+    <string>Allow Squirrel Street access to photos?</string>
     <key>UIAppFonts</key>
     <array>
       <string>Calibri Bold Italic.ttf</string>

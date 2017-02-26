@@ -82,52 +82,30 @@ class Login extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (this.props.done) {
-      console.log('thisdone');
+  shouldComponentUpdate(nextProps) {
+    if (this.props !== nextProps) {
+      return true;
     }
-    if (nextProps.done) {
-      console.log('done');
-      console.log(this.props.accountsArr);
-      //this.loadNextPage();
+    if (this.props.goToMain !== nextProps.goToMain) {
+      return true; //update to go to accounts list or main page
     }
-  }
-
-  componentWillUpdate(nextProps) {
-    if (this.props.done) {
-      console.log('thisdone1');
+    if (this.props.goToAccounts !== nextProps.goToAccounts) {
+      return true; //update to go to accounts list or main page
     }
-    if (nextProps.done) {
-      console.log('done1');
-    }
+    return false;
   }
 
   componentDidUpdate() {
     console.log('did', this.props.done);
     console.log('didA', this.props.accountsArr);
-    if (this.props.done) {
-      this.loadNextPage();
+    if (this.props.goToAccounts) {
+      this.props.resetState();
+      Actions.accountslist();
     }
-  }
-
-  loadNextPage() {
-    console.log('page', this.props.accountsArr);
-    this.props.resetState();
-    //Actions.errorscreen();
-    Actions.accountslist({
-      accList: this.props.accountsArr,
-    });
-    /*
-    if (this.props.accountsArr.length > 1) {
-      Actions.accountslist({
-        AccountsArr: this.props.accountsArr,
-      });
-    } else {
-      Actions.accountslist({
-        AccountsArr: this.props.accountsArr,
-      });
-    } */
-    //this.props.resetState();
+    if (this.props.goToMain) {
+      this.props.resetState();
+       Actions.main();
+      }
   }
 
   render() {
@@ -142,10 +120,7 @@ class Login extends Component {
 
     return (
       <FullScreenView>
-        <View style={layoutStyles.loginView}>
-          <LogoSection />
-        </View>
-        <View style={{ paddingTop: 10 }} />
+        <View style={{ paddingTop: 20, padding: 10 }} />
         <View>
           <FormText onPress={this.goToSignupPage} >
             {CreateAccountString}
@@ -161,7 +136,7 @@ class Login extends Component {
                     autoFocus
                     autoCorrect={false}
                     autoCapitalize='none'
-                    returnKeyType='next'
+                    returnKeyType='done'
                     onChangeText={this.onEmailChange.bind(this)}
                     value={this.props.email}
                 >
@@ -177,6 +152,7 @@ class Login extends Component {
                     inputStyle={input}
                     style={formInput}
                     password
+                    autoCorrect={false}
                     returnKeyType='done'
                     onChangeText={this.onPasswordChange.bind(this)}
                     value={this.props.password}
@@ -198,13 +174,13 @@ class Login extends Component {
           </CardView>
           <View style={socialButtonContainer}>
             <FacebookButton
-              style={{ flexGrow: 1 }}
+              style={{ flexGrow: 0.9 }}
               onPress={this.onFBButtonPress.bind(this)}
             >
               Facebook Login
             </FacebookButton>
             <GoogleButton
-              style={{ flexGrow: 1 }}
+              style={{ flexGrow: 0.9 }}
               onPress={this.onGoogleButtonPress.bind(this)}
             >
               Google Login
@@ -217,6 +193,9 @@ class Login extends Component {
               {ForgotPasswordString}
             </LinkText>
           </CenterTextView>
+        </View>
+        <View style={layoutStyles.loginView}>
+          <LogoSection />
         </View>
         <Spinner visible={this.props.loading} textContent={''} textStyle={{ color: 'white' }} />
       </FullScreenView>
@@ -287,7 +266,7 @@ onEmailChange(text) {
   //check if its a valid password (strong enough)
   isValidPassword(text) {
   //  if (text.match(PASSWORD_REGEX)) {
-      this.props.isPasswordValid(1);
+      this.props.isPasswordValid(1); //always valid
   //  } else {
   //    this.props.isPasswordValid(2);
   //  }
@@ -383,8 +362,9 @@ const mapStateToProps = ({ login, accounts }) => {
     loading
   } = login;
   const {
-    accountsArr,
-    done
+    accountsArray,
+    goToMain,
+    goToAccounts
   } = accounts;
   return {
     email,
@@ -392,8 +372,9 @@ const mapStateToProps = ({ login, accounts }) => {
     password,
     passwordValid,
     loading,
-    accountsArr,
-    done
+    accountsArray,
+    goToMain,
+    goToAccounts
   };
 };
 

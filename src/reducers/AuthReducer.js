@@ -7,29 +7,24 @@ import {
   AUTH_USER,
   UNAUTH_USER,
   AUTH_ERROR,
-  FETCH_MESSAGE
 } from '../actions/types';
 
 const INITIAL_STATE = {
-  authenticated: false,
   isLoading: true,
   goToLogin: false,
-  error: '',
-  message: ''
+  authErrorMsg: '',
 };
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case USER_LOGGED_IN:
-      return { ...state, authenticated: action.payload };
+      return { ...state, isLoading: true };
     case AUTH_USER:
-      return { ...state, error: '', authenticated: action.payload };
+      return { ...state, authErrorMsg: '', isLoading: false };
     case UNAUTH_USER:
-      return { ...state, goToLogin: true, isLoading: false, authenticated: false };
+      return { ...state, authErrorMsg: '', goToLogin: true, isLoading: false };
     case AUTH_ERROR:
-      return { ...state, error: action.payload };
-    case FETCH_MESSAGE:
-      return { ...state, message: action.payload };
+      return { ...state, authErrorMsg: action.payload };
     default:
       return state;
   }

@@ -32,7 +32,7 @@ class Reimbursables extends Component {
         <View
           style={{ flexDirection: 'row', padding: 10, height: 60, backgroundColor: PRIMARY_HIGHLIGHT_COLOUR }}>
           <MySearchBar />
-          <Button style={{ marginTop: 5, height: 30, flexGrow: 0.3 }}> Export </Button>
+          <Button style={{ marginTop: 0, height: 30, flexGrow: 0.3 }}> Export </Button>
         </View>
         <FAB
           onPress={this.onPressFAB}

@@ -29,13 +29,12 @@ class Processing extends Component {
 
   render() {
     return (
-      <BackgroundView style={{ padding: 0, justifyContent: 'center', paddingTop: HEADER.height, flex: 1 }}>
-        <View
-          style={{ flexDirection: 'row', padding: 10, height: 60, backgroundColor: PRIMARY_HIGHLIGHT_COLOUR }}>
+      <BackgroundView style={styles.background}>
+        <View style={styles.view}>
           <MySearchBar />
-          <Button style={{ marginTop: 5, height: 30, flexGrow: 0.3 }}> Export </Button>
+          <Button style={styles.button}> Export </Button>
         </View>
-        <Banner style={{ height: 40, backgroundColor: 'green' }}>
+        <Banner style={styles.banner}>
           Processing receipts are being verified for correctness
         </Banner>
         <FAB
@@ -58,6 +57,30 @@ class Processing extends Component {
     );
   }
 }
+
+const styles = {
+  background: {
+    padding: 0,
+    justifyContent: 'center',
+    paddingTop: HEADER.height,
+    flex: 1
+  },
+  view: {
+    flexDirection: 'row',
+    padding: 10,
+    height: 60,
+    backgroundColor: PRIMARY_HIGHLIGHT_COLOUR
+  },
+  button: {
+    marginTop: 0,
+    height: 30,
+    flexGrow: 0.3
+  },
+  banner: {
+    height: 40,
+    backgroundColor: 'green'
+  }
+};
 
 const mapStateToProps = ({ accounts }) => {
   const {

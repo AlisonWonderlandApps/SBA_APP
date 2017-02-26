@@ -1,4 +1,4 @@
-/*
+ /*
 * contains the definitions of all the different types
 * used by reducer/actions in this. Like a strings file
 */
@@ -6,10 +6,13 @@
 //AuthActions ??? should this be in login or probably user??
 //export const AUTH_USER = 'auth_user';
 export const UNAUTH_USER = 'unauth_user';
+export const AUTH_USER = 'auth_user';
 export const AUTH_ERROR = 'auth_error';
 export const FETCH_MESSAGE = 'fetch_message';
 export const USER_LOGGED_IN = 'user_logged_in';
-//export const TOKEN_FETCHED = 'token_fetched';
+//
+export const GET_AUTH_TOKEN = 'get_auth_token';
+export const SET_AUTH_TOKEN = 'set_auth_token';
 
 //LoginActions
 export const EMAIL_CHANGED = 'email_changed';
@@ -52,8 +55,17 @@ export const USER_SETTINGS_FETCH_FAIL = 'settings_fetch_fail';
 export const USER_PLAN_FETCH = 'plan_fetch';
 export const USER_PLAN_FETCH_SUCCESS = 'plan_fetch_success';
 export const USER_PLAN_FETCH_FAIL = 'plan_fetch_fail';
+//
+export const PLAN_FETCH = 'fetch_plan';
+export const PLAN_FETCH_SUCCESS = 'fetch_plan_success';
+export const PLAN_FETCH_FAIL = 'fetch_plan_fail';
+export const PLAN_SET = 'set_plan';
+export const PLANTYPE_SET = 'set_plantype';
+export const DBEMAIL_SET = 'dbemail_set';
 
 //AccountActions
+export const GO_TO_MAIN = 'go_to_main';
+export const GO_TO_ACCOUNTS = 'go_to_accounts';
 export const ACCOUNTS_LOAD = 'load_accounts';
 export const LABELS_LOAD = 'load_labels';
 export const SET_CUR_ACCOUNT = 'set_current_account';
@@ -73,19 +85,18 @@ export const ACCOUNT_ADD_USER = 'accounts_add_user';
 export const ACCOUNT_ADD_USER_SUCCESS = 'accounts_add_user_success';
 export const ACCOUNT_UPDATE_INFO = 'accounts_edit';
 export const ACCOUNT_DELETE = 'account_delete';
-export const PLAN_FETCH = 'fetch_plan';
-export const PLAN_FETCH_SUCCESS = 'fetch_plan_success';
-export const PLAN_FETCH_FAIL = 'fetch_plan_fail';
-export const PLAN_SET = 'set_plan';
-export const PLANTYPE_SET = 'set_plantype';
-export const DBEMAIL_SET = 'dbemail_set';
 
 //ReceiptsActions
 export const RECEIPTS_FETCH = 'receipts_fetch_all';
 export const RECEIPTS_FETCH_SUCCESS = 'receipts_fetch_success';
 export const RECEIPTS_FETCH_FAIL = 'receipts_fetch_fail';
+export const SET_VENDOR = 'set_vendor';
+export const SET_DATE = 'set_date';
+export const SET_CATEGORY = 'set_category';
+export const SET_COST = 'set_cost';
+export const SET_NUM_RECEIPTS = 'set_number_of_receipts';
 export const SET_LATEST_RECEIPT = 'set_latest_receipt';
-export const RECEIPT_CREATE_NEW = 'receipts_add_new';
+export const RECEIPT_ADD_NEW = 'receipts_add_new';
 export const RECEIPT_CREATE_SUCCESS = 'receipts_add_new_success';
 export const RECEIPT_CREATE_FAIL = 'receipts_add_new_fail';
 export const RECEIPT_UPDATE_INFO = 'receipts_edit';
@@ -93,24 +104,36 @@ export const RECEIPT_DELETE = 'receipt_delete';
 export const RECEIPTS_SEARCH = 'receipt_search';
 export const RECEIPT_ADD_CATEGORY = 'receipt_add_category';
 export const RECEIPT_DELETE_CATEGORY = 'receipt_delete_category';
+export const SET_LIST = 'set_list';
 
-export const PROCESSED_FETCH_FAIL = 'processed_fetch_fail';
-export const PROCESSED_FETCH_SUCCESS = 'processed_fetch_success';
-export const PROCESSED_FETCH = 'processed_fetch';
-export const SET_PROCESSED_NUM = 'set_processed_num';
+export const PROCESSING_FETCH_FAIL = 'processing_fetch_fail';
+export const PROCESSING_FETCH_SUCCESS = 'processing_fetch_success';
+export const PROCESSING_FETCH = 'processing_fetch';
+export const SET_PROCESSING_NUM = 'set_processed_num';
+export const REIMBURSABLES_FETCH = 'fetch_Reimbursables';
+export const REIMBURSABLES_FETCH_SUCCESS = 'fetch_reimbursables_success';
+export const REIMBURSABLES_FETCH_FAIL = 'fetch_reimbursables_fail';
 export const SET_REIMBURSEABLE_NUM = 'set_reimburseable_num';
+export const CATEGORIES_FETCH_SUCCESS = 'fetch_categories_success';
+export const CATEGORIES_FETCH_FAIL = 'fetch_categories_fail';
+export const ADD_RECEIPT = 'add_receipt';
 
+//PhotosActions
 export const PHOTO_ADD = 'add_a_photo';
+export const PHOTO_NAME_ADD = 'add_photo_name';
+export const PHOTO_URI_ADD = 'add_photo_uri';
 export const SET_RECEIPT_CATEGORY = 'set_receipt_category';
 export const SET_RECEIPT_NOTE = 'set_receipt_note';
 export const SAVE_RECEIPT_LOCAL = 'save_receipt_locally';
-export const ADD_RECEIPT_SUCCESS = 'add_receipt_success';
 export const USE_PICTURE = 'use_picture';
 
 //TripsActions (nb: trips are basically a category of
 //    receipt with some additional functionality).
 export const TRIPS_FETCH = 'trips_fetch_all';
 export const TRIPS_FETCH_SUCCESS = 'trips_fetch_success';
+export const SET_TRIP_DATE = 'set_trip_date';
+export const SET_TRIP_COST = 'set_trip_cost';
+export const SET_TRIP_VENDOR = 'set_trip_vendor';
 export const TRIPS_FETCH_FAIL = 'trips_fetch_fail';
 export const SET_LATEST_TRIP = 'set_latest_trip';
 export const TRIP_CREATE_NEW = 'trips_add_new';
@@ -120,7 +143,3 @@ export const TRIP_UPDATE_INFO = 'trips_edit';
 export const TRIP_DELETE = 'trip_delete';
 export const TRIPS_SEARCH = '';
 export const TRIPS_START = '';
-
-//MainNavActions
-export const GET_AUTH_TOKEN = 'get_auth_token';
-export const SET_AUTH_TOKEN = 'set_auth_token';

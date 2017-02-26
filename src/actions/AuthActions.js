@@ -6,24 +6,23 @@ import { ssAuthConfig } from '../config/auth';
 
 import {
   USER_LOGGED_IN,
-  //AUTH_USER,
+  AUTH_USER,
   UNAUTH_USER,
-  //AUTH_ERROR,
-  //FETCH_MESSAGE
+  AUTH_ERROR
 } from './types';
 
 import {
-  loadAccounts,
-  loadUserInfo
+  loadAccounts
 } from '../actions';
 
-//return true if there is a token found in storage
 export const isUserLoggedIn = () => {
-  return dispatch => {
+  return function (dispatch) {
+    dispatch({
+      type: USER_LOGGED_IN //set loading to true
+    });
     try {
       AsyncStorage.getItem('refreshToken').then((value) => {
         if (value !== null) {
-          console.log('rToken', value);
           dispatch(getNewToken(value));
         } else {
           dispatch({
@@ -33,15 +32,11 @@ export const isUserLoggedIn = () => {
     });
     } catch (err) {
         console.log('no refresh token gotten');
-        return err;
+        dispatch({
+          type: AUTH_ERROR,
+          payload: err
+        });
     }
-  };
-};
-
-export const notLoggedIn = () => {
-  return {
-    type: USER_LOGGED_IN,
-    payload: false
   };
 };
 
@@ -58,16 +53,17 @@ export const getNewToken = (refresher) => {
     .then(response => {
         console.log(response.data.access_token);
         const AuthStr = 'Bearer '.concat(response.data.access_token);
-        dispatch(loadUserInfo(AuthStr));
         dispatch(loadAccounts(AuthStr));
         dispatch({
-          type: USER_LOGGED_IN,
-          payload: true
+          type: AUTH_USER
         });
     })
     .catch((err) => {
       console.log('no auth token', err);
-      return err;
+      dispatch({
+        type: AUTH_ERROR,
+        payload: err
+      });
     });
   };
 };

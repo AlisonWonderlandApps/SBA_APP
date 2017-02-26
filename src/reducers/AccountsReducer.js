@@ -1,99 +1,96 @@
 //Holds the list of accounts
 
 import {
-  LOAD_ACCOUNTS,
-  SET_CUR_ACCOUNT,
-  SET_CUR_ACCOUNT_NAME,
+  ACCOUNTS_LOAD,
   LOAD_ACCOUNTS_SUCCESS,
   LOAD_ACCOUNTS_FAIL,
+  SET_CUR_ACCOUNT,
+  SET_CUR_ACCOUNT_NAME,
   LABELS_LOAD,
-  ACCOUNT_CREATE_NEW,
-  ACCOUNT_CHANGE_PLAN,
-  ACCOUNT_ADD_USER,
+  GO_TO_MAIN,
+  GO_TO_ACCOUNTS,
   PLAN_SET,
   PLANTYPE_SET,
   DBEMAIL_SET
 } from '../actions/types';
 
 const INITIAL_STATE = {
-   curAccount: '',
-   curAccName: '',
    isLoading: false,
-   accountsArr: [],
-   labelsArr: [],
-   done: false,
+   goToMain: false,
+   goToAccounts: false,
+   errorMsg: '',
+   //user Accounts
+   accountsArray: [],
+   labelsArray: [],
+   numOfAccounts: 0,
+   //current Account info below
+   curAccountID: '',
+   curAccountName: '',
+   curAccountInfo: {},
    plan: [],
    planType: '',
-   dropBoxEmail: '',
-   //////////
-   status: '',
-   error: '',
-   accountName: '',
-   newUser: ''
+   dropBoxEmail: ''
  };
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    //loads in accountsArr from a prop - sync action
-    case LOAD_ACCOUNTS:
+    case ACCOUNTS_LOAD:
       return {
         ...state,
         isLoading: true,
       };
 
-      case SET_CUR_ACCOUNT:
-        return {
-          ...state,
-          curAccount: action.payload
-        };
+    case LOAD_ACCOUNTS_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        done: true,
+        accountsArray: action.payload,
+        reset: true
+      };
 
-        case SET_CUR_ACCOUNT_NAME:
-          return {
-            ...state,
-            curAccName: action.payload
-          };
+    case LOAD_ACCOUNTS_FAIL:
+      return {
+        ...state,
+        isLoading: false,
+        errorMsg: 'Could not load accounts'
+      };
 
-      case LOAD_ACCOUNTS_SUCCESS:
-        return {
-          ...state,
-          isLoading: false,
-          done: true,
-          accountsArr: action.payload,
-          reset: true
-        };
+    case LABELS_LOAD:
+      return {
+        ...state,
+        labelsArray: action.payload,
+      };
 
-      case LABELS_LOAD:
-        return {
-          ...state,
-          labelsArr: action.payload,
-          reset: true
-        };
+    case SET_CUR_ACCOUNT:
+      return {
+        ...state,
+        isLoading: true,
+        curAccountID: action.payload
+      };
 
-      case PLAN_SET:
-        return { ...state, plan: action.payload };
+    case SET_CUR_ACCOUNT_NAME:
+      return {
+        ...state,
+        curAccountName: action.payload
+      };
 
-      case PLANTYPE_SET:
-        return { ...state, planType: action.payload };
+    case GO_TO_MAIN:
+      return { ...state, isLoading: false, goToMain: true };
 
-      case DBEMAIL_SET:
-        return { ...state, dropBoxEmail: action.payload };
+    case GO_TO_ACCOUNTS:
+      return { ...state, goToAccounts: true };
 
-      case LOAD_ACCOUNTS_FAIL:
-        return {
-          ...state,
-          isLoading: false
-        };
+    case PLAN_SET:
+      return { ...state, plan: action.payload };
 
-      case ACCOUNT_ADD_USER:
-        return { ...state };
+    case PLANTYPE_SET:
+      return { ...state, planType: action.payload };
 
-      case ACCOUNT_CREATE_NEW:
-         return { ...state };
+    case DBEMAIL_SET:
+      return { ...state, dropBoxEmail: action.payload };
 
-      case ACCOUNT_CHANGE_PLAN:
-          return { ...state };
-
-      default:
-        return state;
+    default:
+      return state;
   }
 };

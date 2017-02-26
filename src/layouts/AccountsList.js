@@ -8,11 +8,6 @@ import { HEADER } from '../global/margins';
 
 import {
   setCurAccount,
-  setCurAccountName,
-  getAccountInfo,
-  getToken,
-  setPlan,
-  setPlanType
 } from '../actions';
 
 const AccountArray = [];
@@ -22,11 +17,10 @@ class AccountsList extends Component {
 
   constructor(props) {
     super(props);
-    console.log('list', props.accList);
 
     let i;
-    for (i = 0; i < props.accList.length; i++) {
-      AccountArray[i] = props.accList[i];
+    for (i = 0; i < this.props.accountsArray.length; i++) {
+      AccountArray[i] = this.props.accountsArray[i];
     }
     for (i = 0; i < AccountArray.length; i++) {
       labels[i] = AccountArray[i].label;
@@ -43,19 +37,16 @@ class AccountsList extends Component {
     };
   }
 
-  componentWillUpdate(nextProps) {
-    console.log('update', this.props.nextPage, nextProps.nextPage);
-    if (nextProps.currentAccountId !== this.props.currentAccountId) {
-      //  this.props = nextProps;
-      //  this.getAccountInfo1();
-      console.log(nextProps.currentAccountId);
-     }
-    return true;
+  shouldComponentUpdate(nextProps) {
+    if (this.props !== nextProps) {
+      return true;
+    }
+    return false;
   }
 
   componentDidUpdate() {
-    console.log('did', this.props.curAccount, this.props.nextPage);
-    if (this.props.nextPage) {
+    console.log('did', this.props.curAccountID, this.props.goToMain);
+    if (this.props.goToMain) {
       console.log('gotonext');
       Actions.main();
     }
@@ -65,13 +56,6 @@ class AccountsList extends Component {
     console.log(this.props);
     console.log(rowID);
     this.props.setCurAccount(AccountArray[rowID], AccountArray[rowID].id);
-    this.getAccountInfo(AccountArray[rowID].id);
-  }
-
-  getAccountInfo(aid) {
-    console.log(aid, 'accountinfo', this.props.curAccount);
-    this.props.getToken(aid);
-    //this.props.getAccountInfo(this.props.currentAccountId);
   }
 
   getData(key, index, defaultVal = 'default') {
@@ -99,7 +83,7 @@ class AccountsList extends Component {
           renderRow={this.renderRow.bind(this)}
         />
         <Spinner
-          visible={this.props.isFetching}
+          visible={this.props.isLoading}
           textContent={'Loading...'}
           textStyle={{ color: 'white' }}
         />
@@ -122,40 +106,22 @@ class AccountsList extends Component {
   }
 }
 
-const mapStateToProps = ({ accounts, main }) => {
+const mapStateToProps = ({ accounts }) => {
   const {
-    accountsArr,
-    curAccount
+    isLoading,
+    accountsArray,
+    curAccountID,
+    goToMain
   } = accounts;
-  const {
-    isFetching,
-    currentAccountId,
-    trips,
-    processing,
-    processingCount,
-    reimburseables,
-    reimburseableCount,
-    latestReceipt,
-    latestTrip,
-    nextPage
-  } = main;
   return {
-    accountsArr,
-    curAccount,
-    isFetching,
-    currentAccountId,
-    trips,
-    processing,
-    processingCount,
-    reimburseables,
-    reimburseableCount,
-    latestReceipt,
-    latestTrip,
-    nextPage
+    isLoading,
+    accountsArray,
+    curAccountID,
+    goToMain
   };
 };
 
 
 export default connect(mapStateToProps, {
- setCurAccount, setCurAccountName, getAccountInfo, getToken, setPlan, setPlanType
+ setCurAccount
 })(AccountsList);

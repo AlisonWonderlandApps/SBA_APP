@@ -1,16 +1,28 @@
 /*
 * TODO: fix checking for user status
 * TODO: fix the showing login page error
+*
+* Actions:
+*   check if user is logged in
+*   check for network issues
+*   fetch users name & associated accounts if logged in
+*
+* Logic:
+*   Redirect to login page if no valid session
+*   Redirect to accounts page if >1 account
+*   Redirect to main page if only 1 account (additional action req)
 */
-
 
 import React, { Component } from 'react';
 import { AsyncStorage, Alert, NetInfo } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import LoadingSpinner from 'react-native-spinkit';
-
-import { LogoSection, FullScreenView, TitleText } from '../components';
+import {
+  LogoSection,
+  FullScreenView,
+  TitleText
+} from '../components';
 import { MAIN_LOGO } from '../global/images';
 import { APP_WHITE } from '../global/colours';
 import { SplashScreenStyles } from './styles';
@@ -28,6 +40,9 @@ import {
 class SplashScreen extends Component {
 
   componentWillMount() {
+    //function that handles logic of checking if user
+    //has a current session. Gets a new oAuth token and
+    //accounts info if so.
     this.props.isUserLoggedIn();
   }
 
@@ -49,44 +64,45 @@ class SplashScreen extends Component {
   shouldComponentUpdate(nextProps) {
     console.log('should', this.props.goToLogin, nextProps.goToLogin);
     if (this.props.goToLogin !== nextProps.goToLogin) {
-    //  console.log('gotologin');
-      return true;
+      return true; //update to go to LoginPage
     }
     if (this.props.userName !== nextProps.userName) {
-    //  console.log('gotologin');
-      return true;
+      return true; //update name for loading? wth is this
     }
-    console.log(this.props.done, nextProps.done);
-    if (this.props.done !== nextProps.done) {
-    //  console.log('gotoaccounts');
-      return true;
+    if (this.props.goToMain !== nextProps.goToMain) {
+      return true; //update to go to accounts list or main page
+    }
+    if (this.props.goToAccounts !== nextProps.goToAccounts) {
+      return true; //update to go to accounts list or main page
     }
     return false;
   }
 
   componentDidUpdate() {
-    console.log('did update', this.props);
     if (this.props.goToLogin) {
-        Actions.login();
+      console.log('got to login');
+      Actions.login();
     }
-    if (this.props.done) {
-      Actions.accountslist({
-        accList: this.props.accountsArr,
-      });
+    if (this.props.goToAccounts) {
+      Actions.accountslist();
     }
-  }
+    if (this.props.goToMain) {
+       Actions.main();
+      }
+   }
+
 
   /******General helpers ******/
-    haveNetworkConnectivity() {
-      NetInfo.fetch().done((reach) => {
-        if (reach === 'none') {
-          console.log('no network');
-          return false;
-        }
-        console.log('lol');
-        return true;
-      });
+  haveNetworkConnectivity() {
+    NetInfo.fetch().done((reach) => {
+    if (reach === 'none') {
+      console.log('no network');
+      return false;
     }
+      console.log('lol');
+      return true;
+    });
+  }
 
   render() {
     return (
@@ -96,7 +112,7 @@ class SplashScreen extends Component {
         />
         <LoadingSpinner
           style={{ alignSelf: 'center', paddingBottom: 60 }}
-          isVisible={this.props.isLoading}
+          isVisible
           size={100}
           type={'ThreeBounce'}
           color={APP_WHITE}
@@ -118,15 +134,17 @@ const mapStateToProps = ({ user, auth, accounts }) => {
     goToLogin
   } = auth;
   const {
-    accountsArr,
-    done
+    accountsArray,
+    goToMain,
+    goToAccounts
   } = accounts;
   return {
     userName,
     isLoading,
     goToLogin,
-    accountsArr,
-    done
+    accountsArray,
+    goToMain,
+    goToAccounts
   };
 };
 

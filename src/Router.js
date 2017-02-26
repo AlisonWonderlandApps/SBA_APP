@@ -4,10 +4,14 @@ Purpose is to hold all the screens/routes a user can visit
 import { Text } from 'react-native';
 import React, { Component } from 'react';
 import { Scene, Router, Actions } from 'react-native-router-flux';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
 
-import { LeftNavTitle, RightNavTitle } from './components';
+import {
+        LeftNavTitle,
+        RightNavTitle,
+        RightNameTitle,
+        LeftAccountsTitle
+      } from './components';
 
 import { HEADER } from './global/margins';
 import { PRIMARY_COLOUR, SHADOW_COLOUR } from './global/colours';
@@ -30,6 +34,7 @@ import Tools from './layouts/Tools';
 import SaveDoc from './layouts/SaveDoc';
 import Processing from './layouts/Processing';
 import Reimbursables from './layouts/Reimbursables';
+import ReceiptsListView from './layouts/ReceiptsListView';
 
 class RouterComponent extends Component {
 /*  shouldComponentUpdate(nextProps) {
@@ -59,6 +64,22 @@ class RouterComponent extends Component {
     return props.userName;
   }
 
+  renderRightName(name) {
+    return (
+            <RightNameTitle>
+              {name}
+            </RightNameTitle>
+          );
+  }
+
+  renderLeftName() {
+    return (
+          <LeftAccountsTitle>
+            Accounts
+          </LeftAccountsTitle>
+        );
+  }
+
   render() {
   console.log('name', this.props.userInfo.name);
 
@@ -70,23 +91,15 @@ class RouterComponent extends Component {
       hideNavBar="true"
       component={SplashScreen}
       animation="fade"
-      //initial
-      //duration="20000 "
+      initial
     />
 
     <Scene
       key="settings"
       component={Settings}
       hideNavBar={false}
-      navigationBarStyle={{
-          backgroundColor: PRIMARY_COLOUR,
-          height: HEADER.height,
-          padding: 15,
-          shadowColor: SHADOW_COLOUR,
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.2, }}
+      navigationBarStyle={styles.headerStyle}
       renderTitle={() => <Header />}
-      //onBack={() => console.log('back pressed')}
       //initial
     />
 
@@ -115,33 +128,17 @@ class RouterComponent extends Component {
       component={AccountsList}
       hideNavBar={false}
       renderTitle={() => <Header />}
-      navigationBarStyle={{
-          backgroundColor: PRIMARY_COLOUR,
-          height: HEADER.height,
-          padding: 15,
-          shadowColor: SHADOW_COLOUR,
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.2,
-        }}
+      navigationBarStyle={styles.headerStyle}
       hideBackImage
-      onRightTitle={() => console.log('right clicked')}
-    //  rightTitle={this.props.userName}
-      //backTitle='Accounts'
-    //  onBack={Actions.api}
-    //  backStyle={{ color: PRIMARY_HIGHLIGHT_COLOUR }}
+      onBack={() => console.log('no back')}
+    //  onRightTitle={() => console.log('right clicked')}
     />
 
     <Scene
       key="photos"
       component={Photos}
       hideNavBar={false}
-      navigationBarStyle={{
-          backgroundColor: PRIMARY_COLOUR,
-          height: HEADER.height,
-          padding: 15,
-          shadowColor: SHADOW_COLOUR,
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.2, }}
+      navigationBarStyle={styles.headerStyle}
       renderTitle={() => <Header />}
       rightTitle='Add'
       onRight={() => Actions.save()}
@@ -151,13 +148,7 @@ class RouterComponent extends Component {
       key="camera"
       component={CameraPic}
       hideNavBar={false}
-      navigationBarStyle={{
-          backgroundColor: PRIMARY_COLOUR,
-          height: HEADER.height,
-          padding: 15,
-          shadowColor: SHADOW_COLOUR,
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.2, }}
+      navigationBarStyle={styles.headerStyle}
       renderTitle={() => <Header />}
       //initial
     />
@@ -166,13 +157,7 @@ class RouterComponent extends Component {
       key="cameraPic"
       component={CameraStill}
       hideNavBar={false}
-      navigationBarStyle={{
-          backgroundColor: PRIMARY_COLOUR,
-          height: HEADER.height,
-          padding: 15,
-          shadowColor: SHADOW_COLOUR,
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.2, }}
+      navigationBarStyle={styles.headerStyle}
       renderTitle={() => <Header />}
       //initial
     />
@@ -181,49 +166,31 @@ class RouterComponent extends Component {
       key="main"
       component={MainNavigationList}
       hideNavBar={false}
-      navigationBarStyle={{
-          backgroundColor: PRIMARY_COLOUR,
-          height: HEADER.height,
-          padding: 15,
-          shadowColor: SHADOW_COLOUR,
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.2, }}
+      navigationBarStyle={styles.headerStyle1}
+      //hideBackImage
       renderTitle={() => <Header />}
-      onRight={() => Actions.settings()}
-      //onRight={() => console.log('right clicked', this.props.userInfo.name)}
-    //  renderRightTitle={this.renderRightTitle1.bind(this.props)}
-      rightTitle={this.props.userName}
+      renderRightButton={() => this.renderRightName(this.props.userName)}
+      //renderBackButton={() => console.log('hi')}
+      renderBackButton={() => this.renderLeftName()}
     />
 
     <Scene
       key="trips"
       component={TripsList}
       hideNavBar={false}
-      navigationBarStyle={{
-          backgroundColor: PRIMARY_COLOUR,
-          height: HEADER.height,
-          padding: 15,
-          shadowColor: SHADOW_COLOUR,
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.2, }}
+      navigationBarStyle={styles.headerStyle}
       renderTitle={() => <Header />}
-    //  renderRightButton={() => <Icon name="ellipsis-v" size={25} color="#ffffff" />}
-      //hideBackImage
     />
 
     <Scene
       key="receipts"
       hideNavBar={false}
-      navigationBarStyle={{
-          backgroundColor: PRIMARY_COLOUR,
-          height: HEADER.height,
-          padding: 15,
-          shadowColor: SHADOW_COLOUR,
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.2, }}
+      navigationBarStyle={styles.headerStyle}
       renderTitle={() => <Header />}
-      component={ReceiptsList}
-      renderRightButton={() => <Icon name="ellipsis-v" size={25} color="#ffffff" />}
+      component={ReceiptsListView}
+      rightTitle='Filter'
+      onRight={() => console.log('right')}
+      //renderRightButton={() => <Icon name="ellipsis-v" size={25} color="#ffffff" />}
       //hideBackImage
     />
 
@@ -231,13 +198,7 @@ class RouterComponent extends Component {
       key="tools"
       component={Tools}
       hideNavBar={false}
-      navigationBarStyle={{
-          backgroundColor: PRIMARY_COLOUR,
-          height: HEADER.height,
-          padding: 15,
-          shadowColor: SHADOW_COLOUR,
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.2, }}
+      navigationBarStyle={styles.headerStyle}
       renderTitle={() => <Header />}
       //initial
     />
@@ -246,13 +207,7 @@ class RouterComponent extends Component {
       key="save"
       component={SaveDoc}
       hideNavBar={false}
-      navigationBarStyle={{
-          backgroundColor: PRIMARY_COLOUR,
-          height: HEADER.height,
-          padding: 15,
-          shadowColor: SHADOW_COLOUR,
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.2, }}
+      navigationBarStyle={styles.headerStyle}
       renderTitle={() => <Header />}
       //onRight={() => SaveDoc.onPress.bind(SaveDoc)}
       //rightTitle='Save'
@@ -263,13 +218,7 @@ class RouterComponent extends Component {
       key="processing"
       component={Processing}
       hideNavBar={false}
-      navigationBarStyle={{
-          backgroundColor: PRIMARY_COLOUR,
-          height: HEADER.height,
-          padding: 15,
-          shadowColor: SHADOW_COLOUR,
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.2, }}
+      navigationBarStyle={styles.headerStyle}
       renderTitle={() => <Header />}
       onRight={() => console.log('filter it')}
       rightTitle='Filters'
@@ -280,13 +229,7 @@ class RouterComponent extends Component {
       key="reimbursables"
       component={Reimbursables}
       hideNavBar={false}
-      navigationBarStyle={{
-          backgroundColor: PRIMARY_COLOUR,
-          height: HEADER.height,
-          padding: 15,
-          shadowColor: SHADOW_COLOUR,
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.2, }}
+      navigationBarStyle={styles.headerStyle}
       renderTitle={() => <Header />}
       onRight={() => console.log('filter it')}
       rightTitle='Filters'
@@ -297,13 +240,7 @@ class RouterComponent extends Component {
       key="api"
       component={APITest}
       hideNavBar={false}
-      navigationBarStyle={{
-          backgroundColor: PRIMARY_COLOUR,
-          height: HEADER.height,
-          padding: 15,
-          shadowColor: SHADOW_COLOUR,
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.2, }}
+      navigationBarStyle={styles.headerStyle}
       renderTitle={() => <Header />}
       backTitle='< Back'
       //onBack={Actions.list}
@@ -317,6 +254,24 @@ class RouterComponent extends Component {
   }
 }
 
+const styles = {
+  headerStyle: {
+    backgroundColor: PRIMARY_COLOUR,
+    height: HEADER.height,
+    padding: 15,
+    shadowColor: SHADOW_COLOUR,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2
+  },
+  headerStyle1: {
+    backgroundColor: PRIMARY_COLOUR,
+    height: HEADER.height,
+    padding: 2,
+    shadowColor: SHADOW_COLOUR,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2
+  }
+};
 
 const mapStateToProps = ({ user }) => {
   const {

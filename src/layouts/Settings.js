@@ -14,7 +14,7 @@ import {
  } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
-import Communications from 'react-native-communications';
+import { email } from 'react-native-communications';
 
 import { layoutStyles } from './styles';
 import { BACKGROUND_COLOUR } from '../global/colours';
@@ -71,7 +71,11 @@ class Settings extends Component {
         </CardView>
 
         <CardView>
-          <SettingsSectionUsage name={this.props.curAccName} />
+          <SettingsSectionUsage
+            name={this.props.curAccountName}
+            totalAllowable={this.props.plan.documentLimitPerMonth}
+            totalUsed={this.props.numOfReceipts}
+          />
           <SettingsSectionPlan plan={this.props.planType} />
         </CardView>
 
@@ -117,7 +121,12 @@ class Settings extends Component {
             >
               <View>
               <FormText
-                style={{ fontWeight: 'bold', alignSelf: 'center', color: 'red', paddingBottom: 5, paddingTop: 10 }}
+                style={{
+                  fontWeight: 'bold',
+                  alignSelf: 'center',
+                  color: 'red',
+                  paddingBottom: 5,
+                  paddingTop: 10 }}
               >
                 LOGOUT
               </FormText>
@@ -172,7 +181,11 @@ class Settings extends Component {
   sendFeedback() {
     console.log('send email');
     //email(to, cc, bcc, subject, body)
-    Communications.email(['help@team.shoeboxed.com.au'], null, ['help@team.shoeboxed.com.au'], '[Feedback] Squirrel Street Mobile', null);
+    email(
+      ['help@team.shoeboxed.com.au'],
+      null,
+      ['help@team.shoeboxed.com.au'],
+      '[Feedback] Squirrel Street Mobile', null);
   }
 
   onFAQClick() {
@@ -187,18 +200,24 @@ class Settings extends Component {
 
 }
 
-const mapStateToProps = ({ user, accounts }) => {
+const mapStateToProps = ({ user, accounts, receipts }) => {
   const {
     userInfo
   } = user;
   const {
+    plan,
     planType,
-    curAccName
+    curAccountName
   } = accounts;
+  const {
+    numOfReceipts
+  } = receipts;
   return {
     userInfo,
+    plan,
     planType,
-    curAccName
+    curAccountName,
+    numOfReceipts
   };
 };
 

@@ -1,6 +1,8 @@
 /*
 * All actions a user can take pertaining to main screen
 */
+
+/*
 import { AsyncStorage } from 'react-native';
 //import { Actions } from 'react-native-router-flux';
 import axios from 'axios';
@@ -26,7 +28,7 @@ import {
   PLAN_FETCH_SUCCESS,
   PLAN_FETCH_FAIL,
   PLANTYPE_SET,
-  SET_PROCESSED_NUM
+  SET_PROCESSING_NUM
 } from './types';
 
 export const getAccountInfo = () => {
@@ -269,6 +271,7 @@ const reimbursedNumber = (num) => {
     payload: num
   };
 };
+*/
 
 //Fetch otherReceipts
 

@@ -1,98 +1,312 @@
 /*
 * All actions a user can take pertaining to receipts
-* By default receipts are listed by processing or reimbursable??
+
+//1. Fetch Receipts
+    - fetch (sets loading screen)
+    - success (ends loading, fills receipts array)
+    - fail (ends loading, displays error msg)
+
+//2. Add a receipt
+    - add
+
+//3. Delete a receipt
+    - displays a check
+    - deletes on OK
+
+//4. Export a receipt
+    - send receipt to??
+
+//5. Display a receipt
+
 */
 
+import { AsyncStorage } from 'react-native';
 import axios from 'axios';
 import { ssApiQueryURL } from '../config/auth';
 
 import {
-  //RECEIPTS_FETCH,
-//  RECEIPTS_FETCH_SUCCESS,
-//  RECEIPTS_FETCH_FAIL,
-//  RECEIPT_ADD,
-//RECEIPT_UPDATE,
-  PHOTO_ADD,
-  SET_RECEIPT_CATEGORY,
-  SET_RECEIPT_NOTE,
-  SAVE_RECEIPT_LOCAL,
-  ADD_RECEIPT_SUCCESS,
-  USE_PICTURE
+  fetchTrips
+} from '../actions/TripActions';
+
+import {
+  RECEIPTS_FETCH,
+  RECEIPTS_FETCH_SUCCESS,
+  RECEIPTS_FETCH_FAIL,
+  SET_NUM_RECEIPTS,
+  SET_LATEST_RECEIPT,
+  PROCESSING_FETCH,
+  PROCESSING_FETCH_SUCCESS,
+  PROCESSING_FETCH_FAIL,
+  SET_PROCESSING_NUM,
+  REIMBURSABLES_FETCH_SUCCESS,
+  REIMBURSABLES_FETCH_FAIL,
+  SET_REIMBURSABLE_NUM,
+  CATEGORIES_FETCH_SUCCESS,
+  CATEGORIES_FETCH_FAIL,
+  ADD_RECEIPT,
+  SET_VENDOR,
+  SET_DATE,
+  SET_CATEGORY,
+  SET_COST,
+  SET_LIST
+  //SET_TRIP_DISTANCE
 } from './types';
 
-//0. Fetch all receipts
-export const getPhoto = (photo) => {
-  console.log('get photo', photo);
+
+export const addNewReceipt = (doc) => {
   return {
-    type: PHOTO_ADD,
-    payload: photo
+    type: ADD_RECEIPT,
+    payload: doc
   };
 };
 
-//1. Add a receipts
-export const setReceiptCategory = (cat) => {
-  return {
-    type: SET_RECEIPT_CATEGORY,
-    payload: cat
-  };
-};
-
-export const noteChanged = (note) => {
-  return {
-    type: SET_RECEIPT_NOTE,
-    payload: note
-  };
-};
-
-export const usePicture = (bool) => {
-  return {
-    type: USE_PICTURE,
-    payload: bool
-  };
-};
-
-export const saveReceipt = (theProps) => {
-  const receipt = {
-    account: theProps.curAccount,
-    email: theProps.dropBoxEmail,
-    note: theProps.note,
-    category: theProps.category,
-    attachment: theProps.photoObj
-  };
-  console.log('receipt', receipt);
-  return {
-    type: SAVE_RECEIPT_LOCAL,
-    payload: receipt
-  };
-};
-
-export const addReceipt = (AuthStr) => {
-  console.log('addreceipt');
+//fetches order_by_desc to set latest receipt easily
+export const fetchReceipts = (AuthStr, accountId) => {
+  console.log('fetch receipts');
   return function (dispatch) {
-  axios.post(ssApiQueryURL.userAccounts, { headers: { Authorization: AuthStr } })
+    dispatch({
+      type: RECEIPTS_FETCH
+    });
+
+    const receiptsURL = (ssApiQueryURL.accounts).concat(accountId).concat('/documents');
+    console.log('fetchURL', receiptsURL, AuthStr);
+
+    axios.get(receiptsURL,
+      { params: { order_by_desc: 'uploaded', trashed: 'false' },
+        headers: { Authorization: AuthStr }
+      })
       .then(response => {
-        console.log(response.data);
-        dispatch(addReceiptSuccess(response.data));
-      }).catch((error) => {
-          console.log('error etf ', error);
-          //loadAccountsFail(error);
+        dispatch(fetchReceiptsSuccess(response.data.documents));
+        dispatch(setReceiptsList(response.data.documents));
+        console.log(response.data.documents);
+        const length = response.data.totalCountFiltered;
+        console.log(length);
+        dispatch({
+          type: SET_NUM_RECEIPTS,
+          payload: length
         });
+        //dispatch(fetchCategories(AuthStr, accountId)); //fetch categories (where receipts>0)
+        dispatch(fetchTrips(AuthStr, accountId)); //fetch trips
+        dispatch(fetchProcessing(AuthStr, accountId)); //fetch processing
+        //dispatch(fetchReimbursables(AuthStr, accountId)); //fetch reimburseablesß
+        if (length > 0) {
+          //How to check if first receipt is a trip :(:())
+          let i = 0;
+          console.log(response.data.documents[0].categories);
+          while (response.data.documents[i].categories[0] === 'Trips') {
+            console.log(response.data.documents[i].categories);
+            i++;
+          }
+          dispatch(fetchMostRecentReceipt(response.data.documents[i]));
+          dispatch(setVendor(response.data.documents[i].vendor));
+          dispatch(setDate(response.data.documents[i].uploaded));
+          dispatch(setCategory(response.data.documents[i].categories));
+          dispatch(setCost(response.data.documents[i].totalInPreferredCurrency));
+        } else {
+          dispatch(fetchMostRecentReceipt(''));
+        }
+      })
+      .catch((er) => {
+        dispatch(fetchReceiptsFail(er));
+        return er;
+      });
   };
 };
 
-const addReceiptSuccess = (receipt) => {
+const fetchReceiptsSuccess = (processed) => {
   return {
-    type: ADD_RECEIPT_SUCCESS,
-    payload: receipt
+    type: RECEIPTS_FETCH_SUCCESS,
+    payload: processed
   };
 };
 
-//2. Search receipts by...
+const setReceiptsList = (list) => {
+  let vendor = '';
+  let total = '';
+  let date = '';
+  let category = '';
+  const receiptlist = [];
+  for (let i = 0; i < list.length; i++) {
+    vendor = list[i].vendor;
+    total = '$' + list[i].total.toFixed(2);
+    const formattedDate = new Date(list[i].uploaded).toString();
+    date = formattedDate.substring(4, 10);
+    if (list[i].categories.length < 1) {
+      category = 'No categories';
+    } else {
+      for (let j = 0; j < list[i].categories.length; j++) {
+        category += list[i].categories[j];
+      }
+    }
+    receiptlist[i] = {
+      vendor,
+      total,
+      date,
+      category
+    };
+  }
+  return {
+    type: SET_LIST,
+    payload: receiptlist
+  };
+};
 
-//3. Add a receipt category
+const setVendor = (data) => {
+  return {
+    type: SET_VENDOR,
+    payload: data
+  };
+};
 
-//4. Edit a receipt
+const setDate = (date) => {
+  const formattedDate = new Date(date).toString();
+  const dateStr = formattedDate.substring(4, 10);
+  return {
+    type: SET_DATE,
+    payload: dateStr
+  };
+};
 
-//5. Delete a receipt
+const setCategory = (data) => {
+  let stringItem = '';
+  if (data.length < 1) {
+    stringItem = 'No categories';
+  } else {
+    for (let i = 0; i < data.length; i++) {
+      stringItem += data[i];
+    }
+  }
+  return {
+    type: SET_CATEGORY,
+    payload: stringItem
+  };
+};
 
-//6. Process a receipt?
+const setCost = (cost) => {
+  const currency = '$' + cost.toFixed(2);
+  console.log(currency);
+  return {
+    type: SET_COST,
+    payload: currency
+  };
+};
+
+const fetchReceiptsFail = (err) => {
+  return {
+    type: RECEIPTS_FETCH_FAIL,
+    payload: err
+  };
+};
+
+const fetchMostRecentReceipt = (aRec) => {
+  return {
+    type: SET_LATEST_RECEIPT,
+    payload: aRec
+  };
+};
+
+export const fetchProcessing = (AuthStr, accountId) => {
+  console.log('fetch processing', AuthStr, accountId);
+  return function (dispatch) {
+  dispatch({
+    type: PROCESSING_FETCH
+  });
+  const processingURL = 'https://api.sbaustralia.com:443/v2/accounts/'.concat(accountId).concat('/documents');
+  axios.get(processingURL,
+    { params: { processing_state: 'NEEDS_USER_PROCESSING', order_by_desc: 'uploaded' },
+      headers: { Authorization: AuthStr }
+    })
+    .then(response => {
+      axios.get(processingURL,
+        { params: { processing_state: 'NEEDS_SYSTEM_PROCESSING', order_by_desc: 'uploaded' },
+          headers: { Authorization: AuthStr }
+        }).then(response2 => {
+          const processingArray = response.data.documents + response2.data.documents;
+          dispatch({
+            type: PROCESSING_FETCH_SUCCESS,
+            payload: processingArray
+          });
+          dispatch({
+            type: SET_PROCESSING_NUM,
+            payload: processingArray.length
+          });
+        });
+    })
+    .catch((er) => {
+      console.log('no trips fetched', er);
+      dispatch(fetchProcessingFail());
+    });
+  };
+};
+
+const fetchProcessingFail = () => {
+  return {
+    type: PROCESSING_FETCH_FAIL,
+  };
+};
+
+export const fetchReimbursables = (AuthStr, AccountId) => {
+  return function (dispatch) {
+  const reimburseURL = (ssApiQueryURL.rootURL).concat(AccountId).concat('/documents');
+
+  axios.get(reimburseURL,
+    { params: { category: 'Reimbursables', order_by_desc: 'uploaded' },
+      headers: { Authorization: AuthStr }
+    })
+    .then(response => {
+      dispatch({
+        type: REIMBURSABLES_FETCH_SUCCESS,
+        payload: response.data.documents
+      });
+      dispatch({
+        type: SET_REIMBURSABLE_NUM,
+        payload: response.data.documents.length
+      });
+      }).catch((er) => {
+      dispatch(fetchReimburseFail(er));
+    });
+  };
+};
+
+const fetchReimburseFail = (err) => {
+  return {
+    type: REIMBURSABLES_FETCH_FAIL,
+    payload: err
+  };
+};
+
+export const fetchCategories = (AuthStr, AccountId) => {
+  return function (dispatch) {
+  const reimburseURL = (ssApiQueryURL.rootURL).concat(AccountId).concat('/categories');
+
+  axios.get(reimburseURL,
+    { headers: { Authorization: AuthStr } })
+    .then(response => {
+      dispatch(loadCategories(response.data.categories));
+      }).catch((er) => {
+       dispatch(fetchCategoriesFail(er));
+    });
+  };
+};
+
+const loadCategories = (catArr) => {
+  console.log('load labels');
+  let i;
+  const labels = [];
+  for (i = 0; i < catArr.length; i++) {
+    if (catArr[i].receipts > 0) {
+      labels.push(catArr[i]);
+   }
+  }
+  return {
+    type: CATEGORIES_FETCH_SUCCESS,
+    payload: labels
+  };
+};
+
+const fetchCategoriesFail = (err) => {
+  return {
+    type: CATEGORIES_FETCH_FAIL,
+    payload: err
+  };
+};

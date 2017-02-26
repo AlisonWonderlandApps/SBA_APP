@@ -24,7 +24,7 @@ export const facebookAuth = {
 };
 
 export const ssApiQueryURL = {
-    user: 'https://api.sbaustralia.com:443/v2/user/',
+    user: 'https://api.sbaustralia.com:443/v2/user/', 
     userAccounts: 'https://api.sbaustralia.com:443/v2/user/accounts/',
     accounts: 'https://api.sbaustralia.com:443/v2/accounts/',
     rootURL: 'https://api.sbaustralia.com:443/v2/'

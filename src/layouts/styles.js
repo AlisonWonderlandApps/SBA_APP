@@ -13,8 +13,9 @@ import {
 export const layoutStyles = {
   loginView: {
     flexGrow: 1,
-    paddingTop: (Platform.OS === 'ios') ? 50 : 30,
-    padding: 10
+    //paddingTop: (Platform.OS === 'ios') ? 50 : 30,
+    padding: 20,
+    paddingBottom: 40
   },
   view: {
     flex: 1,

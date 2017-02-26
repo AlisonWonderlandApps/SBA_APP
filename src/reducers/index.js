@@ -9,15 +9,17 @@ import MainReducer from './MainReducer';
 import TripReducer from './TripsReducer';
 import UserReducer from './UserReducer';
 import ReceiptsReducer from './ReceiptsReducer';
+import PhotoReducer from './PhotoReducer';
 
-  //'wire up' the reducer
+//'wire up' the reducer
 export default combineReducers({
   auth: AuthReducer,
   login: LoginReducer,
   signup: SignupReducer,
   accounts: AccountsReducer,
   main: MainReducer,
-  myTrips: TripReducer,
+  trips: TripReducer,
   user: UserReducer,
-  receipts: ReceiptsReducer
+  receipts: ReceiptsReducer,
+  photos: PhotoReducer
 });
