@@ -77,7 +77,7 @@ export const fetchReceipts = (AuthStr, accountId) => {
       })
       .then(response => {
         dispatch(fetchReceiptsSuccess(response.data.documents));
-        dispatch(setReceiptsList(response.data.documents));
+      //  dispatch(setReceiptsList(response.data.documents));
         console.log(response.data.documents);
         const length = response.data.totalCountFiltered;
         console.log(length);
@@ -129,7 +129,7 @@ const setReceiptsList = (list) => {
   for (let i = 0; i < list.length; i++) {
     vendor = list[i].vendor;
     total = '$' + list[i].total.toFixed(2);
-    const formattedDate = new Date(list[i].uploaded).toString();
+    let formattedDate = new Date(list[i].uploaded).toString();
     date = formattedDate.substring(4, 10);
     if (list[i].categories.length < 1) {
       category = 'No categories';

@@ -19,11 +19,11 @@ class TripsList extends Component {
 
   constructor(props) {
     super(props);
-    console.log('list', props.trips);
+    console.log('list', props.myTrips);
 
     let i;
-    for (i = 0; i < props.trips.length; i++) {
-      TripsArray[i] = props.trips[i];
+    for (i = 0; i < props.myTrips.length; i++) {
+      TripsArray[i] = props.myTrips[i];
     }
     for (i = 0; i < TripsArray.length; i++) {
       labels[i] = TripsArray[i].vendor;
@@ -62,7 +62,7 @@ class TripsList extends Component {
   }
 
   getAccountInfo(aid) {
-    console.log(aid, 'accountinfo', this.props.curAccount);
+    console.log(aid, 'accountinfo', this.props.curAccountID);
     this.props.getToken(aid);
     //this.props.getAccountInfo(this.props.currentAccountId);
   }
@@ -106,33 +106,33 @@ class TripsList extends Component {
   }
 }
 
-const mapStateToProps = ({ accounts, main }) => {
+const mapStateToProps = ({ accounts, receipts, trips }) => {
   const {
-    accountsArr,
-    curAccount
+    accountsArray,
+    curAccountID
   } = accounts;
   const {
-    isFetching,
-    currentAccountId,
-    trips,
     processing,
     processingCount,
-    reimburseables,
-    reimburseableCount,
+    reimbursables,
+    reimbursableCount,
     latestReceipt,
-    latestTrip,
     nextPage
-  } = main;
+  } = receipts;
+  const {
+    myTrips,
+    isFetchingTrips,
+    latestTrip,
+  } = trips;
   return {
-    accountsArr,
-    curAccount,
-    isFetching,
-    currentAccountId,
-    trips,
+    accountsArray,
+    curAccountID,
+    isFetchingTrips,
+    myTrips,
     processing,
     processingCount,
-    reimburseables,
-    reimburseableCount,
+    reimbursables,
+    reimbursableCount,
     latestReceipt,
     latestTrip,
     nextPage

@@ -55,6 +55,9 @@ export default (state = INITIAL_STATE, action) => {
           myReceipts: action.payload
       };
 
+    case SET_LIST:
+      return { ...state, receiptList: action.payload };
+
     case SET_VENDOR:
       return { ...state, rVendor: action.payload };
 
