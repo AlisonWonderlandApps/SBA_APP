@@ -44,6 +44,7 @@
 		A37F9D7C50114DEF83963BD8 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D5A835BF5710420B8014C4BC /* Foundation.ttf */; };
 		A43074D545A24A20A5603CBF /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FDFA834A10A242DAA3A1C274 /* SimpleLineIcons.ttf */; };
 		BA6539A614EE4A538B289A1A /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1ED25F13993148DEA48EF019 /* EvilIcons.ttf */; };
+		BF2EAD3E1E6524820049E7B1 /* libReact-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF15F2361E4D83C2004013E1 /* libReact-tvOS.a */; };
 		BF62F7221E56CCF1009DBBF7 /* libRCTCameraRoll.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF62F7211E56CCF1009DBBF7 /* libRCTCameraRoll.a */; settings = {ATTRIBUTES = (Required, ); }; };
 		BFFCF6DF1E5289EE00BF7718 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF15F2341E4D83C2004013E1 /* libReact.a */; };
 		C7DE80AF7EB14FA6B009D9DF /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 280DFAAEF612434BBB284C72 /* Ionicons.ttf */; };
@@ -221,12 +222,19 @@
 			remoteGlobalIDString = 5DBEB1501B18CEA900B34395;
 			remoteInfo = RNVectorIcons;
 		};
-		BF62F7B61E56D69A009DBBF7 /* PBXContainerItemProxy */ = {
+		BF2EAD3C1E6524530049E7B1 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = BF62F7AD1E56D699009DBBF7 /* RCTCameraRoll.xcodeproj */;
+			containerPortal = BF2EAD381E6524530049E7B1 /* RCTCameraRoll.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 58B5115D1A9E6B3D00147676;
 			remoteInfo = RCTCameraRoll;
+		};
+		BFE0005E1E655B0F008E26F9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFE000551E655B0F008E26F9 /* RCTCamera.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 4107012F1ACB723B00C6AA39;
+			remoteInfo = RCTCamera;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -273,9 +281,10 @@
 		9E058483D2894F1FA7180064 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = ../src/assets/fonts/Fonts/SimpleLineIcons.ttf; sourceTree = "<group>"; };
 		A9879F9D7BE24558AA1A45D6 /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = ../src/assets/fonts/Fonts/MaterialIcons.ttf; sourceTree = "<group>"; };
 		A9C0B304A0FA4C4CA54AE160 /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
+		BF2EAD381E6524530049E7B1 /* RCTCameraRoll.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTCameraRoll.xcodeproj; path = ../../../Desktop/RCTCameraRoll.xcodeproj; sourceTree = "<group>"; };
 		BF62F7211E56CCF1009DBBF7 /* libRCTCameraRoll.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libRCTCameraRoll.a; path = "../../socialAuth/node_modules/react-native/Libraries/CameraRoll/build/Debug-iphoneos/libRCTCameraRoll.a"; sourceTree = "<group>"; };
-		BF62F7AD1E56D699009DBBF7 /* RCTCameraRoll.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTCameraRoll.xcodeproj; path = "../../socialAuth/node_modules/react-native/Libraries/CameraRoll/RCTCameraRoll.xcodeproj"; sourceTree = "<group>"; };
 		BF62F7DA1E56D725009DBBF7 /* libRCTCameraRoll.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libRCTCameraRoll.a; path = "../../SBA/SquirrelStreetAustralia/ios/build/Build/Products/Debug-iphonesimulator/libRCTCameraRoll.a"; sourceTree = "<group>"; };
+		BFE000551E655B0F008E26F9 /* RCTCamera.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTCamera.xcodeproj; path = "../node_modules/react-native-camera/ios/RCTCamera.xcodeproj"; sourceTree = "<group>"; };
 		C2C2EB086A3D4542AED9C32A /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = ../src/assets/fonts/Fonts/EvilIcons.ttf; sourceTree = "<group>"; };
 		C31EEA5C1F74407EB2075C6C /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = ../src/assets/fonts/Fonts/Foundation.ttf; sourceTree = "<group>"; };
 		C49F984F6B7344B0B6753E4F /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
@@ -300,6 +309,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BF2EAD3E1E6524820049E7B1 /* libReact-tvOS.a in Frameworks */,
 				BF62F7221E56CCF1009DBBF7 /* libRCTCameraRoll.a in Frameworks */,
 				BFFCF6DF1E5289EE00BF7718 /* libReact.a in Frameworks */,
 				5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */,
@@ -443,7 +453,8 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				BF62F7AD1E56D699009DBBF7 /* RCTCameraRoll.xcodeproj */,
+				BFE000551E655B0F008E26F9 /* RCTCamera.xcodeproj */,
+				BF2EAD381E6524530049E7B1 /* RCTCameraRoll.xcodeproj */,
 				5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
 				00C302A71ABCB8CE00DB3ED1 /* RCTActionSheet.xcodeproj */,
@@ -527,6 +538,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		BF2EAD391E6524530049E7B1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BF2EAD3D1E6524530049E7B1 /* libRCTCameraRoll.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		BF62F7201E56CCF1009DBBF7 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -536,10 +555,10 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		BF62F7AE1E56D699009DBBF7 /* Products */ = {
+		BFE000561E655B0F008E26F9 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				BF62F7B71E56D69A009DBBF7 /* libRCTCameraRoll.a */,
+				BFE0005F1E655B0F008E26F9 /* libRCTCamera.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -659,8 +678,12 @@
 					ProjectRef = 132815EC80FA4C06836E2EA8 /* RCTCamera.xcodeproj */;
 				},
 				{
-					ProductGroup = BF62F7AE1E56D699009DBBF7 /* Products */;
-					ProjectRef = BF62F7AD1E56D699009DBBF7 /* RCTCameraRoll.xcodeproj */;
+					ProductGroup = BFE000561E655B0F008E26F9 /* Products */;
+					ProjectRef = BFE000551E655B0F008E26F9 /* RCTCamera.xcodeproj */;
+				},
+				{
+					ProductGroup = BF2EAD391E6524530049E7B1 /* Products */;
+					ProjectRef = BF2EAD381E6524530049E7B1 /* RCTCameraRoll.xcodeproj */;
 				},
 				{
 					ProductGroup = 00C302B61ABCB90400DB3ED1 /* Products */;
@@ -877,11 +900,18 @@
 			remoteRef = BF15F2441E4D83C2004013E1 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		BF62F7B71E56D69A009DBBF7 /* libRCTCameraRoll.a */ = {
+		BF2EAD3D1E6524530049E7B1 /* libRCTCameraRoll.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
 			path = libRCTCameraRoll.a;
-			remoteRef = BF62F7B61E56D69A009DBBF7 /* PBXContainerItemProxy */;
+			remoteRef = BF2EAD3C1E6524530049E7B1 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		BFE0005F1E655B0F008E26F9 /* libRCTCamera.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRCTCamera.a;
+			remoteRef = BFE0005E1E655B0F008E26F9 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -1041,6 +1071,7 @@
 				INFOPLIST_FILE = SquirrelStreetAustralia/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1062,6 +1093,7 @@
 				INFOPLIST_FILE = SquirrelStreetAustralia/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

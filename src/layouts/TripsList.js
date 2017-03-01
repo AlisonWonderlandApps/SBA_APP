@@ -12,46 +12,14 @@ import {
   getToken
 } from '../actions';
 
-const TripsArray = [];
-const labels = [];
-
 class TripsList extends Component {
 
-  constructor(props) {
-    super(props);
-    console.log('list', props.myTrips);
-
-    let i;
-    for (i = 0; i < props.myTrips.length; i++) {
-      TripsArray[i] = props.myTrips[i];
-    }
-    for (i = 0; i < TripsArray.length; i++) {
-      labels[i] = TripsArray[i].vendor;
-      console.log('labelfor', labels[i]);
-    }
-
-    const ds = new ListView.DataSource({
-      rowHasChanged: (r1, r2) => r1 !== r2
-    });
-
-    this.state = {
-      dataSource: ds.cloneWithRows(labels),
-      loading: false
-    };
-  }
-
   componentWillUpdate(nextProps) {
-  //  console.log('update', this.props.nextPage, nextProps.nextPage);
-  //  if (nextProps.currentAccountId !== this.props.currentAccountId) {
-      //  this.props = nextProps;
-      //  this.getAccountInfo1();
-  //    console.log(nextProps.currentAccountId);
-  //   }
-  //  return true;
-  }
-
-  componentDidUpdate() {
-
+    console.log('update', this.props, nextProps);
+    if (this.props !== nextProps) {
+      return true;
+    }
+    return false;
   }
 
   onRowPress(rowID) {
@@ -59,16 +27,6 @@ class TripsList extends Component {
     console.log(rowID);
   //  this.props.setCurAccount(TripsArray[rowID].id);
   //  this.getAccountInfo(TripsArray[rowID].id);
-  }
-
-  getAccountInfo(aid) {
-    console.log(aid, 'accountinfo', this.props.curAccountID);
-    this.props.getToken(aid);
-    //this.props.getAccountInfo(this.props.currentAccountId);
-  }
-
-  getData(key, index, defaultVal = 'default') {
-    return this.state.accounts[index][key] || defaultVal;
   }
 
   renderRow(rowData, sectionID, rowID) {
@@ -97,7 +55,7 @@ class TripsList extends Component {
       </View>
 
         <Spinner
-          visible={this.props.isFetching}
+          visible={this.props.isFetchingTrips}
           textContent={'Loading...'}
           textStyle={{ color: 'white' }}
         />

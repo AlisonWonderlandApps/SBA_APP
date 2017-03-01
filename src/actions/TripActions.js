@@ -39,6 +39,7 @@ export const fetchTrips = (AuthStr, AccountId) => {
         dispatch(fetchTripsSuccess(response.data.documents));
         console.log(response.data.documents.length);
         if (response.data.documents.length > 0) {
+          console.log('trips', response.data.documents);
           dispatch(fetchMostRecentTrips(response.data.documents[0]));
           dispatch(setDate(response.data.documents[0].uploaded));
           dispatch(setCost(response.data.documents[0].totalInPreferredCurrency));
@@ -71,7 +72,7 @@ const setDate = (date) => {
 };
 
 const setCost = (cost) => {
-  const currency = '$' + cost.toFixed(2);
+  const currency = '$'.concat(cost.toFixed(2));
   return {
     type: SET_TRIP_COST,
     payload: currency
@@ -81,7 +82,7 @@ const setCost = (cost) => {
 const setVendor = (name) => {
   return {
     type: SET_TRIP_VENDOR,
-    payload: data
+    payload: name
   };
 };
 

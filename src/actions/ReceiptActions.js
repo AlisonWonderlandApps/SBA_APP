@@ -20,7 +20,7 @@
 
 */
 
-import { AsyncStorage } from 'react-native';
+//import { AsyncStorage } from 'react-native';
 import axios from 'axios';
 import { ssApiQueryURL } from '../config/auth';
 
@@ -77,7 +77,6 @@ export const fetchReceipts = (AuthStr, accountId) => {
       })
       .then(response => {
         dispatch(fetchReceiptsSuccess(response.data.documents));
-      //  dispatch(setReceiptsList(response.data.documents));
         console.log(response.data.documents);
         const length = response.data.totalCountFiltered;
         console.log(length);
@@ -85,9 +84,10 @@ export const fetchReceipts = (AuthStr, accountId) => {
           type: SET_NUM_RECEIPTS,
           payload: length
         });
-        //dispatch(fetchCategories(AuthStr, accountId)); //fetch categories (where receipts>0)
         dispatch(fetchTrips(AuthStr, accountId)); //fetch trips
         dispatch(fetchProcessing(AuthStr, accountId)); //fetch processing
+        //dispatch(setReceiptsList(response.data.documents));
+        //dispatch(fetchCategories(AuthStr, accountId)); //fetch categories (where receipts>0)
         //dispatch(fetchReimbursables(AuthStr, accountId)); //fetch reimburseablesß
         if (length > 0) {
           //How to check if first receipt is a trip :(:())
@@ -97,11 +97,13 @@ export const fetchReceipts = (AuthStr, accountId) => {
             console.log(response.data.documents[i].categories);
             i++;
           }
+          if (i < length) {
           dispatch(fetchMostRecentReceipt(response.data.documents[i]));
           dispatch(setVendor(response.data.documents[i].vendor));
           dispatch(setDate(response.data.documents[i].uploaded));
           dispatch(setCategory(response.data.documents[i].categories));
           dispatch(setCost(response.data.documents[i].totalInPreferredCurrency));
+          }
         } else {
           dispatch(fetchMostRecentReceipt(''));
         }
@@ -113,14 +115,15 @@ export const fetchReceipts = (AuthStr, accountId) => {
   };
 };
 
-const fetchReceiptsSuccess = (processed) => {
+const fetchReceiptsSuccess = (receipts) => {
   return {
     type: RECEIPTS_FETCH_SUCCESS,
-    payload: processed
+    payload: receipts
   };
 };
 
 const setReceiptsList = (list) => {
+  console.log('listlength', list.length);
   let vendor = '';
   let total = '';
   let date = '';
@@ -128,22 +131,28 @@ const setReceiptsList = (list) => {
   const receiptlist = [];
   for (let i = 0; i < list.length; i++) {
     vendor = list[i].vendor;
-    total = '$' + list[i].total.toFixed(2);
-    let formattedDate = new Date(list[i].uploaded).toString();
+    total = '$'.concat(list[i].total.toFixed(2));
+    const formattedDate = new Date(list[i].uploaded).toString();
     date = formattedDate.substring(4, 10);
     if (list[i].categories.length < 1) {
       category = 'No categories';
     } else {
       for (let j = 0; j < list[i].categories.length; j++) {
-        category += list[i].categories[j];
+        category += ', '.concat(list[i].categories[j]);
       }
     }
+
     receiptlist[i] = {
       vendor,
       total,
       date,
       category
     };
+    vendor = '';
+    total = '';
+    date = '';
+    category = '';
+    console.log('receipt', i, receiptlist[i]);
   }
   return {
     type: SET_LIST,
@@ -183,7 +192,7 @@ const setCategory = (data) => {
 };
 
 const setCost = (cost) => {
-  const currency = '$' + cost.toFixed(2);
+  const currency = '$'.concat(cost.toFixed(2));
   console.log(currency);
   return {
     type: SET_COST,
@@ -275,9 +284,29 @@ const fetchReimburseFail = (err) => {
   };
 };
 
-export const fetchCategories = (AuthStr, AccountId) => {
+export const fetchCategories = (receipts) => {
   return function (dispatch) {
-  const reimburseURL = (ssApiQueryURL.rootURL).concat(AccountId).concat('/categories');
+    const cat = [];
+    for (let i = 0; i < receipts.length; i++) {
+      if (receipts.categories.length === 1) {
+        cat[i] = receipts.categories[0];
+      } else if (receipts.categories.length > 1) {
+        cat[i] = receipts.categories[0];
+        let j = 1;
+        while (j <= receipts.categories.length) {
+          i++;
+          cat[i] = receipts.categories[j];
+          j++;
+        }
+      }
+    }
+    console.log('cat', cat);
+    const uniqCat = (cat) => [...new Set(cat)];
+    console.log('uniqcat', uniqCat);
+    dispatch(loadCategories(uniqCat));
+  };
+};
+/*  const reimburseURL = (ssApiQueryURL.rootURL).concat(AccountId).concat('/categories');
 
   axios.get(reimburseURL,
     { headers: { Authorization: AuthStr } })
@@ -285,9 +314,7 @@ export const fetchCategories = (AuthStr, AccountId) => {
       dispatch(loadCategories(response.data.categories));
       }).catch((er) => {
        dispatch(fetchCategoriesFail(er));
-    });
-  };
-};
+    }); */
 
 const loadCategories = (catArr) => {
   console.log('load labels');
