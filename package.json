@@ -7,6 +7,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@turf/turf": "^3.10.4",
     "axios": "^0.15.3",
     "i": "^0.3.5",
     "lodash": "^4.17.4",
