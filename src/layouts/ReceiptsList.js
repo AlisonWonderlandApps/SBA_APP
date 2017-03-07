@@ -3,15 +3,11 @@ import React, {
 } from 'react';
 import {
 	ListView,
-	StyleSheet,
 	Text,
 	TouchableOpacity,
 	TouchableHighlight,
 	View,
-  Alert
 } from 'react-native';
-import { connect } from 'react-redux';
-import { Actions } from 'react-native-router-flux';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import {
   PRIMARY_HIGHLIGHT_COLOUR,
@@ -26,100 +22,107 @@ import {
  } from '../components';
  import { HEADER } from '../global/margins';
 
-class ReceiptsList extends Component {
-
-	constructor(props) {
-		super(props);
-	//	this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-		this.state = {
-			//basic: true,
-			listViewData: this.props.myReceipts
-		};
-    console.log('constructor', this.props);
-	}
-
-  shouldComponentUpdate(nextProps) {
-    if (this.props !== nextProps) {
-      return true;
-    }
-    return false;
-  }
-
-	deleteRow(secId, rowId, rowMap) {
-		rowMap[`${secId}${rowId}`].closeRow();
-    console.log('delete', secId, rowId, rowMap);
-
-		const newData = [...this.state.listViewData];
-		newData.splice(rowId, 1);
-		this.setState({ listViewData: newData });
-	}
-
-	render() {
-    this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+const ReceiptsList = (props) => {
+		this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+    console.log(props);
+    //const dataSource = ds.cloneWithRows(receiptlist);
+    //this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 		return (
-			<BackgroundView style={styles.container}>
+    <View style={{ flex: 1, padding: 0 }}>
       <View style={styles.search}>
+            <MySearchBar />
+            <Button style={styles.button}> Export </Button>
+          </View>
+          <SwipeListView
+              dataSource={this.ds.cloneWithRows(props.data)}
+              renderRow={data => (
+                <TouchableHighlight
+                  onPress={console.log('You touched me', data)}
+                  style={styles.rowFront}
+                  underlayColor={'#AAA'}
+                >
+                  <View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }} >
+                      <Text> {data.vendor} </Text>
+                      <Text> {data.total} </Text>
+                    </View>
+                    <View>
+                      <Text> {data.date} </Text>
+                      <Text> {data.category} </Text>
+                    </View>
+                  </View>
+                </TouchableHighlight>
+                )}
+              renderHiddenRow={(data, secId, rowId, rowMap) => (
+                <View style={styles.rowBack}>
+                <TouchableOpacity
+                  style={[styles.backRightBtn, styles.backRightBtnLeft]}
+                  onPress={_ => (console.log(secId, rowId, rowMap))}
+                >
+                  <Text style={styles.backTextWhite}>Export</Text>
+                </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.backRightBtn, styles.backRightBtnRight]}
+                    onPress={_ => (console.log(secId, rowId, rowMap))}
+                  >
+                    <Text style={styles.backTextWhite}>Delete</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+              rightOpenValue={-150}
+              recalculateHiddenLayout
+              previewFirstRow
+          />
+      </View>
+		);
+	};
+
+  /*		<View style={styles.search}>
         <MySearchBar />
         <Button style={styles.button}> Export </Button>
       </View>
-					<SwipeListView
-						dataSource={this.ds.cloneWithRows(this.props.myReceipts)}
-						renderRow={data => (
-							<TouchableHighlight
-								onPress={console.log('You touched me')}
-								style={styles.rowFront}
-								underlayColor={'#AAA'}
-							>
-								<View>
-                  <View style={{ flexDirection: 'row', justifyContent: 'space-between' }} >
-                    <Text> {data.vendor} </Text>
-                    <Text> ${data.total} </Text>
-                  </View>
-                  <View>
-                    <Text> {data.uploaded} </Text>
-                    <Text> {data.categories} </Text>
-                  </View>
+      <SwipeListView
+          dataSource={this.ds.cloneWithRows(props.data)}
+          renderRow={data => (
+            <TouchableHighlight
+              onPress={console.log('You touched me', data)}
+              style={styles.rowFront}
+              underlayColor={'#AAA'}
+            >
+              <View>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }} >
+                  <Text> {data.vendor} </Text>
+                  <Text> {data.total} </Text>
                 </View>
-							</TouchableHighlight>
-						)}
-						renderHiddenRow={(data, secId, rowId, rowMap) => (
-							<View style={styles.rowBack}>
+                <View>
+                  <Text> {data.date} </Text>
+                  <Text> {data.category} </Text>
+                </View>
+              </View>
+            </TouchableHighlight>
+            )}
+          renderHiddenRow={(data, secId, rowId, rowMap) => (
+            <View style={styles.rowBack}>
+            <TouchableOpacity
+              style={[styles.backRightBtn, styles.backRightBtnLeft]}
+              onPress={_ => (console.log(secId, rowId, rowMap))}
+            >
+              <Text style={styles.backTextWhite}>Export</Text>
+            </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.backRightBtn, styles.backRightBtnRight]}
+                onPress={_ => (console.log(secId, rowId, rowMap))}
+              >
+                <Text style={styles.backTextWhite}>Delete</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+          rightOpenValue={-150}
+          recalculateHiddenLayout
+          previewFirstRow
+      /> */
 
-								<View style={[styles.backRightBtn, styles.backRightBtnLeft]}>
-									<Text style={styles.backTextWhite}>Export</Text>
-								</View>
-								<TouchableOpacity
-                  style={[styles.backRightBtn, styles.backRightBtnRight]}
-                  onPress={_ => this.deleteRow(secId, rowId, rowMap)}
-                >
-									<Text style={styles.backTextWhite}>Delete</Text>
-								</TouchableOpacity>
-							</View>
-						)}
-						rightOpenValue={-150}
-					/>
-          <FAB
-            onPress={this.onPressFAB}
-          />
-			</BackgroundView>
-		);
-	}
-
-  onPressFAB() {
-    console.log('FAB pressed');
-    Alert.alert(
-      'Choose Photo Source',
-      null,
-      [
-        { text: 'Camera', onPress: () => Actions.camera() },
-        { text: 'Photo Library', onPress: () => Actions.photos() },
-        { text: 'Cancel', onPress: () => console.log('cancel'), style: 'cancel' }
-      ]
-    );
-  }
-}
-
-const styles = StyleSheet.create({
+const styles = ({
   search: {
     flexDirection: 'row',
     padding: 10,
@@ -187,18 +190,4 @@ const styles = StyleSheet.create({
 	}
 });
 
-const mapStateToProps = ({ receipts, accounts }) => {
-  const {
-    myReceipts
-  } = receipts;
-  const {
-    labelsArray
-  } = accounts;
-  return {
-    myReceipts,
-    labelsArray
-  };
-};
-
-export default connect(mapStateToProps, {
-})(ReceiptsList);
+export { ReceiptsList };
