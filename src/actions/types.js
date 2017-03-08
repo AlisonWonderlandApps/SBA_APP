@@ -143,3 +143,7 @@ export const TRIP_UPDATE_INFO = 'trips_edit';
 export const TRIP_DELETE = 'trip_delete';
 export const TRIPS_SEARCH = '';
 export const TRIPS_START = '';
+
+//SearchActions
+export const SEARCH_TEXT_CHANGED = 'search_text_changed';
+export const SEARCH_DATA = 'search_data';

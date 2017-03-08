@@ -226,7 +226,7 @@ showAlert(message) {
 /******End General helpers ******/
 
 /******Email helpers ******/
-onEmailChange(text) {
+  onEmailChange(text) {
     this.props.emailChanged(text);
     this.isValidEmail(text);
   }

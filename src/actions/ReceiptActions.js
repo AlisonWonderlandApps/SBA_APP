@@ -136,17 +136,19 @@ const setReceiptsList = (list) => {
       }	else {
         total = '$'.concat(list[i].total.toFixed(2));
       }
-      const formattedDate = new Date(list[i].issued).toString();
-      console.log('formatted', formattedDate);
-      //	if (year !== Date) {
-      //		console.log('invalidDate', year);
-      //			date = 'unknown';
-      //		} else {
-      console.log('year', year);
-      let year = formattedDate.substring(11, 15);
-      year = ' '.concat(year);
-      date = formattedDate.substring(4, 10).concat(year);
-  //		}
+      if (list[i].issued === undefined) {
+        const formattedDate = new Date(list[i].uploaded).toString();
+        let year = formattedDate.substring(11, 15);
+        year = ' '.concat(year);
+        date = formattedDate.substring(4, 10).concat(year);
+      } else {
+        const formattedDate = new Date(list[i].issued).toString();
+        console.log('formatted', formattedDate);
+        console.log('year', year);
+        let year = formattedDate.substring(11, 15);
+        year = ' '.concat(year);
+        date = formattedDate.substring(4, 10).concat(year);
+      }
       if (list[i].categories === undefined || list[i].categories.length < 1) {
         category = 'No categories';
       } else {
