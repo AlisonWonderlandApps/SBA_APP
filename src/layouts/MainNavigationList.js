@@ -4,14 +4,14 @@
 */
 
 import React, { Component } from 'react';
-import { Alert, Text, View, TouchableHighlight, TouchableWithoutFeedback } from 'react-native';
+import { Alert, Text, View, TouchableHighlight, TouchableWithoutFeedback,AsyncStorage } from 'react-native';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { receiptsFetch } from '../actions';
 import { layoutStyles } from './styles';
 import { PRIMARY_HIGHLIGHT_COLOUR } from '../global/colours';
-
+import RNFetchBlob from 'react-native-fetch-blob'
 import {
   BackgroundView,
   CardSection,
@@ -31,6 +31,8 @@ import {
   TripsStr,
   ToolsStr
 } from './strings';
+
+var ImagePicker = require('react-native-image-picker');
 
 class MainNavigationList extends Component {
 
@@ -165,16 +167,88 @@ class MainNavigationList extends Component {
   }
 
   onPressFAB() {
-    console.log('FAB pressed');
-    Alert.alert(
-      'Choose Photo Source',
-      null,
-      [
-        { text: 'Camera', onPress: () => Actions.camera() },
-        { text: 'Photo Library', onPress: () => Actions.photos() },
-        { text: 'Cancel', onPress: () => console.log('cancel'), style: 'cancel' }
-      ]
-    );
+    // console.log('FAB pressed');
+    // Alert.alert(
+    //   'Choose Photo Source',
+    //   null,
+    //   [
+    //     { text: 'Camera', onPress: () => Actions.camera() },
+    //     { text: 'Photo Library', onPress: () => Actions.photos() },
+    //     { text: 'Cancel', onPress: () => console.log('cancel'), style: 'cancel' }
+    //   ]
+    // );
+
+    var options = {
+      title: 'Choose Photo Source',
+      // customButtons: [
+      //   {name: 'fb', title: 'Choose Photo from Facebook'},
+      // ],
+      storageOptions: {
+        skipBackup: true,
+        path: 'images'
+      }
+    };
+
+/**
+ * The first arg is the options object for customization (it can also be null or omitted for default options),
+ * The second arg is the callback which sends object: response (more info below in README)
+ */
+ImagePicker.showImagePicker(options, (response) => {
+  console.log('Response = ', response);
+
+  if (response.didCancel) {
+    console.log('User cancelled image picker');
+  }
+  else if (response.error) {
+    console.log('ImagePicker Error: ', response.error);
+  }
+  else if (response.customButton) {
+    console.log('User tapped custom button: ', response.customButton);
+  }
+  else {
+    let source = { uri: response.uri };
+
+
+      ///**************
+      AsyncStorage.getItem('newAccessToken',function(err,res)  {
+        if(err){
+
+        }else{
+          let accessToken = res;
+
+          let AuthStr = accessToken;
+
+          RNFetchBlob.fetch('POST', 'https://api.squirrelstreet.com/v2/accounts/1481900574/documents/', {
+               Authorization : AuthStr,
+               'Content-Type' : 'multipart/form-data',
+             }, [
+                {
+                  name : 'attachment',
+                  filename : response.fileName,
+                  type:response.type,
+                  data: RNFetchBlob.wrap(response.path)
+                },
+               { name : 'account', data : "1481900574"},
+               { name : 'document', data : JSON.stringify({
+                 processingState : 'NEEDS_SYSTEM_PROCESSING',
+               })},
+             ]).then((resp) => {
+               let respJSONData = JSON.parse(resp.data);
+               let receiptId = respJSONData.id;
+
+               alert("Receipt uploaded successfully.(Receipt Id : "+ receiptId +")");
+               console.log("--------->resp : "+JSON.stringify(resp));
+             }).catch((err) => {
+               alert("Sorry , something went wrong while receipt upload.");
+               console.log("--------->err : "+JSON.stringify(err));
+             });
+          }
+        });
+      //*************
+  }
+});
+
+
   }
 
   processingPressed() {
