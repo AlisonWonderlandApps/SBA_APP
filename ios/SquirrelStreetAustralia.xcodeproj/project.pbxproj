@@ -50,6 +50,8 @@
 		CB779BA921174A8190D907BF /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A9C0B304A0FA4C4CA54AE160 /* Zocial.ttf */; };
 		CFC9FFD9420C40FA83B2756F /* Calibri Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3F3F4BE72AE849BD83BB8537 /* Calibri Italic.ttf */; };
 		D04C0A0047EC4CAC9A8EBF8F /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C2C2EB086A3D4542AED9C32A /* EvilIcons.ttf */; };
+		8223D3E24FF44244832AF6A4 /* libRNFetchBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CB048CFF48534D3AA0C31AA0 /* libRNFetchBlob.a */; };
+		90F9C8727746453AB039C75A /* libRNPDFView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 963834DA3E4F4DD0903440B9 /* libRNPDFView.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -294,6 +296,10 @@
 		EB8566F1CA3D48D484729983 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		FB1E71AFD19B4760B111B187 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
 		FDFA834A10A242DAA3A1C274 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
+		B39E27CED38649BD949F36F8 /* RNFetchBlob.xcodeproj */ = {isa = PBXFileReference; name = "RNFetchBlob.xcodeproj"; path = "../node_modules/react-native-fetch-blob/ios/RNFetchBlob.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		CB048CFF48534D3AA0C31AA0 /* libRNFetchBlob.a */ = {isa = PBXFileReference; name = "libRNFetchBlob.a"; path = "libRNFetchBlob.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		C1E1B88F8C874B0793CC4397 /* RNPDFView.xcodeproj */ = {isa = PBXFileReference; name = "RNPDFView.xcodeproj"; path = "../node_modules/react-native-pdf-view/RNPDFView.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		963834DA3E4F4DD0903440B9 /* libRNPDFView.a */ = {isa = PBXFileReference; name = "libRNPDFView.a"; path = "libRNPDFView.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -325,6 +331,8 @@
 				4543EA3BC1EB43B288BB9E21 /* libAirMaps.a in Frameworks */,
 				57C9C21C5CC241EBB5F0AB5B /* libRNSpinkit.a in Frameworks */,
 				08774581F07D4424997F4C10 /* libRNVectorIcons.a in Frameworks */,
+				8223D3E24FF44244832AF6A4 /* libRNFetchBlob.a in Frameworks */,
+				90F9C8727746453AB039C75A /* libRNPDFView.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -469,6 +477,8 @@
 				34435B48607047E9A9F464AE /* AirMaps.xcodeproj */,
 				DC7CEB45304041779E8E9487 /* RNSpinkit.xcodeproj */,
 				31CB7FF007424855AECDCB42 /* RNVectorIcons.xcodeproj */,
+				B39E27CED38649BD949F36F8 /* RNFetchBlob.xcodeproj */,
+				C1E1B88F8C874B0793CC4397 /* RNPDFView.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1031,6 +1041,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1048,6 +1060,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1150,6 +1164,8 @@
 					"$(SRCROOT)/../node_modules/react-native-maps/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-spinkit/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
+					"$(SRCROOT)/../node_modules/react-native-fetch-blob/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-pdf-view/RNPDFView",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -1197,6 +1213,8 @@
 					"$(SRCROOT)/../node_modules/react-native-maps/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-spinkit/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
+					"$(SRCROOT)/../node_modules/react-native-fetch-blob/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-pdf-view/RNPDFView",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;

@@ -8,14 +8,17 @@ import {
 	TouchableHighlight,
 	View,
   Alert,
-	TextInput
+	TextInput,
+	AsyncStorage
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Spinner from 'react-native-loading-spinner-overlay';
-
+import { ssApiQueryURL } from '../config/auth';
+import axios from 'axios';
+import RNFetchBlob from 'react-native-fetch-blob';
 import {
   PRIMARY_HIGHLIGHT_COLOUR,
   CARD_BACKGROUND_COLOUR,
@@ -31,10 +34,15 @@ import {
  import { HEADER } from '../global/margins';
  import { searchTextChanged } from '../actions';
 
+let self;
+
 class ReceiptsListView extends Component {
 
 	constructor(props) {
 		super(props);
+
+		self = this;
+
 		console.log(this.props.receiptList);
 		this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 	}
@@ -114,7 +122,7 @@ class ReceiptsListView extends Component {
 		//console.log('data', data);
 		return (
 				<TouchableHighlight
-					onPress={() => console.log('You touched me', data)}
+					onPress={() => Actions.receiptdetail()}
 					underlayColor={'#AAA'}
 					style={styles.rowFront}
 				>
@@ -137,13 +145,13 @@ class ReceiptsListView extends Component {
 		<View style={styles.rowBack}>
 			<TouchableOpacity
 				style={[styles.backRightBtn, styles.backRightBtnLeft]}
-				onPress={() => (this.deleteItem(secId, rowId, rowMap))}
+				// onPress={() => (this.deleteItem(secId, rowId, rowMap))}
 			>
 				<Text style={styles.backTextWhite}>Export</Text>
 			</TouchableOpacity>
 			<TouchableOpacity
 				style={[styles.backRightBtn, styles.backRightBtnRight]}
-				onPress={_ => (console.log('secId', secId, 'rowId', rowId, 'rowMap', rowMap))}
+				onPress={() => (this.deleteItem(secId, rowId, rowMap))}
 			>
 				<Text style={styles.backTextWhite}>Delete</Text>
 			</TouchableOpacity>
@@ -152,8 +160,35 @@ class ReceiptsListView extends Component {
 	}
 
 	deleteItem(secId, rowId, rowMap) {
-			rowMap[`${secId}${rowId}`].closeRow();
-	    console.log('delete', secId, rowId, rowMap);
+			// rowMap[`${secId}${rowId}`].closeRow();
+
+			//**************************Api call start *******************************
+			AsyncStorage.multiGet(['AuthStr','curAccountId'],function(err,res)  {
+        if(err){
+          alert('Sorry, something went wrong.Please try again.....');
+        }else{
+					let AuthStr = res[0][1];
+     			let accountId = res[1][1];
+
+					let documnetId = "52910d0de4b06f6f8ca3abaa";  //pass document id as per row selection
+          let requestUrl = ssApiQueryURL.accounts + accountId + "/documents/" + documnetId + "/";
+
+          console.log('----->requestUrl : '+requestUrl);
+
+					axios.delete(requestUrl, { headers: { Authorization: AuthStr } })
+				      .then(response => {
+								if(response.status == 204){
+									alert('Receipt deleted successfully.');
+								}else{
+									alert('response ==> '+JSON.stringify(response));
+								}
+				      }).catch((error) => {
+				          alert('Sorry something went wrong.Please try again latter.');
+				      });
+          }
+        });
+
+			//*************************Api call end***********************************
 	}
 
 	exportItem(secId, rowId, rowMap) {

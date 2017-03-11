@@ -35,6 +35,8 @@ import SaveDoc from './layouts/SaveDoc';
 import Processing from './layouts/Processing';
 import Reimbursables from './layouts/Reimbursables';
 import ReceiptsListView from './layouts/ReceiptsListView';
+import ReceiptDetail from './layouts/ReceiptDetail';
+
 
 class RouterComponent extends Component {
 /*  shouldComponentUpdate(nextProps) {
@@ -190,6 +192,18 @@ class RouterComponent extends Component {
       component={ReceiptsListView}
       rightTitle='Filter'
       onRight={() => console.log('right')}
+      //renderRightButton={() => <Icon name="ellipsis-v" size={25} color="#ffffff" />}
+      //hideBackImage
+    />
+
+    <Scene
+      key="receiptdetail"
+      hideNavBar={false}
+      navigationBarStyle={styles.headerStyle}
+      renderTitle={() => <Header />}
+      component={ReceiptDetail}
+      // rightTitle='Filter'
+      // onRight={() => console.log('right')}
       //renderRightButton={() => <Icon name="ellipsis-v" size={25} color="#ffffff" />}
       //hideBackImage
     />
