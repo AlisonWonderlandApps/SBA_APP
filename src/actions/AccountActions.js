@@ -46,9 +46,7 @@ export const loadAccounts = (AuthStr) => {
 
   console.log('load', AuthStr);
 
-  AsyncStorage.setItem('newAccessToken',AuthStr,function(){
-    
-  });
+  AsyncStorage.setItem('newAccessToken',AuthStr);
 
   axios.get(ssApiQueryURL.user, { headers: { Authorization: AuthStr } })
       .then(response => {
