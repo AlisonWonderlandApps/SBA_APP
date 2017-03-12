@@ -43,9 +43,12 @@ import {
 //load accounts should get all user accounts (not their info)
 export const loadAccounts = (AuthStr) => {
   return function (dispatch) {
+
   console.log('load', AuthStr);
 
+  AsyncStorage.setItem('newAccessToken',AuthStr);
   AsyncStorage.setItem('AuthStr',AuthStr);
+
 
   axios.get(ssApiQueryURL.user, { headers: { Authorization: AuthStr } })
       .then(response => {

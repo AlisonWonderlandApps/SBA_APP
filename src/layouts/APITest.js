@@ -48,7 +48,7 @@ class APITest extends Component
 
     axios.post(ssAuthConfig.tokenURL, Querystring.stringify(data))
       .then(response => {
-        console.log(response.data);
+        console.log('response : : : '+response.data);
         this.setState({ token: response.data.access_token });
         console.log(this.state.token);
         console.log('userresponse ', response.data.access_token);

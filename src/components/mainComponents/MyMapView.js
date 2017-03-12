@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
 
 class MyMapView extends Component {
  render() {
-   const { region } = this.props;
+   const { region ,location } = this.props;
    console.log('region', region);
 
    return (
@@ -26,12 +26,18 @@ class MyMapView extends Component {
        <MapView
          style={styles.map}
          region={{
-           latitude: 37.78825,
-           longitude: -122.4324,
+           latitude: location.latitude,
+           longitude: location.longitude,
            latitudeDelta: 0.015,
            longitudeDelta: 0.0121,
          }}
-       />
+       >
+             <MapView.Marker
+               coordinate={location}
+               title={'title'}
+               description={'description'}
+              />
+        </MapView>
      </View>
    );
  }
