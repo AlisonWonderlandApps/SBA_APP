@@ -29,13 +29,14 @@ import {
 	TitleText
  } from '../components';
  import { HEADER } from '../global/margins';
- import { searchTextChanged } from '../actions';
+ import { searchTextChanged, deleteReceipt } from '../actions';
 
 class ReceiptsListView extends Component {
 
 	constructor(props) {
 		super(props);
 		console.log(this.props.receiptList);
+		console.log(this.props.categories);
 		this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 	}
 
@@ -101,7 +102,11 @@ class ReceiptsListView extends Component {
 				<FAB
             onPress={this.onPressFAB}
 				/>
-				<Spinner visible={this.props.loading} textContent={''} textStyle={{ color: 'white' }} />
+				<Spinner
+					visible={this.props.isFetching}
+					textContent={''}
+					textStyle={{ color: 'white' }}
+				/>
 			</BackgroundView>
 		);
 	}
@@ -137,13 +142,13 @@ class ReceiptsListView extends Component {
 		<View style={styles.rowBack}>
 			<TouchableOpacity
 				style={[styles.backRightBtn, styles.backRightBtnLeft]}
-				onPress={() => (this.deleteItem(secId, rowId, rowMap))}
+				onPress={() => (this.exportItem(secId, rowId, rowMap))}
 			>
 				<Text style={styles.backTextWhite}>Export</Text>
 			</TouchableOpacity>
 			<TouchableOpacity
 				style={[styles.backRightBtn, styles.backRightBtnRight]}
-				onPress={_ => (console.log('secId', secId, 'rowId', rowId, 'rowMap', rowMap))}
+				onPress={() => (this.deleteItem(secId, rowId, rowMap))}
 			>
 				<Text style={styles.backTextWhite}>Delete</Text>
 			</TouchableOpacity>
@@ -152,12 +157,14 @@ class ReceiptsListView extends Component {
 	}
 
 	deleteItem(secId, rowId, rowMap) {
-			rowMap[`${secId}${rowId}`].closeRow();
-	    console.log('delete', secId, rowId, rowMap);
+		console.log('secId', secId, 'rowId', rowId, 'rowMap', rowMap);
+		console.log('obj', secId.id, 'acc', this.props.curAccountID);
+		this.props.deleteReceipt(this.props.curAccountID, secId.id);
 	}
 
 	exportItem(secId, rowId, rowMap) {
-
+		console.log('secId', secId, 'rowId', rowId, 'rowMap', rowMap);
+		//this.props.exportReceipt(this.props.curAccountID, secId.id);
 	}
 
   onPressFAB() {
@@ -271,21 +278,29 @@ const styles = {
 	},
 };
 
-const mapStateToProps = ({ receipts, searchIt }) => {
+const mapStateToProps = ({ accounts, receipts, searchIt }) => {
+	const {
+		curAccountID
+	} = accounts;
 	const {
 		searchQuery
 	} = searchIt;
   const {
-    myReceipts,
-		receiptList
-  } = receipts;
-  return {
+		isFetching,
     myReceipts,
 		receiptList,
-		searchQuery
+		categories
+  } = receipts;
+  return {
+		curAccountID,
+		isFetching,
+    myReceipts,
+		receiptList,
+		searchQuery,
+		categories
   };
 };
 
 export default connect(mapStateToProps, {
-		searchTextChanged
+		searchTextChanged, deleteReceipt
 })(ReceiptsListView);

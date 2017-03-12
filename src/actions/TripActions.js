@@ -12,7 +12,8 @@ import {
   SET_LATEST_TRIP,
   SET_TRIP_DATE,
   SET_TRIP_COST,
-  SET_TRIP_VENDOR
+  SET_TRIP_VENDOR,
+  RESET_TRIPS
 } from './types';
 
 export const startNewTrip = () => {
@@ -96,6 +97,12 @@ const fetchMostRecentTrips = (aTrip) => {
 const fetchTripsFail = () => {
   return {
     type: TRIPS_FETCH_FAIL,
+  };
+};
+
+export const resetTrips = () => {
+  return {
+    type: RESET_TRIPS
   };
 };
 

@@ -17,8 +17,6 @@ import {
 import {
   MySearchBar,
   Button,
-  FAB,
-  BackgroundView
  } from '../components';
  import { HEADER } from '../global/margins';
 

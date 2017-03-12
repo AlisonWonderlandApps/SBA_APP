@@ -17,6 +17,7 @@
 import { Alert, AsyncStorage } from 'react-native';
 import axios from 'axios';
 import Querystring from 'querystring';
+import { Actions } from 'react-native-router-flux';
 import { ssApiQueryURL, ssAuthConfig } from '../config/auth';
 import {
   loadUserInfo,
@@ -43,16 +44,14 @@ import {
 //load accounts should get all user accounts (not their info)
 export const loadAccounts = (AuthStr) => {
   return function (dispatch) {
-  console.log('load', AuthStr);
   axios.get(ssApiQueryURL.user, { headers: { Authorization: AuthStr } })
       .then(response => {
-        console.log('load2', response.data);
         const accArr = response.data.accounts;
         const length = response.data.accounts.length;
-        console.log(accArr, length);
+        const sortedAccArr = sortAccounts(accArr);
         dispatch(loadUserInfo(response.data));
-        dispatch(loadLabels(accArr));
-        dispatch(loadAccountsSuccess(accArr));
+        dispatch(loadLabels(sortedAccArr));
+        dispatch(loadAccountsSuccess(sortedAccArr));
         if (length < 1) {
           console.log('theres no accounts!!!!!');
         }
@@ -71,6 +70,54 @@ export const loadAccounts = (AuthStr) => {
           dispatch(loadAccountsFail(error));
         });
    };
+};
+
+//calls function to get receipts too.
+export const setCurAccount = (accObj, id) => {
+  console.log('curAccount', accObj);
+  return function (dispatch) {
+    dispatch({
+      type: SET_CUR_ACCOUNT,
+      payload: id
+    });
+    dispatch(getReceipts(id));
+    dispatch(setCurAccountName(accObj.label));
+    dispatch(setPlan(accObj.plan));
+    dispatch(setPlanType(accObj.plan.planType));
+    dispatch(setDBEmail(accObj.dropboxEmail));
+    dispatch({
+      type: GO_TO_MAIN
+    });
+  };
+};
+
+const sortAccounts = (accArray) => {
+  accArray.sort((a, b) => {
+    const accA = a.label.toLowerCase();
+    const accB = b.label.toLowerCase();
+    if (accA < accB) {
+      return -1;
+    }
+    if (accA > accB) {
+      return 1;
+    }
+      return 0;
+  });
+  return accArray;
+};
+
+export const loadLabels = (accArr) => {
+  console.log('load labels');
+  let i;
+  const labels = [];
+  for (i = 0; i < accArr.length; i++) {
+    labels[i] = accArr[i].label;
+  }
+
+  return {
+    type: LABELS_LOAD,
+    payload: labels
+  };
 };
 
 export const loadAccountsSuccess = (accs) => {
@@ -101,38 +148,6 @@ export const loadAccountsFail = (err) => {
   };
 };
 
-export const loadLabels = (accArr) => {
-  console.log('load labels');
-  let i;
-  const labels = [];
-  for (i = 0; i < accArr.length; i++) {
-    labels[i] = accArr[i].label;
-  }
-  return {
-    type: LABELS_LOAD,
-    payload: labels
-  };
-};
-
-//calls function to get receipts too.
-export const setCurAccount = (accObj, id) => {
-  console.log('curAccount', accObj);
-  return function (dispatch) {
-    dispatch({
-      type: SET_CUR_ACCOUNT,
-      payload: id
-    });
-    dispatch(getReceipts(id));
-    dispatch(setCurAccountName(accObj.label));
-    dispatch(setPlan(accObj.plan));
-    dispatch(setPlanType(accObj.plan.planType));
-    dispatch(setDBEmail(accObj.dropboxEmail));
-    dispatch({
-      type: GO_TO_MAIN
-    });
-  };
-};
-
 export const getReceipts = (accId) => {
   return function (dispatch) {
   try {
@@ -142,6 +157,14 @@ export const getReceipts = (accId) => {
       }
     });
   } catch (err) {
+    Alert.alert(
+      'Sorry',
+      'Could not find account :(',
+      [
+        { text: 'OK' }
+      ]
+    );
+    Actions.accounts();
     console.log('no refresh token gotten');
   }
 };
@@ -164,6 +187,14 @@ export const updateToken = (accountID, token) => {
       }
     })
     .catch((err) => {
+      Alert.alert(
+        'Sorry',
+        'An error occurred :(',
+        [
+          { text: 'OK' }
+        ]
+      );
+      Actions.accounts();
       console.log('no auth token', err);
     });
   };

@@ -259,7 +259,7 @@ class TripsList extends Component {
           <View>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }} >
               <Text> {`${data.vendor}`} </Text>
-              <Text> {`${data.total}`} </Text>
+              <Text> {`${data.total}`} kms </Text>
             </View>
           </View>
         </TouchableHighlight>

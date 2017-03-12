@@ -10,7 +10,10 @@ import {
         LeftNavTitle,
         RightNavTitle,
         RightNameTitle,
-        LeftAccountsTitle
+        LeftAccountsTitle,
+        BackTitle,
+        FilterTitle,
+        BackToReceipts
       } from './components';
 
 import { HEADER } from './global/margins';
@@ -25,7 +28,7 @@ import AccountsList from './layouts/AccountsList';
 import APITest from './layouts/APITest';
 import MainNavigationList from './layouts/MainNavigationList';
 import TripsList from './layouts/TripsList';
-import ReceiptsList from './layouts/ReceiptsList';
+//import ReceiptsList from './layouts/ReceiptsList';
 import Photos from './layouts/Photos';
 import CameraPic from './layouts/Camera';
 import CameraStill from './layouts/CameraStill';
@@ -35,6 +38,7 @@ import SaveDoc from './layouts/SaveDoc';
 import Processing from './layouts/Processing';
 import Reimbursables from './layouts/Reimbursables';
 import ReceiptsListView from './layouts/ReceiptsListView';
+import CategoryList from './layouts/CategoryList';
 
 class RouterComponent extends Component {
 /*  shouldComponentUpdate(nextProps) {
@@ -78,6 +82,53 @@ class RouterComponent extends Component {
             Accounts
           </LeftAccountsTitle>
         );
+  }
+
+  renderFilterButton(num) {
+    let render = false;
+    switch (num) {
+      case 1:
+        if (this.props.numOfReceipts > 0) {
+          render = true;
+        }
+        break;
+      case 2:
+        if (this.props.processingCount > 0) {
+          render = true;
+        }
+        break;
+      case 3:
+        if (this.props.reimbursableCount > 0) {
+          render = true;
+        }
+        break;
+      default:
+        render = false;
+    }
+    if (render) {
+      return (
+        <FilterTitle>
+          Filter
+        </FilterTitle>
+      );
+    }
+    return <Text />;
+  }
+
+  renderBackButton() {
+    return (
+      <BackTitle>
+        Back
+      </BackTitle>
+    );
+  }
+
+  renderBackToReceiptsButton() {
+    return (
+      <BackToReceipts>
+        Back
+      </BackToReceipts>
+    );
   }
 
   render() {
@@ -180,6 +231,7 @@ class RouterComponent extends Component {
       hideNavBar={false}
       navigationBarStyle={styles.headerStyle}
       renderTitle={() => <Header />}
+      renderBackButton={() => this.renderBackButton()}
     />
 
     <Scene
@@ -188,9 +240,8 @@ class RouterComponent extends Component {
       navigationBarStyle={styles.headerStyle}
       renderTitle={() => <Header />}
       component={ReceiptsListView}
-      rightTitle='Filter'
-      onRight={() => console.log('right')}
-      //renderRightButton={() => <Icon name="ellipsis-v" size={25} color="#ffffff" />}
+      renderRightButton={() => this.renderFilterButton(1)}
+      renderBackButton={() => this.renderBackButton()}
       //hideBackImage
     />
 
@@ -220,9 +271,8 @@ class RouterComponent extends Component {
       hideNavBar={false}
       navigationBarStyle={styles.headerStyle}
       renderTitle={() => <Header />}
-      onRight={() => console.log('filter it')}
-      rightTitle='Filters'
-      //initial
+      renderRightButton={() => this.renderFilterButton(2)}
+      renderBackButton={() => this.renderBackButton()}
     />
 
     <Scene
@@ -231,9 +281,17 @@ class RouterComponent extends Component {
       hideNavBar={false}
       navigationBarStyle={styles.headerStyle}
       renderTitle={() => <Header />}
-      onRight={() => console.log('filter it')}
-      rightTitle='Filters'
-      //initial
+      renderRightButton={() => this.renderFilterButton(3)}
+      renderBackButton={() => this.renderBackButton()}
+    />
+
+    <Scene
+      key="categories"
+      component={CategoryList}
+      hideNavBar={false}
+      navigationBarStyle={styles.headerStyle}
+      renderTitle={() => <Header />}
+      renderBackButton={() => this.renderBackToReceiptsButton()}
     />
 
     <Scene
@@ -243,7 +301,6 @@ class RouterComponent extends Component {
       navigationBarStyle={styles.headerStyle}
       renderTitle={() => <Header />}
       backTitle='< Back'
-      //onBack={Actions.list}
       renderBackButton={this.renderLeftButton.bind(this.props)}
       rightTitle='Next'
       renderRightButton={this.renderRightButton.bind(this.props)}
@@ -273,18 +330,27 @@ const styles = {
   }
 };
 
-const mapStateToProps = ({ user }) => {
+const mapStateToProps = ({ user, receipts }) => {
   const {
     userName,
     userInfo
   } = user;
+  const {
+    processingCount,
+    reimbursableCount,
+    numOfReceipts
+  } = receipts;
   return {
     userName,
-    userInfo
+    userInfo,
+    processingCount,
+    reimbursableCount,
+    numOfReceipts
   };
 };
 
-export default connect(mapStateToProps, {})(RouterComponent);
+export default connect(mapStateToProps, {
+})(RouterComponent);
 
 /*
 

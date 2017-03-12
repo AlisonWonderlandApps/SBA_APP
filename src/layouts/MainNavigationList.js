@@ -35,7 +35,7 @@ import {
 class MainNavigationList extends Component {
 
   shouldComponentUpdate(nextProps) {
-    console.log('update', this.props, nextProps);
+    console.log('updateMain', nextProps);
     if (this.props !== nextProps) {
       return true;
     }

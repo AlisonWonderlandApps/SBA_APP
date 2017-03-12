@@ -101,10 +101,13 @@ export const RECEIPT_CREATE_SUCCESS = 'receipts_add_new_success';
 export const RECEIPT_CREATE_FAIL = 'receipts_add_new_fail';
 export const RECEIPT_UPDATE_INFO = 'receipts_edit';
 export const RECEIPT_DELETE = 'receipt_delete';
+export const RECEIPT_DELETE_SUCCESS = 'receipt_delete_success';
+export const RECEIPT_DELETE_FAIL = 'receipt_delete_fail';
 export const RECEIPTS_SEARCH = 'receipt_search';
 export const RECEIPT_ADD_CATEGORY = 'receipt_add_category';
 export const RECEIPT_DELETE_CATEGORY = 'receipt_delete_category';
 export const SET_LIST = 'set_list';
+export const RESET_RECEIPTS = 'reset_receipts';
 
 export const PROCESSING_FETCH_FAIL = 'processing_fetch_fail';
 export const PROCESSING_FETCH_SUCCESS = 'processing_fetch_success';
@@ -113,10 +116,13 @@ export const SET_PROCESSING_NUM = 'set_processed_num';
 export const REIMBURSABLES_FETCH = 'fetch_Reimbursables';
 export const REIMBURSABLES_FETCH_SUCCESS = 'fetch_reimbursables_success';
 export const REIMBURSABLES_FETCH_FAIL = 'fetch_reimbursables_fail';
-export const SET_REIMBURSEABLE_NUM = 'set_reimburseable_num';
+export const SET_REIMBURSABLE_NUM = 'set_reimburseable_num';
 export const CATEGORIES_FETCH_SUCCESS = 'fetch_categories_success';
 export const CATEGORIES_FETCH_FAIL = 'fetch_categories_fail';
 export const ADD_RECEIPT = 'add_receipt';
+export const CATEGORY_SEARCH = 'filter_by_category';
+export const CATEGORY_SEARCH_SUCCESS = 'filter_by_category_success';
+export const CATEGORY_SEARCH_FAIL = 'filter_by_category_fail';
 
 //PhotosActions
 export const PHOTO_ADD = 'add_a_photo';
@@ -141,8 +147,9 @@ export const TRIP_CREATE_SUCCESS = 'trips_add_new_success';
 export const TRIP_CREATE_FAIL = 'trips_add_new_fail';
 export const TRIP_UPDATE_INFO = 'trips_edit';
 export const TRIP_DELETE = 'trip_delete';
-export const TRIPS_SEARCH = '';
-export const TRIPS_START = '';
+export const TRIPS_SEARCH = 'trips_search';
+export const TRIPS_START = 'trips_start';
+export const RESET_TRIPS = 'reset_trips';
 
 //SearchActions
 export const SEARCH_TEXT_CHANGED = 'search_text_changed';

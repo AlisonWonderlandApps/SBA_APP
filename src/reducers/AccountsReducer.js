@@ -19,11 +19,9 @@ const INITIAL_STATE = {
    goToMain: false,
    goToAccounts: false,
    errorMsg: '',
-   //user Accounts
    accountsArray: [],
    labelsArray: [],
    numOfAccounts: 0,
-   //current Account info below
    curAccountID: '',
    curAccountName: '',
    curAccountInfo: {},

@@ -12,12 +12,19 @@ import {
   CATEGORIES_FETCH_SUCCESS,
   CATEGORIES_FETCH_FAIL,
   ADD_RECEIPT,
+  RECEIPT_DELETE,
+  RECEIPT_DELETE_SUCCESS,
+  RECEIPT_DELETE_FAIL,
   SET_LATEST_RECEIPT,
   SET_VENDOR,
   SET_DATE,
   SET_CATEGORY,
   SET_COST,
-  SET_LIST
+  SET_LIST,
+  RESET_RECEIPTS,
+  CATEGORY_SEARCH,
+  CATEGORY_SEARCH_SUCCESS,
+  CATEGORY_SEARCH_FAIL
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -88,7 +95,7 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         latestReceipt: action.payload
-      }
+      };
 
     case PROCESSING_FETCH_SUCCESS:
       return {
@@ -149,6 +156,47 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         myReceipts: [...state.myReceipts, action.payload]
+      };
+
+    case RECEIPT_DELETE:
+      return {
+        ...state,
+        isFetching: true
+        //take out of receiptsList
+        //check categories
+        //reload eveything basically.
+      };
+
+    case RECEIPT_DELETE_SUCCESS:
+      return {
+        ...state,
+        isFetching: false
+      };
+
+    case RECEIPT_DELETE_FAIL:
+      return {
+        ...state,
+        isFetching: false
+      };
+
+    case RESET_RECEIPTS:
+      return {
+        errorMsg: '',
+        isFetching: false,
+        myReceipts: [],
+        receiptList: [],
+        rVendor: '', //string
+        rDate: '', //string version
+        rCategory: '', //if multiple in a string
+        rCost: '',
+        numOfReceipts: 0,
+        processingReceipts: [],
+        processingCount: 0,
+        reimbursableReceipts: [],
+        reimbursableCount: 0,
+        latestReceipt: {},
+        categories: [],
+        nextPage: false,
       };
 
     default:

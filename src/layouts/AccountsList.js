@@ -8,33 +8,16 @@ import { HEADER } from '../global/margins';
 
 import {
   setCurAccount,
+  resetTrips,
+  resetReceipts
 } from '../actions';
-
-const AccountArray = [];
-const labels = [];
 
 class AccountsList extends Component {
 
   constructor(props) {
     super(props);
 
-    let i;
-    for (i = 0; i < this.props.accountsArray.length; i++) {
-      AccountArray[i] = this.props.accountsArray[i];
-    }
-    for (i = 0; i < AccountArray.length; i++) {
-      labels[i] = AccountArray[i].label;
-      console.log('labelfor', labels[i]);
-    }
-
-    const ds = new ListView.DataSource({
-      rowHasChanged: (r1, r2) => r1 !== r2
-    });
-
-    this.state = {
-      dataSource: ds.cloneWithRows(labels),
-      loading: false
-    };
+    this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
   }
 
   shouldComponentUpdate(nextProps) {
@@ -45,8 +28,8 @@ class AccountsList extends Component {
   }
 
   componentDidUpdate() {
-    console.log('did', this.props.curAccountID, this.props.goToMain);
-    if (this.props.goToMain) {
+    console.log('did', this.props);
+    if (this.props.goToMain && (this.props.isFetching === false)) {
       console.log('gotonext');
       Actions.main();
     }
@@ -55,7 +38,9 @@ class AccountsList extends Component {
   onRowPress(rowID) {
     console.log(this.props);
     console.log(rowID);
-    this.props.setCurAccount(AccountArray[rowID], AccountArray[rowID].id);
+    this.props.resetReceipts();
+    this.props.resetTrips();
+    this.props.setCurAccount(this.props.accountsArray[rowID], this.props.accountsArray[rowID].id);
   }
 
   getData(key, index, defaultVal = 'default') {
@@ -79,16 +64,16 @@ class AccountsList extends Component {
       <TitleText style={{ alignSelf: 'center', paddingTop: 30 }}> Choose Account </TitleText>
         <ListView
           style={{ flex: 1, marginTop: 20 }}
-          dataSource={this.state.dataSource}
+          dataSource={this.ds.cloneWithRows(this.props.labelsArray)}
           renderRow={this.renderRow.bind(this)}
-        />
-        <Spinner
-          visible={this.props.isLoading}
-          textContent={'Loading...'}
-          textStyle={{ color: 'white' }}
         />
         <FAB
           onPress={this.addAccount}
+        />
+        <Spinner
+          visible={this.props.isFetching}
+          textContent={'Loading...'}
+          textStyle={{ color: 'white' }}
         />
       </BackgroundView>
     );
@@ -106,16 +91,20 @@ class AccountsList extends Component {
   }
 }
 
-const mapStateToProps = ({ accounts }) => {
+const mapStateToProps = ({ accounts, receipts }) => {
   const {
-    isLoading,
     accountsArray,
+    labelsArray,
     curAccountID,
     goToMain
   } = accounts;
+  const {
+    isFetching
+  } = receipts;
   return {
-    isLoading,
+    isFetching,
     accountsArray,
+    labelsArray,
     curAccountID,
     goToMain
   };
@@ -123,5 +112,5 @@ const mapStateToProps = ({ accounts }) => {
 
 
 export default connect(mapStateToProps, {
- setCurAccount
+ setCurAccount, resetTrips, resetReceipts
 })(AccountsList);

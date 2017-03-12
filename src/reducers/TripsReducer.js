@@ -10,6 +10,7 @@ import {
   SET_TRIP_DATE,
   SET_TRIP_COST,
   SET_TRIP_VENDOR,
+  RESET_TRIPS
 //  SET_TRIP_DISTANCE
 } from '../actions/types';
 
@@ -49,6 +50,20 @@ export default (state = INITIAL_STATE, action) => {
 
     case SET_TRIP_VENDOR:
       return { ...state, tVendor: action.payload };
+
+    case RESET_TRIPS:
+        return {
+          isTracking: false, //current trip in progress?
+          isFetchingTrips: false,
+          tripsErrorMsg: '',
+          myTrips: [],
+          latestTrip: {},
+          tVendor: '', //string
+          tDate: '', //string version
+          tCategory: '', //if multiple in a string
+          tCost: '',
+          tDistance: ''
+        };
 
   //  case SET_TRIP_DISTANCE:
     //  return { ...state, tDistance: action.payload };

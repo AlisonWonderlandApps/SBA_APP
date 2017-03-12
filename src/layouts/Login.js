@@ -96,7 +96,6 @@ class Login extends Component {
   }
 
   componentDidUpdate() {
-    console.log('did', this.props.done);
     console.log('didA', this.props.accountsArr);
     if (this.props.goToAccounts) {
       this.props.resetState();
@@ -115,8 +114,6 @@ class Login extends Component {
       formInput,
       socialButtonContainer
     } = LoginStyles;
-
-    console.log('render', this.props.done);
 
     return (
       <FullScreenView>

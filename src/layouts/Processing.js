@@ -31,6 +31,7 @@ class Processing extends Component {
 
   constructor(props) {
     super(props);
+    console.log('receipts', this.props.processingReceipts);
     this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
   }
 
@@ -64,7 +65,7 @@ class Processing extends Component {
       <View style={styles.search}>
           <View style={{ flexGrow: 1, height: 35, paddingTop: 5 }}>
             <View style={styles.searchStyle}>
-              <View style={style.searchbar}>
+              <View style={styles.searchbar}>
                 <Icon
                   name="search"
                   size={15}
@@ -112,12 +113,27 @@ class Processing extends Component {
         >
           <View>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }} >
-              <Text> {`${data.vendor}`} </Text>
-              <Text> {`${data.total}`} </Text>
+              <Text> {this.renderDataVendor(data.vendor)} </Text>
+              <Text> {this.renderDataTotal(data.total)} </Text>
             </View>
           </View>
         </TouchableHighlight>
     );
+  }
+
+  renderDataVendor(name) {
+    if (name === undefined) {
+      return 'No Title';
+    }
+    return name;
+  }
+
+  renderDataTotal(cost) {
+    if (cost === undefined) {
+      return '$ unknown';
+    }
+    const currency = '$'.concat(cost.toFixed(2));
+    return currency;
   }
 
   onSearchChange(text) {
