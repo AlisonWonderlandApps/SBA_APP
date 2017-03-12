@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react';
 import { View } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/Ionicons';
 import { CardSection, TitleText } from '../../components';
 import { mainStyles } from './styles';
 
@@ -14,7 +14,7 @@ class NavListSectionTools extends Component {
   }
 
   render() {
-    const myIcon = (<Icon name="angle-right" size={50} />);
+    const myIcon = (<Icon name='ios-arrow-forward' size={50} />);
 
     return (
       <CardSection style={mainStyles.cardSection}>

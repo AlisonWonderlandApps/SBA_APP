@@ -53,6 +53,9 @@
 		FD30EEF541B94EB6AE314F26 /* libRNUploader.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CE47523765041ED932AC9A6 /* libRNUploader.a */; };
 		C0599AACBF724BE6A7B8539D /* libRNFetchBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F6C99C7E9F542D59827452B /* libRNFetchBlob.a */; };
 		6EBF7E3F1B8D453899585305 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E05E62F171BC4F84AE84D314 /* libRNImagePicker.a */; };
+		8223D3E24FF44244832AF6A4 /* libRNFetchBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CB048CFF48534D3AA0C31AA0 /* libRNFetchBlob.a */; };
+		90F9C8727746453AB039C75A /* libRNPDFView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 963834DA3E4F4DD0903440B9 /* libRNPDFView.a */; };
+
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -303,6 +306,11 @@
 		6F6C99C7E9F542D59827452B /* libRNFetchBlob.a */ = {isa = PBXFileReference; name = "libRNFetchBlob.a"; path = "libRNFetchBlob.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		475F21AE33D1482CB3909CEA /* RNImagePicker.xcodeproj */ = {isa = PBXFileReference; name = "RNImagePicker.xcodeproj"; path = "../node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		E05E62F171BC4F84AE84D314 /* libRNImagePicker.a */ = {isa = PBXFileReference; name = "libRNImagePicker.a"; path = "libRNImagePicker.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		B39E27CED38649BD949F36F8 /* RNFetchBlob.xcodeproj */ = {isa = PBXFileReference; name = "RNFetchBlob.xcodeproj"; path = "../node_modules/react-native-fetch-blob/ios/RNFetchBlob.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		CB048CFF48534D3AA0C31AA0 /* libRNFetchBlob.a */ = {isa = PBXFileReference; name = "libRNFetchBlob.a"; path = "libRNFetchBlob.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		C1E1B88F8C874B0793CC4397 /* RNPDFView.xcodeproj */ = {isa = PBXFileReference; name = "RNPDFView.xcodeproj"; path = "../node_modules/react-native-pdf-view/RNPDFView.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		963834DA3E4F4DD0903440B9 /* libRNPDFView.a */ = {isa = PBXFileReference; name = "libRNPDFView.a"; path = "libRNPDFView.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -337,6 +345,8 @@
 				FD30EEF541B94EB6AE314F26 /* libRNUploader.a in Frameworks */,
 				C0599AACBF724BE6A7B8539D /* libRNFetchBlob.a in Frameworks */,
 				6EBF7E3F1B8D453899585305 /* libRNImagePicker.a in Frameworks */,
+				8223D3E24FF44244832AF6A4 /* libRNFetchBlob.a in Frameworks */,
+				90F9C8727746453AB039C75A /* libRNPDFView.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -484,6 +494,8 @@
 				F8CED100E3EC48E6A845F634 /* RNUploader.xcodeproj */,
 				016675BDF9F74C8CB7BAC25E /* RNFetchBlob.xcodeproj */,
 				475F21AE33D1482CB3909CEA /* RNImagePicker.xcodeproj */,
+				B39E27CED38649BD949F36F8 /* RNFetchBlob.xcodeproj */,
+				C1E1B88F8C874B0793CC4397 /* RNPDFView.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1049,6 +1061,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1073,6 +1086,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1173,6 +1187,8 @@
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-fetch-blob/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
+					"$(SRCROOT)/../node_modules/react-native-pdf-view/RNPDFView",
+
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -1222,6 +1238,7 @@
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-fetch-blob/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
+					"$(SRCROOT)/../node_modules/react-native-pdf-view/RNPDFView",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;

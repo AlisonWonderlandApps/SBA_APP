@@ -72,21 +72,21 @@ export const fetchReceipts = (AuthStr, accountId) => {
     console.log('fetchURL', receiptsURL, AuthStr);
 
     axios.get(receiptsURL,
-      { params: { order_by_desc: 'uploaded', trashed: 'false' },
+      { params: { type: 'receipt', order_by_desc: 'uploaded', trashed: 'false' },
         headers: { Authorization: AuthStr }
       })
       .then(response => {
         dispatch(fetchReceiptsSuccess(response.data.documents));
         console.log(response.data.documents);
         const length = response.data.totalCountFiltered;
-        console.log(length);
+        console.log('length\n', length);
         dispatch({
           type: SET_NUM_RECEIPTS,
           payload: length
         });
         dispatch(fetchTrips(AuthStr, accountId)); //fetch trips
         dispatch(fetchProcessing(AuthStr, accountId)); //fetch processing
-        //dispatch(setReceiptsList(response.data.documents));
+        dispatch(setReceiptsList(response.data.documents));
         //dispatch(fetchCategories(AuthStr, accountId)); //fetch categories (where receipts>0)
         //dispatch(fetchReimbursables(AuthStr, accountId)); //fetch reimburseablesß
         if (length > 0) {
@@ -123,37 +123,56 @@ const fetchReceiptsSuccess = (receipts) => {
 };
 
 const setReceiptsList = (list) => {
-  console.log('listlength', list.length);
-  let vendor = '';
-  let total = '';
-  let date = '';
-  let category = '';
-  const receiptlist = [];
-  for (let i = 0; i < list.length; i++) {
-    vendor = list[i].vendor;
-    total = '$'.concat(list[i].total.toFixed(2));
-    const formattedDate = new Date(list[i].uploaded).toString();
-    date = formattedDate.substring(4, 10);
-    if (list[i].categories.length < 1) {
-      category = 'No categories';
-    } else {
-      for (let j = 0; j < list[i].categories.length; j++) {
-        category += ', '.concat(list[i].categories[j]);
+    //console.log('listlength', list.length);
+    const receiptlist = [];
+    let vendor = '';
+    let total = '';
+    let date = '';
+    let category = '';
+    for (let i = 0; i < list.length; i++) {
+      vendor = list[i].vendor;
+      if (list[i].total === undefined) {
+        total = '$0.00';
+      }	else {
+        total = '$'.concat(list[i].total.toFixed(2));
       }
-    }
+      if (list[i].issued === undefined) {
+        const formattedDate = new Date(list[i].uploaded).toString();
+        let year = formattedDate.substring(11, 15);
+        year = ' '.concat(year);
+        date = formattedDate.substring(4, 10).concat(year);
+      } else {
+        const formattedDate = new Date(list[i].issued).toString();
+        console.log('formatted', formattedDate);
+        console.log('year', year);
+        let year = formattedDate.substring(11, 15);
+        year = ' '.concat(year);
+        date = formattedDate.substring(4, 10).concat(year);
+      }
+      if (list[i].categories === undefined || list[i].categories.length < 1) {
+        category = 'No categories';
+      } else {
+        console.log(list[i].categories[0]);
+        let j = 0;
+        category += list[i].categories[j];
+        for (j = 1; j < list[i].categories.length; j++) {
+          category += ', '.concat(list[i].categories[j]);
+        }
+        console.log('cat', category);
+      }
 
-    receiptlist[i] = {
-      vendor,
-      total,
-      date,
-      category
-    };
-    vendor = '';
-    total = '';
-    date = '';
-    category = '';
-    console.log('receipt', i, receiptlist[i]);
-  }
+      receiptlist[i] = {
+        vendor,
+        total,
+        date,
+        category
+      };
+      vendor = '';
+      total = '';
+      date = '';
+      category = '';
+      //console.log('receipt', i, receiptlist[i]);
+    }
   return {
     type: SET_LIST,
     payload: receiptlist

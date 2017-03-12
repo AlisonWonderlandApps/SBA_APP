@@ -47,6 +47,8 @@ export const loadAccounts = (AuthStr) => {
   console.log('load', AuthStr);
 
   AsyncStorage.setItem('newAccessToken',AuthStr);
+  AsyncStorage.setItem('AuthStr',AuthStr);
+
 
   axios.get(ssApiQueryURL.user, { headers: { Authorization: AuthStr } })
       .then(response => {
@@ -120,6 +122,8 @@ export const loadLabels = (accArr) => {
 
 //calls function to get receipts too.
 export const setCurAccount = (accObj, id) => {
+  AsyncStorage.setItem('curAccountId',id);
+
   console.log('curAccount', accObj);
   return function (dispatch) {
     dispatch({

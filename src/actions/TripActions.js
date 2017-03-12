@@ -37,7 +37,7 @@ export const fetchTrips = (AuthStr, AccountId) => {
       })
       .then(response => {
         dispatch(fetchTripsSuccess(response.data.documents));
-        console.log(response.data.documents.length);
+        console.log('tripsActions', response.data.documents);
         if (response.data.documents.length > 0) {
           console.log('trips', response.data.documents);
           dispatch(fetchMostRecentTrips(response.data.documents[0]));

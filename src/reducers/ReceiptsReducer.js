@@ -45,6 +45,7 @@ export default (state = INITIAL_STATE, action) => {
     case RECEIPTS_FETCH:
       return {
           ...state,
+          myReceipts: [],
           isFetching: true
       };
 

@@ -3,122 +3,196 @@ import React, {
 } from 'react';
 import {
 	ListView,
-	StyleSheet,
 	Text,
 	TouchableOpacity,
 	TouchableHighlight,
 	View,
-  Alert
+  Alert,
+	TextInput,
+	AsyncStorage
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
-import { SwipeListView, SwipeRow } from 'react-native-swipe-list-view';
+import { SwipeListView } from 'react-native-swipe-list-view';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import Spinner from 'react-native-loading-spinner-overlay';
+import { ssApiQueryURL } from '../config/auth';
+import axios from 'axios';
+import RNFetchBlob from 'react-native-fetch-blob';
 import {
   PRIMARY_HIGHLIGHT_COLOUR,
   CARD_BACKGROUND_COLOUR,
   BORDER_COLOUR,
-	BRAND_COLOUR_RED,
-	BRAND_COLOUR_GREEN
+	SHADOW_COLOUR
  } from '../global/colours';
 import {
-  MySearchBar,
   Button,
   FAB,
-  BackgroundView
+  BackgroundView,
+	TitleText
  } from '../components';
  import { HEADER } from '../global/margins';
+ import { searchTextChanged } from '../actions';
 
-const receiptlist = [];
+let self;
 
 class ReceiptsListView extends Component {
 
 	constructor(props) {
 		super(props);
-		this.setReceiptsList(this.props.myReceipts);
-		const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-		this.state = {
-			dataSource: ds.cloneWithRows(receiptlist)
-		};
-		console.log('state', this.state);
-	}
 
+		self = this;
+
+		console.log(this.props.receiptList);
+		this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+	}
 
   shouldComponentUpdate(nextProps) {
     if (this.props !== nextProps) {
-      return false;
-    }
+      return true;
+    } else if (this.props.searchQuery !== nextProps.searchQuery) {
+			return true;
+		}
     return false;
   }
 
-	deleteRow(secId, rowId, rowMap) {
-		rowMap[`${secId}${rowId}`].closeRow();
-    console.log('delete', secId, rowId, rowMap);
-
-		const newData = [...this.state.listViewData];
-		newData.splice(rowId, 1);
-		this.setState({ listViewData: newData });
-	}
-
 	render() {
-    //this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+		if (this.props.receiptList.length < 1) {
+			return (
+				<BackgroundView style={styles.emptyContainer}>
+					<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+						<TitleText> No Receipts </TitleText>
+					</View>
+					<FAB
+						onPress={this.onPressFAB}
+					/>
+				</BackgroundView>
+			);
+		}
 		return (
 			<BackgroundView style={styles.container}>
 				<View style={styles.search}>
-					<MySearchBar />
-					<Button style={styles.button}> Export </Button>
-				</View>
+						<View style={{ flexGrow: 1, height: 35, paddingTop: 5 }}>
+							<View style={styles.searchStyle}>
+								<View style={styles.searchbar}>
+									<Icon
+										name="search"
+										size={15}
+										color="#ddd"
+									/>
+									<TextInput
+										style={{ flexGrow: 1, width: null, paddingLeft: 5 }}
+										placeholder='search'
+										placeholderTextColor='lightgray'
+										onChangeText={this.onSearchChange.bind(this)}
+										value={this.props.searchQuery}
+										onFocus={() => console.log('hi')}
+									/>
+								</View>
+							</View>
+						</View>
+						<Button
+							style={styles.button}
+							//onPress={this.searchText()}
+						>
+							Search
+						</Button>
+					</View>
 				<SwipeListView
-						dataSource={this.state.dataSource}
-						renderRow={this.renderRow.bind(this)}
-				>
-					<SwipeRow
-						renderHiddenRow={this.renderHiddenRow.bind(this)}
+						dataSource={this.ds.cloneWithRows(this.props.receiptList)}
+						renderRow={(data) => this.renderRow(data)}
+						renderHiddenRow={(secId, rowId, rowMap) => this.renderHiddenRow(secId, rowId, rowMap)}
 						rightOpenValue={-150}
-					/>
-				</SwipeListView>
+						recalculateHiddenLayout
+						previewFirstRow
+				/>
 				<FAB
             onPress={this.onPressFAB}
 				/>
+				<Spinner visible={this.props.loading} textContent={''} textStyle={{ color: 'white' }} />
 			</BackgroundView>
 		);
 	}
 
+	onSearchChange(text) {
+		this.props.searchTextChanged(text);
+	}
+
 	renderRow(data) {
-		console.log('data', data);
+		//console.log('data', data);
 		return (
-			<TouchableHighlight
-				//onPress={console.log('You touched me')}
-				style={styles.rowFront}
-				underlayColor={'#AAA'}
-			>
-				<View>
-					<View style={{ flexDirection: 'row', justifyContent: 'space-between' }} >
-						<Text> {data.vendor} </Text>
-						<Text> {data.total} </Text>
-					</View>
+				<TouchableHighlight
+					onPress={() => Actions.receiptdetail()}
+					underlayColor={'#AAA'}
+					style={styles.rowFront}
+				>
 					<View>
-						<Text> {data.date} </Text>
-						<Text> {data.category} </Text>
+						<View style={{ flexDirection: 'row', justifyContent: 'space-between' }} >
+							<Text> {`${data.vendor}`} </Text>
+							<Text> {`${data.total}`} </Text>
+						</View>
+						<View>
+							<Text> {`${data.date}`} </Text>
+							<Text> {`${data.category}`} </Text>
+						</View>
 					</View>
-				</View>
-			</TouchableHighlight>
+				</TouchableHighlight>
 		);
 	}
 
-	renderHiddenRow(data, secId, rowId, rowMap) {
+	renderHiddenRow(secId, rowId, rowMap) {
 		return (
-			<View style={styles.rowBack}>
-				<View style={[styles.backRightBtn, styles.backRightBtnLeft]}>
-					<Text style={styles.backTextWhite}>Export</Text>
-				</View>
-				<TouchableOpacity
-					style={[styles.backRightBtn, styles.backRightBtnRight]}
-					onPress={_ => this.deleteRow(secId, rowId, rowMap)}
-				>
-					<Text style={styles.backTextWhite}>Delete</Text>
-				</TouchableOpacity>
-			</View>
+		<View style={styles.rowBack}>
+			<TouchableOpacity
+				style={[styles.backRightBtn, styles.backRightBtnLeft]}
+				// onPress={() => (this.deleteItem(secId, rowId, rowMap))}
+			>
+				<Text style={styles.backTextWhite}>Export</Text>
+			</TouchableOpacity>
+			<TouchableOpacity
+				style={[styles.backRightBtn, styles.backRightBtnRight]}
+				onPress={() => (this.deleteItem(secId, rowId, rowMap))}
+			>
+				<Text style={styles.backTextWhite}>Delete</Text>
+			</TouchableOpacity>
+		</View>
 		);
+	}
+
+	deleteItem(secId, rowId, rowMap) {
+			// rowMap[`${secId}${rowId}`].closeRow();
+
+			//**************************Api call start *******************************
+			AsyncStorage.multiGet(['AuthStr','curAccountId'],function(err,res)  {
+        if(err){
+          alert('Sorry, something went wrong.Please try again.....');
+        }else{
+					let AuthStr = res[0][1];
+     			let accountId = res[1][1];
+
+					let documnetId = "52910d0de4b06f6f8ca3abaa";  //pass document id as per row selection
+          let requestUrl = ssApiQueryURL.accounts + accountId + "/documents/" + documnetId + "/";
+
+          console.log('----->requestUrl : '+requestUrl);
+
+					axios.delete(requestUrl, { headers: { Authorization: AuthStr } })
+				      .then(response => {
+								if(response.status == 204){
+									alert('Receipt deleted successfully.');
+								}else{
+									alert('response ==> '+JSON.stringify(response));
+								}
+				      }).catch((error) => {
+				          alert('Sorry something went wrong.Please try again latter.');
+				      });
+          }
+        });
+
+			//*************************Api call end***********************************
+	}
+
+	exportItem(secId, rowId, rowMap) {
+
 	}
 
   onPressFAB() {
@@ -133,68 +207,21 @@ class ReceiptsListView extends Component {
       ]
     );
   }
-
-setReceiptsList(list) {
-  //console.log('listlength', list.length);
-  let vendor = '';
-  let total = '';
-  let date = '';
-  let category = '';
-  for (let i = 0; i < list.length; i++) {
-    vendor = list[i].vendor;
-		//console.log('for', list[i].total);
-		if (list[i].total === undefined) {
-			//console.log('if', list[i].total);
-			total = '$0.00';
-		}	else {
-			total = '$'.concat(list[i].total.toFixed(2));
-		}
-		//console.log(total);
-    const formattedDate = new Date(list[i].issued).toString();
-		console.log('formatted', formattedDate);
-	//	if (year !== Date) {
-	//		console.log('invalidDate', year);
-//			date = 'unknown';
-//		} else {
-			console.log('year', year);
-			let year = formattedDate.substring(11, 15);
-			year = ' '.concat(year);
-			date = formattedDate.substring(4, 10).concat(year);
-//		}
-		if (list[i].categories === undefined || list[i].categories.length < 1) {
-			category = 'No categories';
-    } else {
-			console.log(list[i].categories[0]);
-			let j = 0;
-				category += list[i].categories[j];
-      for (j = 1; j < list[i].categories.length; j++) {
-        category += ', '.concat(list[i].categories[j]);
-      }
-			console.log('cat', category);
-    }
-
-    receiptlist[i] = {
-      vendor,
-      total,
-      date,
-      category
-    };
-    vendor = '';
-    total = '';
-    date = '';
-    category = '';
-    //console.log('receipt', i, receiptlist[i]);
-  }
- }
 }
 
-const styles = StyleSheet.create({
+const styles = {
   search: {
     flexDirection: 'row',
     padding: 10,
     height: 60,
     backgroundColor: PRIMARY_HIGHLIGHT_COLOUR
   },
+	searchbar: {
+		flex: 1,
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		paddingLeft: 5
+	},
   button: {
     marginTop: 0,
     height: 30,
@@ -204,9 +231,14 @@ const styles = StyleSheet.create({
     padding: 0,
     paddingTop: HEADER.height
 	},
+	emptyContainer: {
+		flex: 1,
+		padding: 0,
+		paddingTop: HEADER.height,
+		justifyContent: 'center'
+	},
 	rowFront: {
 		//alignItems: 'center',
-    flex: 1,
     padding: 10,
 		backgroundColor: CARD_BACKGROUND_COLOUR,
 		borderBottomColor: BORDER_COLOUR,
@@ -253,21 +285,42 @@ const styles = StyleSheet.create({
 		borderColor: 'black',
 		paddingVertical: 10,
 		width: 100,
-	}
-});
+	},
+	searchStyle: {
+		flex: 1,
+		flexDirection: 'row',
+		alignSelf: 'stretch',
+		padding: 5,
+		justifyContent: 'flex-start',
+		alignItems: 'center',
+		backgroundColor: CARD_BACKGROUND_COLOUR,
+		borderRadius: 10,
+		borderWidth: 1,
+		borderColor: 'grey',
+		marginLeft: 5,
+		marginRight: 5,
+		shadowColor: SHADOW_COLOUR,
+		shadowOffset: { width: 0, height: 2 },
+		shadowOpacity: 0.1,
+		shadowRadius: 2,
+	},
+};
 
-const mapStateToProps = ({ receipts, accounts }) => {
+const mapStateToProps = ({ receipts, searchIt }) => {
+	const {
+		searchQuery
+	} = searchIt;
   const {
-    myReceipts
+    myReceipts,
+		receiptList
   } = receipts;
-  const {
-    labelsArray
-  } = accounts;
   return {
     myReceipts,
-    labelsArray
+		receiptList,
+		searchQuery
   };
 };
 
 export default connect(mapStateToProps, {
+		searchTextChanged
 })(ReceiptsListView);

@@ -10,6 +10,7 @@ import TripReducer from './TripsReducer';
 import UserReducer from './UserReducer';
 import ReceiptsReducer from './ReceiptsReducer';
 import PhotoReducer from './PhotoReducer';
+import SearchReducer from './SearchReducer';
 
 //'wire up' the reducer
 export default combineReducers({
@@ -21,5 +22,6 @@ export default combineReducers({
   trips: TripReducer,
   user: UserReducer,
   receipts: ReceiptsReducer,
-  photos: PhotoReducer
+  photos: PhotoReducer,
+  searchIt: SearchReducer
 });

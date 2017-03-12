@@ -6,6 +6,7 @@ export * from './UserActions';
 export * from './AccountActions';
 export * from './ReceiptActions';
 export * from './PhotoActions';
+export * from './SearchActions';
 //export * from './TripActions';
 //export * from './MainNavActions';
 //export * from './SettingsActions';

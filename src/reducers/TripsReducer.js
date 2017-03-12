@@ -33,7 +33,7 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state, isFetchingTrips: true };
 
     case TRIPS_FETCH_SUCCESS:
-      return { ...state, isFetchingTrips: false, trips: action.payload };
+      return { ...state, isFetchingTrips: false, myTrips: action.payload };
 
     case TRIPS_FETCH_FAIL:
       return { ...state, isFetchingTrips: false, tripsErrorMsg: action.payload };

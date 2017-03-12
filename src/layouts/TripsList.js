@@ -1,21 +1,35 @@
 import React, { Component } from 'react';
 import { View, ListView, AsyncStorage } from 'react-native';
 import { Actions } from 'react-native-router-flux';
+
+import {
+  Alert,
+  Text,
+  View,
+  ListView,
+  AsyncStorage,
+  TouchableHighlight,
+} from 'react-native';
+
 import { connect } from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { BackgroundView, TripsListItem, Button, MyMapView } from '../components';
 import { HEADER } from '../global/margins';
 import {
-  setCurAccount,
-  getAccountInfo,
-  getToken
-} from '../actions';
+  CARD_BACKGROUND_COLOUR,
+  BORDER_COLOUR
+ } from '../global/colours';
+
+let self;
 
 let self;
 
 class TripsList extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
+    console.log(this.props.myTrips);
+
+    this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 
     self = this;
 
@@ -30,6 +44,7 @@ class TripsList extends Component {
 
     this.updateLocation();
 
+/*
     this.setTripBtnText();
 
   }
@@ -51,14 +66,37 @@ class TripsList extends Component {
 
             if(tripData.isTripStarted){
               buttonText = ' End Trip ';
-            }else{
+            }else{ */
+    this.setTripBtnText();
+  }
+
+  setTripBtnText() {
+    let buttonText = '';
+    AsyncStorage.getItem('tripData', (err, res) => {
+        if (err) {
+          //alert('err : '+err);
+          Alert('Sorry, something went wrong. Please try again.');
+        } else {
+          let isFirstTime = false;
+          let tripData;
+
+          if (res == null) {  //for firest time
+            buttonText = ' Start Trip ';
+          } else {
+            tripData = JSON.parse(res);
+
+          if (tripData.isTripStarted) {
+              buttonText = ' End Trip ';
+          } else {
+
               buttonText = ' Start Trip ';
             }
           }
 
           self.setState({
-            buttonText : buttonText
-          })
+            buttonText
+          });
+
         }
     });
   }
@@ -81,6 +119,29 @@ class TripsList extends Component {
       setTimeout(function(){
         self.updateLocation();
       },5000);
+
+  updateLocation() {
+      navigator.geolocation.getCurrentPosition((position) => {
+        self.setState({
+          curLocation: {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+          }
+        });
+      },
+      (err) => {
+        console.log(err);
+        Alert('Sorry, something went wrong. Please try again.');
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 20000,
+        maximumAge: 10000
+      });
+
+      setTimeout(() => {
+        self.updateLocation();
+      }, 5000);
   }
 
   componentWillUpdate(nextProps) {
@@ -98,7 +159,7 @@ class TripsList extends Component {
   //  this.getAccountInfo(TripsArray[rowID].id);
   }
 
-  renderRow(rowData, sectionID, rowID) {
+  renderRow1(rowData, sectionID, rowID) {
     return (
       <TripsListItem
         onPress={this.onRowPress.bind(this, rowID)}
@@ -109,6 +170,7 @@ class TripsList extends Component {
     );
   }
 
+/*
   startOrEndTrip(){
     let isTripEnd = false;
     AsyncStorage.getItem('tripData',function(err,res){
@@ -142,6 +204,43 @@ class TripsList extends Component {
 
           }else{
             if(isTripEnd){
+              //******************************************Find Distance start**************************************//*/
+  */
+
+  startOrEndTrip() {
+    let isTripEnd = false;
+    AsyncStorage.getItem('tripData', (err, res) => {
+      if (err) {
+        // alert('err : '+err);
+        Alert('Sorry, something went wrong. Please try again.');
+      } else {
+        let isFirstTime = false;
+        let tripData;
+
+      if (res == null) {  //for firest time
+          tripData = {
+            isTripStarted: true,
+            startLocation: self.state.curLocation,
+          };
+      } else {
+          tripData = JSON.parse(res);
+
+      if (tripData.isTripStarted === true) {
+            tripData.isTripStarted = false;
+            isTripEnd = true;
+            //find distance
+      } else {
+            tripData.isTripStarted = true;
+            tripData.startLoaction = self.state.curLocation;
+          }
+      }
+
+        AsyncStorage.setItem('tripData', JSON.stringify(tripData), (err1, res1) => {
+          if (err1) {
+            console.log(err1, res1);
+          } else {
+            console.log('hi');
+            if (isTripEnd) {
               //******************************************Find Distance start**************************************//
 
               let url = 'https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins='+
@@ -157,67 +256,131 @@ class TripsList extends Component {
               fetch(url)
                 .then((response) => response.json())
                 .then((responseJson) => {
-                  let distance = responseJson.rows[0].elements[0].distance.text;
-                  alert('Trip Distance : '+distance);
+
+                  const distance = responseJson.rows[0].elements[0].distance.text;
+                  Alert('Trip Distance : ', distance);
                   // alert('res : '+JSON.stringify(responseJson));
                 })
                 .catch((error) => {
                   // alert('err : '+error);
-                  alert('Sorry, something went wrong. Please try again.')
+
+                  console.log(error);
+                  Alert('Sorry, something went wrong. Please try again.');
                 });
 
               //******************************************Find Distance end**************************************//
 
               self.setState({
-                buttonText : ' Start Trip '
-              })
-            }else{
+               buttonText: ' Start Trip '
+              });
+            } else {
               self.setState({
-                buttonText : ' End Trip '
-              })
+                buttonText: ' End Trip '
+              });
             }
           }
         });
       }
-    })
+    });
   }
 
   render() {
+    if (this.props.myTrips.length < 1) {
+      return (
+        <BackgroundView
+          style={{
+            paddingTop: HEADER.height + 10,
+            paddingBottom: 10,
+            justifyContent: 'center'
+           }}
+        >
+          <MyMapView location={this.state.curLocation} />
+          <View style={{ paddingTop: 20 }}>
+            <Button onPress={() => this.startOrEndTrip()}>{this.state.buttonText}</Button>
+          </View>
+          <Spinner
+            visible={this.props.isFetchingTrips}
+            textContent={'Loading...'}
+            textStyle={{ color: 'white' }}
+          />
+        </BackgroundView>
+      );
+    }
     return (
       <BackgroundView
         style={{
           paddingTop: HEADER.height + 10,
-          paddingBottom: 10,
+          paddingBottom: 0,
           justifyContent: 'center'
          }}
       >
+
+      /*
       <MyMapView location={this.state.curLocation}/>
       <View style={{ paddingTop: 20 }}>
         <Button onPress={() => this.startOrEndTrip()}>{this.state.buttonText}</Button>
-      </View>
+        */
 
+      <View style={{ flex: 1 }}>
+        <View style={{ flexGrow: 1 }}>
+          <MyMapView location={this.state.curLocation} />
+          <View style={{ paddingTop: 20 }}>
+            <Button onPress={() => this.startOrEndTrip()}>{this.state.buttonText}</Button>
+          </View>
+          <Text> Recent Trips </Text>
+        </View>
+        <View style={{ flexGrow: 0.05, borderWidth: 1, borderBottomWidth: 0, marginTop: 5 }}>
+          <ListView
+            dataSource={this.ds.cloneWithRows(this.props.myTrips)}
+            renderRow={(data) => this.renderRow(data)}
+          />
+        </View>
+
+      </View>
         <Spinner
           visible={this.props.isFetchingTrips}
           textContent={'Loading...'}
           textStyle={{ color: 'white' }}
         />
+
       </BackgroundView>
+    );
+  }
+
+  renderRow(data) {
+    //console.log('data', data);
+    return (
+        <TouchableHighlight
+          onPress={() => console.log('You touched me', data)}
+          underlayColor={'#AAA'}
+          style={styles.rowFront}
+        >
+          <View>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }} >
+              <Text> {`${data.vendor}`} </Text>
+              <Text> {`${data.total}`} </Text>
+            </View>
+          </View>
+        </TouchableHighlight>
     );
   }
 }
 
-const mapStateToProps = ({ accounts, receipts, trips }) => {
+const styles = {
+  rowFront: {
+    //alignItems: 'center',
+    padding: 10,
+    backgroundColor: CARD_BACKGROUND_COLOUR,
+    borderBottomColor: BORDER_COLOUR,
+    borderBottomWidth: 1,
+    justifyContent: 'center',
+    //height: 100,
+  }
+};
+
+const mapStateToProps = ({ receipts, trips }) => {
   const {
-    accountsArray,
-    curAccountID
-  } = accounts;
-  const {
-    processing,
-    processingCount,
-    reimbursables,
-    reimbursableCount,
-    latestReceipt,
-    nextPage
+    receiptList,
   } = receipts;
   const {
     myTrips,
@@ -225,21 +388,13 @@ const mapStateToProps = ({ accounts, receipts, trips }) => {
     latestTrip,
   } = trips;
   return {
-    accountsArray,
-    curAccountID,
     isFetchingTrips,
     myTrips,
-    processing,
-    processingCount,
-    reimbursables,
-    reimbursableCount,
-    latestReceipt,
+    receiptList,
     latestTrip,
-    nextPage
   };
 };
 
 
 export default connect(mapStateToProps, {
- setCurAccount, getAccountInfo, getToken
 })(TripsList);
