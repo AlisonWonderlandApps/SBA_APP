@@ -1,15 +1,6 @@
 import React, { Component } from 'react';
-import { View, ListView, AsyncStorage } from 'react-native';
+import { Alert ,Text ,View, ListView, AsyncStorage ,TouchableHighlight} from 'react-native';
 import { Actions } from 'react-native-router-flux';
-
-import {
-  Alert,
-  Text,
-  View,
-  ListView,
-  AsyncStorage,
-  TouchableHighlight,
-} from 'react-native';
 
 import { connect } from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -22,7 +13,6 @@ import {
 
 let self;
 
-let self;
 
 class TripsList extends Component {
   constructor(props) {
@@ -101,24 +91,6 @@ class TripsList extends Component {
     });
   }
 
-  updateLocation(){
-      navigator.geolocation.getCurrentPosition(function(position){
-        self.setState({
-          curLocation : {
-            latitude : position.coords.latitude,
-            longitude : position.coords.longitude
-          }
-        })
-      },
-      function(err){
-        // alert('err : '+JSON.stringify(err))
-        alert('Sorry, something went wrong. Please try again.')
-      },
-      {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000});
-
-      setTimeout(function(){
-        self.updateLocation();
-      },5000);
 
   updateLocation() {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -315,11 +287,6 @@ class TripsList extends Component {
          }}
       >
 
-      /*
-      <MyMapView location={this.state.curLocation}/>
-      <View style={{ paddingTop: 20 }}>
-        <Button onPress={() => this.startOrEndTrip()}>{this.state.buttonText}</Button>
-        */
 
       <View style={{ flex: 1 }}>
         <View style={{ flexGrow: 1 }}>

@@ -23,7 +23,7 @@ export const ssApiQueryURL = {
     user: 'https://api.squirrelstreet.com:443/v2/user/',
     userAccounts: 'https://api.squirrelstreet.com:443/v2/user/accounts/',
     accounts: 'https://api.squirrelstreet.com:443/v2/accounts/',
-    rootURL: 'https://api.squirrelstreet.com:443/v2/'
+    rootURL: 'https://api.squirrelstreet.com:443/v2/',
     accountsSquirrel : 'https://api.squirrelstreet.com/v2/accounts/'
 
 };

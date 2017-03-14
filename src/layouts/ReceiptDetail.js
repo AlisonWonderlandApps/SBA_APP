@@ -64,8 +64,9 @@ class ReceiptDetail extends Component {
         ////alert('Sorry, something went wrong.Please try again.....');
       }else{
 				let AuthStr = res[0][1];
-   			let accountId = res[1][1];
+   		// 	let accountId = res[1][1];
 
+				let accountId = '1481900574';
 				let documnetId = "58c2a374e4b04cd8325ff80a";  //pass document id as per row selection
         let requestUrl = ssApiQueryURL.accounts + accountId + "/documents/" + documnetId + "/";
 
@@ -123,7 +124,7 @@ class ReceiptDetail extends Component {
 		                note : note,
 		                url : pdfUrl
 			              },
-										isDownloadComplete : trueblob
+										isDownloadComplete : true
 									});
 
 							  }).
