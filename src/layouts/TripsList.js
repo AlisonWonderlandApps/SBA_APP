@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import { View, ListView, AsyncStorage } from 'react-native';
+import { Actions } from 'react-native-router-flux';
+
 import {
   Alert,
   Text,
@@ -7,6 +10,7 @@ import {
   AsyncStorage,
   TouchableHighlight,
 } from 'react-native';
+
 import { connect } from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { BackgroundView, TripsListItem, Button, MyMapView } from '../components';
@@ -15,6 +19,8 @@ import {
   CARD_BACKGROUND_COLOUR,
   BORDER_COLOUR
  } from '../global/colours';
+
+let self;
 
 let self;
 
@@ -28,15 +34,39 @@ class TripsList extends Component {
     self = this;
 
     this.state = {
-      isTripStarted: false,
-      buttonText: ' Start Trip ',
-      curLocation: {
-        latitude: 25,
-        longitude: 25
+      isTripStarted : false,
+      buttonText : ' Start Trip ',
+      curLocation : {
+        latitude : 25,
+        longitude : 25
       }
     };
 
     this.updateLocation();
+
+/*
+    this.setTripBtnText();
+
+  }
+
+  setTripBtnText(){
+    let buttonText = '';
+    AsyncStorage.getItem('tripData',function(err,res){
+        if(err){
+          //alert('err : '+err);
+          alert('Sorry, something went wrong. Please try again.')
+        }else{
+          let isFirstTime = false;
+          let tripData;
+
+          if(res == null){  //for firest time
+            buttonText = ' Start Trip '
+          }else{
+            tripData = JSON.parse(res);
+
+            if(tripData.isTripStarted){
+              buttonText = ' End Trip ';
+            }else{ */
     this.setTripBtnText();
   }
 
@@ -58,6 +88,7 @@ class TripsList extends Component {
           if (tripData.isTripStarted) {
               buttonText = ' End Trip ';
           } else {
+
               buttonText = ' Start Trip ';
             }
           }
@@ -65,9 +96,29 @@ class TripsList extends Component {
           self.setState({
             buttonText
           });
+
         }
     });
   }
+
+  updateLocation(){
+      navigator.geolocation.getCurrentPosition(function(position){
+        self.setState({
+          curLocation : {
+            latitude : position.coords.latitude,
+            longitude : position.coords.longitude
+          }
+        })
+      },
+      function(err){
+        // alert('err : '+JSON.stringify(err))
+        alert('Sorry, something went wrong. Please try again.')
+      },
+      {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000});
+
+      setTimeout(function(){
+        self.updateLocation();
+      },5000);
 
   updateLocation() {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -119,6 +170,43 @@ class TripsList extends Component {
     );
   }
 
+/*
+  startOrEndTrip(){
+    let isTripEnd = false;
+    AsyncStorage.getItem('tripData',function(err,res){
+      if(err){
+        // alert('err : '+err);
+        alert('Sorry, something went wrong. Please try again.')
+      }else{
+        let isFirstTime = false;
+        let tripData;
+
+        if(res == null){  //for firest time
+          tripData = {
+            isTripStarted : true,
+            startLocation : self.state.curLocation,
+          };
+        }else{
+          tripData = JSON.parse(res);
+
+          if(tripData.isTripStarted == true){
+            tripData.isTripStarted = false;
+            isTripEnd = true;
+            //find distance
+          }else{
+            tripData.isTripStarted = true;
+            tripData.startLoaction = self.state.curLocation;
+          }
+        }
+
+        AsyncStorage.setItem('tripData', JSON.stringify(tripData), function(err,res){
+          if(err){
+
+          }else{
+            if(isTripEnd){
+              //******************************************Find Distance start**************************************//*/
+  */
+
   startOrEndTrip() {
     let isTripEnd = false;
     AsyncStorage.getItem('tripData', (err, res) => {
@@ -154,6 +242,7 @@ class TripsList extends Component {
             console.log('hi');
             if (isTripEnd) {
               //******************************************Find Distance start**************************************//
+
               let url = 'https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins='+
                         tripData.startLoaction.latitude + ',' +
                         tripData.startLoaction.longitude + '&destinations=' +
@@ -167,12 +256,14 @@ class TripsList extends Component {
               fetch(url)
                 .then((response) => response.json())
                 .then((responseJson) => {
+
                   const distance = responseJson.rows[0].elements[0].distance.text;
                   Alert('Trip Distance : ', distance);
                   // alert('res : '+JSON.stringify(responseJson));
                 })
                 .catch((error) => {
                   // alert('err : '+error);
+
                   console.log(error);
                   Alert('Sorry, something went wrong. Please try again.');
                 });
@@ -180,7 +271,7 @@ class TripsList extends Component {
               //******************************************Find Distance end**************************************//
 
               self.setState({
-                buttonText: ' Start Trip '
+               buttonText: ' Start Trip '
               });
             } else {
               self.setState({
@@ -223,6 +314,13 @@ class TripsList extends Component {
           justifyContent: 'center'
          }}
       >
+
+      /*
+      <MyMapView location={this.state.curLocation}/>
+      <View style={{ paddingTop: 20 }}>
+        <Button onPress={() => this.startOrEndTrip()}>{this.state.buttonText}</Button>
+        */
+
       <View style={{ flex: 1 }}>
         <View style={{ flexGrow: 1 }}>
           <MyMapView location={this.state.curLocation} />
@@ -237,6 +335,7 @@ class TripsList extends Component {
             renderRow={(data) => this.renderRow(data)}
           />
         </View>
+
       </View>
         <Spinner
           visible={this.props.isFetchingTrips}

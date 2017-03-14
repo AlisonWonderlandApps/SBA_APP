@@ -15,7 +15,7 @@ class ErrorScreen extends Component {
           Oops!!
         </ErrorText>
         <ErrorText>
-          Something went wrong :(
+          something went wrong :(
         </ErrorText>
       </FullScreenView>
     );

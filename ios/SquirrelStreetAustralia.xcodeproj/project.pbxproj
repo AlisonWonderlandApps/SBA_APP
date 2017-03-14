@@ -50,6 +50,9 @@
 		CB779BA921174A8190D907BF /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A9C0B304A0FA4C4CA54AE160 /* Zocial.ttf */; };
 		CFC9FFD9420C40FA83B2756F /* Calibri Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3F3F4BE72AE849BD83BB8537 /* Calibri Italic.ttf */; };
 		D04C0A0047EC4CAC9A8EBF8F /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C2C2EB086A3D4542AED9C32A /* EvilIcons.ttf */; };
+		FD30EEF541B94EB6AE314F26 /* libRNUploader.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CE47523765041ED932AC9A6 /* libRNUploader.a */; };
+		C0599AACBF724BE6A7B8539D /* libRNFetchBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F6C99C7E9F542D59827452B /* libRNFetchBlob.a */; };
+		6EBF7E3F1B8D453899585305 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E05E62F171BC4F84AE84D314 /* libRNImagePicker.a */; };
 		8223D3E24FF44244832AF6A4 /* libRNFetchBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CB048CFF48534D3AA0C31AA0 /* libRNFetchBlob.a */; };
 		90F9C8727746453AB039C75A /* libRNPDFView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 963834DA3E4F4DD0903440B9 /* libRNPDFView.a */; };
 		E082379763FC42B98C6A21C7 /* libRNViewShot.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DF2D171C9F44FCE8A888858 /* libRNViewShot.a */; };
@@ -297,6 +300,12 @@
 		EB8566F1CA3D48D484729983 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		FB1E71AFD19B4760B111B187 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
 		FDFA834A10A242DAA3A1C274 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
+		F8CED100E3EC48E6A845F634 /* RNUploader.xcodeproj */ = {isa = PBXFileReference; name = "RNUploader.xcodeproj"; path = "../node_modules/react-native-uploader/RNUploader/RNUploader.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		8CE47523765041ED932AC9A6 /* libRNUploader.a */ = {isa = PBXFileReference; name = "libRNUploader.a"; path = "libRNUploader.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		016675BDF9F74C8CB7BAC25E /* RNFetchBlob.xcodeproj */ = {isa = PBXFileReference; name = "RNFetchBlob.xcodeproj"; path = "../node_modules/react-native-fetch-blob/ios/RNFetchBlob.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		6F6C99C7E9F542D59827452B /* libRNFetchBlob.a */ = {isa = PBXFileReference; name = "libRNFetchBlob.a"; path = "libRNFetchBlob.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		475F21AE33D1482CB3909CEA /* RNImagePicker.xcodeproj */ = {isa = PBXFileReference; name = "RNImagePicker.xcodeproj"; path = "../node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		E05E62F171BC4F84AE84D314 /* libRNImagePicker.a */ = {isa = PBXFileReference; name = "libRNImagePicker.a"; path = "libRNImagePicker.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		B39E27CED38649BD949F36F8 /* RNFetchBlob.xcodeproj */ = {isa = PBXFileReference; name = "RNFetchBlob.xcodeproj"; path = "../node_modules/react-native-fetch-blob/ios/RNFetchBlob.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		CB048CFF48534D3AA0C31AA0 /* libRNFetchBlob.a */ = {isa = PBXFileReference; name = "libRNFetchBlob.a"; path = "libRNFetchBlob.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		C1E1B88F8C874B0793CC4397 /* RNPDFView.xcodeproj */ = {isa = PBXFileReference; name = "RNPDFView.xcodeproj"; path = "../node_modules/react-native-pdf-view/RNPDFView.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
@@ -334,6 +343,9 @@
 				4543EA3BC1EB43B288BB9E21 /* libAirMaps.a in Frameworks */,
 				57C9C21C5CC241EBB5F0AB5B /* libRNSpinkit.a in Frameworks */,
 				08774581F07D4424997F4C10 /* libRNVectorIcons.a in Frameworks */,
+				FD30EEF541B94EB6AE314F26 /* libRNUploader.a in Frameworks */,
+				C0599AACBF724BE6A7B8539D /* libRNFetchBlob.a in Frameworks */,
+				6EBF7E3F1B8D453899585305 /* libRNImagePicker.a in Frameworks */,
 				8223D3E24FF44244832AF6A4 /* libRNFetchBlob.a in Frameworks */,
 				90F9C8727746453AB039C75A /* libRNPDFView.a in Frameworks */,
 				E082379763FC42B98C6A21C7 /* libRNViewShot.a in Frameworks */,
@@ -481,6 +493,9 @@
 				34435B48607047E9A9F464AE /* AirMaps.xcodeproj */,
 				DC7CEB45304041779E8E9487 /* RNSpinkit.xcodeproj */,
 				31CB7FF007424855AECDCB42 /* RNVectorIcons.xcodeproj */,
+				F8CED100E3EC48E6A845F634 /* RNUploader.xcodeproj */,
+				016675BDF9F74C8CB7BAC25E /* RNFetchBlob.xcodeproj */,
+				475F21AE33D1482CB3909CEA /* RNImagePicker.xcodeproj */,
 				B39E27CED38649BD949F36F8 /* RNFetchBlob.xcodeproj */,
 				C1E1B88F8C874B0793CC4397 /* RNPDFView.xcodeproj */,
 				98A5022C1E114B9E847B8A17 /* RNViewShot.xcodeproj */,
@@ -1172,6 +1187,7 @@
 					"$(SRCROOT)/../node_modules/react-native-spinkit/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-fetch-blob/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
 					"$(SRCROOT)/../node_modules/react-native-pdf-view/RNPDFView",
 					"$(SRCROOT)/../node_modules/react-native-view-shot/ios",
 				);
@@ -1222,6 +1238,7 @@
 					"$(SRCROOT)/../node_modules/react-native-spinkit/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-fetch-blob/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
 					"$(SRCROOT)/../node_modules/react-native-pdf-view/RNPDFView",
 					"$(SRCROOT)/../node_modules/react-native-view-shot/ios",
 				);

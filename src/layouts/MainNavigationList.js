@@ -4,14 +4,15 @@
 */
 
 import React, { Component } from 'react';
-import { Alert, Text, View, TouchableHighlight, TouchableWithoutFeedback } from 'react-native';
+import { Alert, Text, View, TouchableHighlight, TouchableWithoutFeedback,AsyncStorage } from 'react-native';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { receiptsFetch } from '../actions';
 import { layoutStyles } from './styles';
 import { PRIMARY_HIGHLIGHT_COLOUR } from '../global/colours';
-
+import RNFetchBlob from 'react-native-fetch-blob';
+import { ssAuthConfig, ssApiQueryURL } from '../config/auth';
 import {
   BackgroundView,
   CardSection,
@@ -32,7 +33,17 @@ import {
   ToolsStr
 } from './strings';
 
+var ImagePicker = require('react-native-image-picker');
+
+let self;
+
 class MainNavigationList extends Component {
+
+  constructor(props){
+    super(props);
+
+    self = this;
+  }
 
   shouldComponentUpdate(nextProps) {
     console.log('update', this.props, nextProps);
@@ -165,16 +176,79 @@ class MainNavigationList extends Component {
   }
 
   onPressFAB() {
-    console.log('FAB pressed');
-    Alert.alert(
-      'Choose Photo Source',
-      null,
-      [
-        { text: 'Camera', onPress: () => Actions.camera() },
-        { text: 'Photo Library', onPress: () => Actions.photos() },
-        { text: 'Cancel', onPress: () => console.log('cancel'), style: 'cancel' }
-      ]
-    );
+    // console.log('FAB pressed');
+    // Alert.alert(
+    //   'Choose Photo Source',
+    //   null,
+    //   [
+    //     { text: 'Camera', onPress: () => Actions.camera() },
+    //     { text: 'Photo Library', onPress: () => Actions.photos() },
+    //     { text: 'Cancel', onPress: () => console.log('cancel'), style: 'cancel' }
+    //   ]
+    // );
+
+    var options = {
+      title: 'Choose Photo Source',
+      storageOptions: {
+        skipBackup: true,
+        path: 'images'
+      }
+    };
+
+
+    let accountId = self.props.curAccountID;
+
+    ImagePicker.showImagePicker(options, (response) => {
+        if (response.didCancel) {
+          console.log('User cancelled image picker');
+        }
+        else if (response.error) {
+          alert('Sorry, something went wrong.Please try again.');
+        }
+        else if (response.customButton) {
+          console.log('User tapped custom button: ', response.customButton);
+        }
+        else {
+          let source = { uri: response.uri };
+          AsyncStorage.getItem('newAccessToken',function(err,res)  {
+              if(err){
+                alert('Sorry, something went wrong.Please try again.');
+              }else{
+                let accessToken = res;
+                let AuthStr = accessToken;
+                let requestUrl = ssApiQueryURL.accountsSquirrel + accountId + "/documents/";
+
+                console.log('----->requestUrl : '+requestUrl);
+
+                RNFetchBlob.fetch('POST', requestUrl , {
+                     Authorization : AuthStr,
+                     'Content-Type' : 'multipart/form-data',
+                   }, [
+                      {
+                        name : 'attachment',
+                        filename : response.fileName,
+                        type:response.type,
+                        data: RNFetchBlob.wrap(response.path)
+                      },
+                     { name : 'account', data : accountId },
+                     { name : 'document', data : JSON.stringify({
+                       processingState : 'NEEDS_SYSTEM_PROCESSING',
+                     })},
+                   ]).then((resp) => {
+                     let respJSONData = JSON.parse(resp.data);
+                     let receiptId = respJSONData.id;
+
+                     alert("Receipt uploaded successfully.(Receipt Id : "+ receiptId +")");
+                     console.log("--------->resp : "+JSON.stringify(resp));
+                   }).catch((err) => {
+                     alert("Sorry , something went wrong while receipt upload.");
+                     console.log("--------->err : "+JSON.stringify(err));
+                   });
+                }
+              });
+            //*************
+        }
+      });
   }
 
   processingPressed() {
