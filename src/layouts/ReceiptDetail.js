@@ -32,6 +32,8 @@ import {
  import { ssApiQueryURL } from '../config/auth';
  import axios from 'axios';
  import PDFView from 'react-native-pdf-view';
+ import RNFetchBlob from 'react-native-fetch-blob';
+ import Moment from 'moment';
 
 let self;
 
@@ -41,23 +43,16 @@ class ReceiptDetail extends Component {
 		super(props);
 
     self = this;
-    // var uri = {
-    //   html:"<html> <body><h1>To Open the <a href='http://www.adobe.com/content/dam/Adobe/en/devnet/acrobat/pdfs/pdf_open_parameters.pdf'>PDF</a></h1></body></html>"
-    // };
-    var uri = {
-      html:"<html> <body><h1>To Open the <a href='http://www.adobe.com'>PDF</a></h1></body></html>"
-    };
 
     this.state = {
       receiptDetail : {
         processingState : '',
         uploaded : new Date(),
         note : '',
-        url:uri
-      }
+        url:'/storage/emulated/0/receipt.pdf',
+      },
+			isDownloadComplete : false
     }
-
-
 
     this.getReceiptDetail();
 	}
@@ -66,7 +61,7 @@ class ReceiptDetail extends Component {
 		//**************************Api call start *******************************
 		AsyncStorage.multiGet(['AuthStr','curAccountId'],function(err,res)  {
       if(err){
-        alert('Sorry, something went wrong.Please try again.....');
+        ////alert('Sorry, something went wrong.Please try again.....');
       }else{
 				let AuthStr = res[0][1];
    			let accountId = res[1][1];
@@ -78,21 +73,68 @@ class ReceiptDetail extends Component {
 
 				axios.get(requestUrl, { headers: { Authorization: AuthStr } })
 			      .then(response => {
-              alert(JSON.stringify(response.data))
-              // let receptData = response.data;
-              // self.setState({receiptDetail : {
-              //   processingState : receptData.processingState,
-              //   uploaded : receptData.uploaded,
-              //   note : receptData.note,
-              //   url : ''
-              // }})
-							// if(response.status == 204){
-							// 	alert('Receipt deleted successfully.');
-							// }else{
-							// 	alert('response ==> '+JSON.stringify(response));
-							// }
+            console.log(JSON.stringify(response))
+              let receiptData = response.data;
+							let processingState = "",uploaded = "",note = "",pdfUrl = "";
+							if(receiptData.processingState){
+								processingState = receiptData.processingState;
+							}
+							if(receiptData.uploaded){
+								uploaded = Moment(receiptData.uploaded).format("Do MMMM YYYY");
+							}
+							if(receiptData.note){
+								note = receiptData.note;
+							}
+							if(receiptData.attachment && receiptData.attachment.url){
+								pdfUrl = receiptData.attachment.url;
+							}
+
+              self.setState({receiptDetail : {
+                processingState : processingState,
+                uploaded : uploaded,
+                note : note,
+                url : pdfUrl
+              }});
+
+							let curFormatedDate = Moment().format();
+
+							let filePath = "/storage/emulated/0/receipt_" + curFormatedDate + ".pdf"
+
+							RNFetchBlob
+							  .config({
+							    // add this option that makes response data to be stored as a file,
+							    // this is much more performant.
+							    fileCache : true,
+
+								//	path : filePath
+							  })
+							  .fetch('GET', pdfUrl , {
+							    //some headers ..
+							  })
+							  .then((res) => {
+							    // the temp file path
+							    ////alert('The file saved to '+ res.path());
+
+									let pdfUrl = res.path();
+
+									self.setState({receiptDetail : {
+		                processingState : processingState,
+		                uploaded : uploaded,
+		                note : note,
+		                url : pdfUrl
+			              },
+										isDownloadComplete : trueblob
+									});
+
+							  }).
+								then((err) => {
+									console.log('-->err : '+JSON.stringify(err));
+							    ////alert('Sorry, something went wrong.Please try again.')
+							  });
+
 			      }).catch((error) => {
-			          alert('Sorry something went wrong.Please try again latter.');
+							console.log('-->error : '+JSON.stringify(error));
+							////alert('Sorry, something went wrong.Please try again.')
 			      });
         }
       });
@@ -103,12 +145,35 @@ class ReceiptDetail extends Component {
   onNavigationStateChange (navState) {
           var wb_url=navState.url;
           var lastPart = wb_url.substr(wb_url.lastIndexOf('.') + 1);
-          alert(JSON.stringify(navState))
+          ////alert(JSON.stringify(navState))
           if (lastPart === "pdf") {
             var DEFAULT_URL = {uri:'http://docs.google.com/gview?embedded=true&url='+wb_url};
             self.setState({url:DEFAULT_URL})
          }
     }
+
+	renderPdfViewer(){
+		if(this.state.isDownloadComplete){
+			return (
+				<PDFView
+					 ref={(pdf)=>{this.pdfView = pdf;}}
+           src={this.state.receiptDetail.url}
+           onLoadComplete = {(pageCount)=>{
+						  ////alert('pdf loaded.')
+              this.pdfView.setNativeProps({
+                  zoom: 1
+              });
+           }}
+           style={styles.pdf}/>
+			);
+		}else{
+			return (
+				<View style={{flex : 1,justifyContent : 'center',alignItems : 'center'}}>
+					<Text>Loading....</Text>
+				</View>
+			)
+		}
+	}
 
 	render() {
     let {receiptDetail} = this.state;
@@ -129,39 +194,16 @@ class ReceiptDetail extends Component {
             </View>
         </View>
 
-        <WebView
-          // ref={WEBVIEW_REF}
-          automaticallyAdjustContentInsets={false}
-          source={{uri: 'http://docs.google.com/gview?embedded=true&url=http://www.pdf995.com/samples/pdf.pdf'}}
-          // source={{uri: 'http://docs.google.com/gview?embedded=true&url=https://s3-ap-southeast-2.amazonaws.com/sba-render/1481900574%7Cdocument_58c2a374e4b04cd8325ff80a.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20170311T105720Z&X-Amz-SignedHeaders=host&X-Amz-Expires=900&X-Amz-Credential=AKIAJD3UILPK5DBPFNHA%2F20170311%2Fap-southeast-2%2Fs3%2Faws4_request&X-Amz-Signature=57877404242ffeb57ba6677db45e998e1fcb808ae08c413df19e902d7abbda5a'}}
-
-          javaScriptEnabled={true}
-          domStorageEnabled={true}
-          decelerationRate="normal"
-          // onNavigationStateChange={this.onNavigationStateChange}
-          startInLoadingState={true}
-          scalesPageToFit={true}
-      />
-
+				<View style={styles.pdfViewPatent}>
+				{
+					this.renderPdfViewer()
+				}
+				</View>
 
       </View>
 		);
 	}
 }
-
-// <PDFView ref={(pdf)=>{this.pdfView = pdf;}}
-//                  src={"http://www.pdf995.com/samples/pdf.pdf"}
-//                  onLoadComplete = {(pageCount)=>{
-//                     this.pdfView.setNativeProps({
-//                         zoom: 1.5
-//                     });
-//                  }}
-//                  style={styles.pdf}/>
-
-// <Image
-//   source={{ uri : 'https://s3-ap-southeast-2.amazonaws.com/sba-render/1481900574%7Cdocument_58c2a374e4b04cd8325ff80a.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20170311T093833Z&X-Amz-SignedHeaders=host&X-Amz-Expires=900&X-Amz-Credential=AKIAJD3UILPK5DBPFNHA%2F20170311%2Fap-southeast-2%2Fs3%2Faws4_request&X-Amz-Signature=14326c6a91664aad096cef195553dd5e66e8b6d1cfd3f85856382f851c30ba0b'}}
-//   style={[styles.receiptImage]}
-// />
 
 const styles = {
   container: {
@@ -194,9 +236,16 @@ const styles = {
     height : 100,
     wifth : 100
   },
+	pdfViewPatent : {
+		width : window.width,
+		height : 500,
+		justifyContent : 'center',
+		// backgroundColor : 'pink'
+	},
   pdf : {
-    height : 300,
-    width : 300
+    // height : ,
+    // width : window.width,
+		flex : 1,
   }
 };
 
