@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
 
 class MyMapView extends Component {
  render() {
-   const { region ,location } = this.props;
+   const { region ,location} = this.props;
    console.log('region', region);
 
    return (
