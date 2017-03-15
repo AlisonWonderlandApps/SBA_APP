@@ -4,7 +4,7 @@
 */
 
 import React, { Component } from 'react';
-import { Alert, Text, View, TouchableHighlight, TouchableWithoutFeedback,AsyncStorage } from 'react-native';
+import { Alert, Text, View, TouchableHighlight, Platform,TouchableWithoutFeedback,AsyncStorage,Image } from 'react-native';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -13,6 +13,7 @@ import { layoutStyles } from './styles';
 import { PRIMARY_HIGHLIGHT_COLOUR } from '../global/colours';
 import RNFetchBlob from 'react-native-fetch-blob';
 import { ssAuthConfig, ssApiQueryURL } from '../config/auth';
+import axios from 'axios';
 import {
   BackgroundView,
   CardSection,
@@ -92,6 +93,7 @@ class MainNavigationList extends Component {
         >
           {this.renderToolsBar()}
         </TouchableHighlight>
+
         <FAB
           onPress={this.onPressFAB}
         />
@@ -199,6 +201,7 @@ class MainNavigationList extends Component {
     let accountId = self.props.curAccountID;
 
     ImagePicker.showImagePicker(options, (response) => {
+      console.log("response",response);
         if (response.didCancel) {
           console.log('User cancelled image picker');
         }
@@ -209,6 +212,12 @@ class MainNavigationList extends Component {
           console.log('User tapped custom button: ', response.customButton);
         }
         else {
+          let image;
+          if(Platform.OS === 'ios'){
+            image = response.origURL;
+          }else{
+            image = response.path;
+          }
           let source = { uri: response.uri };
           AsyncStorage.getItem('newAccessToken',function(err,res)  {
               if(err){
@@ -228,7 +237,7 @@ class MainNavigationList extends Component {
                         name : 'attachment',
                         filename : response.fileName,
                         type:response.type,
-                        data: RNFetchBlob.wrap(response.path)
+                        data: RNFetchBlob.wrap(image)
                       },
                      { name : 'account', data : accountId },
                      { name : 'document', data : JSON.stringify({
