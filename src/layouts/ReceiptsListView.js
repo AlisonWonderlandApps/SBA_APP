@@ -168,21 +168,38 @@ class ReceiptsListView extends Component {
           alert('Sorry, something went wrong.Please try again.....');
         }else{
 					let AuthStr = res[0][1];
-     			let accountId = res[1][1];
+					console.log('------------AuthStr : '+AuthStr);
+     			//let accountId = res[1][1];
 
-					let documnetId = "52910d0de4b06f6f8ca3abaa";  //pass document id as per row selection
+					let accountId = "1481900574";
+					let documnetId = "52910d0de4b06f6f8ca3abeb";  //pass document id as per row selection
           let requestUrl = ssApiQueryURL.accounts + accountId + "/documents/" + documnetId + "/";
 
-          console.log('----->requestUrl : '+requestUrl);
-
-					axios.delete(requestUrl, { headers: { Authorization: AuthStr } })
+					axios.get(requestUrl, { headers: { Authorization: AuthStr } })
 				      .then(response => {
-								if(response.status == 204){
-									alert('Receipt deleted successfully.');
+								let responseData = JSON.parse(JSON.stringify(response));
+								console.log('------->responseData',responseData);
+								if(response.status == 200){
+									let jsonToUpate = responseData.data;
+									jsonToUpate.trashed = true;
+											console.log('------------>jsonToUpate',jsonToUpate);
+
+											RNFetchBlob.fetch('PUT', requestUrl, {
+												 Authorization : AuthStr,
+												 'Content-Type' : 'application/json',
+											 }, JSON.stringify(jsonToUpate)).then((resp) => {
+
+												 alert('Receipt deleted successfully.')
+											 }).catch((err) => {
+												 console.log('delete error',err);
+												 alert('Sorry something went wrong.Please try again latter.');
+											 })
+
 								}else{
-									alert('response ==> '+JSON.stringify(response));
+									alert('Sorry something went wrong.Please try again latter.(status code : '+response.status+")");
 								}
 				      }).catch((error) => {
+								  console.log("error",error);
 				          alert('Sorry something went wrong.Please try again latter.');
 				      });
           }
