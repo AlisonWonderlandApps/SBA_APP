@@ -15,10 +15,10 @@ import {
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/Ionicons';
-import RNFetchBlob from 'react-native-fetch-blob';
-import ImagePicker from 'react-native-image-picker';
+//import RNFetchBlob from 'react-native-fetch-blob';
+//import ImagePicker from 'react-native-image-picker';
 
-import { receiptsFetch } from '../actions';
+import { receiptsFetch, addReceiptFromImage } from '../actions';
 import { ssAuthConfig, ssApiQueryURL } from '../config/auth';
 import { layoutStyles } from './styles';
 import { PRIMARY_HIGHLIGHT_COLOUR } from '../global/colours';
@@ -41,6 +41,8 @@ import {
   TripsStr,
   ToolsStr
 } from './strings';
+
+const ImagePicker = require('react-native-image-picker');
 
 class MainNavigationList extends Component {
 
@@ -205,52 +207,15 @@ class MainNavigationList extends Component {
       } else if (response.customButton) {
         console.log('User tapped custom button: ', response.customButton);
       } else {
-        let image;
+        let image = '';
         if (Platform.OS === 'ios') {
           image = response.origURL;
         } else {
           image = response.path;
         }
         const source = { uri: response.uri };
-        AsyncStorage.getItem('newAccessToken', (err, res) => {
-            if (err) {
-              Alert('Sorry, something went wrong.Please try again.');
-            } else {
-              const accessToken = res;
-              const AuthStr = accessToken;
-              const requestUrl = ssApiQueryURL.accountsSquirrel + this.props.curAccountId + '/documents/';
-
-              console.log('----->requestUrl : '+requestUrl);
-
-              RNFetchBlob.fetch('POST', requestUrl, {
-                   Authorization: AuthStr,
-                   'Content-Type': 'multipart/form-data',
-                 }, [
-                    {
-                      name: 'attachment',
-                      filename: response.fileName,
-                      type: response.type,
-                      //data: RNFetchBlob.wrap(image)
-                    },
-                   { name: 'account', data: this.props.curAccountId },
-                   { name: 'document',
-                        data: JSON.stringify({
-                        processingState: 'NEEDS_SYSTEM_PROCESSING',
-                   }) },
-                 ]).then((resp) => {
-                   const respJSONData = JSON.parse(resp.data);
-                   const receiptId = respJSONData.id;
-
-                   Alert('Receipt uploaded successfully.(Receipt Id : ' + receiptId + ')');
-                   console.log('--------->resp : ', JSON.stringify(resp));
-                 }).catch((err) => {
-                   Alert('Sorry , something went wrong while receipt upload.');
-                   console.log('--------->err : ', JSON.stringify(err));
-                 });
-              }
-            });
-        }
-    });
+        this.props.addReceiptFromImage(this.props.curAccountID, response, image, source);
+    }
   }
 
   processingPressed() {
@@ -360,33 +325,5 @@ const mapStateToProps = ({ user, accounts, receipts, trips }) => {
 };
 
 export default connect(mapStateToProps, {
-  receiptsFetch
+  receiptsFetch, addReceiptFromImage
 })(MainNavigationList);
-
-/*
-//subtitle={this.getSubtitle().bind(this)}
-//data={''}
-<View style={{ paddingBottom: 50 }}>
-  <LogoSection />
-</View>
-*/
-
-/*
-renderMostRecentReceiptCost() {
-  if (this.props.numOfReceipts < 1) {
-    return 'Waiting on';
-  }
-  console.log('total', this.props.latestReceipt.total);
-  const cost = '$ '.concat(this.props.latestReceipt.total);
-  console.log(cost);
-  return (cost);
-}
-
-renderMostRecentReceiptData() {
-  //renders the place / name of receipt
-  if (this.props.numOfReceipts < 1) {
-    return 'your receipts';
-  }
-  return ('Place');
-}
-*/

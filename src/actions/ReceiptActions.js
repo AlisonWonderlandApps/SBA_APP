@@ -24,6 +24,8 @@ import { AsyncStorage, Alert } from 'react-native';
 import axios from 'axios';
 import Querystring from 'querystring';
 import { Actions } from 'react-native-router-flux';
+import RNFetchBlob from 'react-native-fetch-blob';
+import ImagePicker from 'react-native-image-picker';
 import { ssApiQueryURL, ssAuthConfig } from '../config/auth';
 
 import {
@@ -477,7 +479,7 @@ export const newToken = (accountID, token, receiptID = '', newReceipt = {}, num)
             dispatch(trashItem(AuthStr, accountID, receiptID));
             break;
           case 2:
-            //dispatch(addItem());
+            dispatch(addItem(AuthStr, accountID, newReceipt));
             break;
           default:
             break;
@@ -538,6 +540,101 @@ const trashItem = (AuthStr, accId, receiptId, receiptIndex) => {
       });
     };
 };
+
+export const addReceiptFromImage = (AccountId, response, image, source) => {
+  const receiptObj = {
+    response,
+    image,
+    source
+  };
+  return function (dispatch) {
+    //show loading status?
+    dispatch({
+      type: ADD_RECEIPT
+    });
+    //1. get Auth token
+    try {
+      AsyncStorage.getItem('refreshToken').then((value) => {
+        if (value !== null) {
+          dispatch(newToken(AccountId, value, '', receiptObj, 2));
+        }
+      });
+    } catch (err) {
+      console.log('token', err);
+    }
+  };
+};
+
+const addItem = (AuthStr, accountId, receiptObj) => {
+  const requestUrl = ssApiQueryURL.accountsSquirrel.concat(accountId).concat('/documents/');
+  console.log('----->requestUrl : ', requestUrl);
+
+  RNFetchBlob.fetch('POST', requestUrl, {
+       Authorization: AuthStr,
+       'Content-Type': 'multipart/form-data',
+     }, [
+        {
+          name: 'attachment',
+          filename: receiptObj.response.fileName,
+          type: receiptObj.response.type,
+          data: RNFetchBlob.wrap(receiptObj.image)
+        },
+       { name: 'account', data: accountId },
+       { name: 'document',
+            data: JSON.stringify({
+            processingState: 'NEEDS_SYSTEM_PROCESSING',
+       }) },
+     ]).then((resp) => {
+       const respJSONData = JSON.parse(resp.data);
+       const receiptId = respJSONData.id;
+
+       Alert('Receipt uploaded successfully.(Receipt Id : ' + receiptId + ')');
+       console.log('--------->resp : ', JSON.stringify(resp));
+     }).catch((err) => {
+       Alert('Sorry , something went wrong while receipt upload.');
+       console.log('--------->err : ', JSON.stringify(err));
+     });
+};
+  //2.
+  /*      AsyncStorage.getItem('newAccessToken', (err, res) => {
+            if (err) {
+              Alert('Sorry, something went wrong.Please try again.');
+            } else {
+              const accessToken = res;
+              const AuthStr = accessToken;
+              const requestUrl = ssApiQueryURL.accountsSquirrel + this.props.curAccountId + '/documents/';
+
+              console.log('----->requestUrl : '+requestUrl);
+
+              RNFetchBlob.fetch('POST', requestUrl, {
+                   Authorization: AuthStr,
+                   'Content-Type': 'multipart/form-data',
+                 }, [
+                    {
+                      name: 'attachment',
+                      filename: response.fileName,
+                      type: response.type,
+                      //data: RNFetchBlob.wrap(image)
+                    },
+                   { name: 'account', data: this.props.curAccountId },
+                   { name: 'document',
+                        data: JSON.stringify({
+                        processingState: 'NEEDS_SYSTEM_PROCESSING',
+                   }) },
+                 ]).then((resp) => {
+                   const respJSONData = JSON.parse(resp.data);
+                   const receiptId = respJSONData.id;
+
+                   Alert('Receipt uploaded successfully.(Receipt Id : ' + receiptId + ')');
+                   console.log('--------->resp : ', JSON.stringify(resp));
+                 }).catch((err) => {
+                   Alert('Sorry , something went wrong while receipt upload.');
+                   console.log('--------->err : ', JSON.stringify(err));
+                 });
+              }
+            });
+        }
+}; */
 
 const deleteFailed = (er) => {
   return {
