@@ -13,7 +13,8 @@ import {
         LeftAccountsTitle,
         BackTitle,
         FilterTitle,
-        BackToReceipts
+        BackToReceipts,
+        BackToCats
       } from './components';
 
 import { HEADER } from './global/margins';
@@ -39,6 +40,9 @@ import Processing from './layouts/Processing';
 import Reimbursables from './layouts/Reimbursables';
 import ReceiptsListView from './layouts/ReceiptsListView';
 import CategoryList from './layouts/CategoryList';
+import ReceiptDetail from './layouts/ReceiptDetail';
+import CategoryReceiptList from './layouts/CategoryReceiptList';
+
 
 class RouterComponent extends Component {
 /*  shouldComponentUpdate(nextProps) {
@@ -88,7 +92,7 @@ class RouterComponent extends Component {
     let render = false;
     switch (num) {
       case 1:
-        if (this.props.numOfReceipts > 0) {
+        if (this.props.categories.length > 0) {
           render = true;
         }
         break;
@@ -128,6 +132,14 @@ class RouterComponent extends Component {
       <BackToReceipts>
         Back
       </BackToReceipts>
+    );
+  }
+
+  renderBackToCategoriesButton() {
+    return (
+      <BackToCats>
+        Back
+      </BackToCats>
     );
   }
 
@@ -246,6 +258,18 @@ class RouterComponent extends Component {
     />
 
     <Scene
+      key="receiptdetail"
+      hideNavBar={false}
+      navigationBarStyle={styles.headerStyle}
+      renderTitle={() => <Header />}
+      component={ReceiptDetail}
+      // rightTitle='Filter'
+      // onRight={() => console.log('right')}
+      //renderRightButton={() => <Icon name="ellipsis-v" size={25} color="#ffffff" />}
+      //hideBackImage
+    />
+
+    <Scene
       key="tools"
       component={Tools}
       hideNavBar={false}
@@ -271,7 +295,7 @@ class RouterComponent extends Component {
       hideNavBar={false}
       navigationBarStyle={styles.headerStyle}
       renderTitle={() => <Header />}
-      renderRightButton={() => this.renderFilterButton(2)}
+      //renderRightButton={() => this.renderFilterButton(2)}
       renderBackButton={() => this.renderBackButton()}
     />
 
@@ -281,7 +305,7 @@ class RouterComponent extends Component {
       hideNavBar={false}
       navigationBarStyle={styles.headerStyle}
       renderTitle={() => <Header />}
-      renderRightButton={() => this.renderFilterButton(3)}
+      //renderRightButton={() => this.renderFilterButton(3)}
       renderBackButton={() => this.renderBackButton()}
     />
 
@@ -292,6 +316,15 @@ class RouterComponent extends Component {
       navigationBarStyle={styles.headerStyle}
       renderTitle={() => <Header />}
       renderBackButton={() => this.renderBackToReceiptsButton()}
+    />
+
+    <Scene
+      key="catReceipts"
+      component={CategoryReceiptList}
+      hideNavBar={false}
+      navigationBarStyle={styles.headerStyle}
+      renderTitle={() => <Header />}
+      renderBackButton={() => this.renderBackToCategoriesButton()}
     />
 
     <Scene
@@ -338,14 +371,16 @@ const mapStateToProps = ({ user, receipts }) => {
   const {
     processingCount,
     reimbursableCount,
-    numOfReceipts
+    numOfReceipts,
+    categories
   } = receipts;
   return {
     userName,
     userInfo,
     processingCount,
     reimbursableCount,
-    numOfReceipts
+    numOfReceipts,
+    categories
   };
 };
 

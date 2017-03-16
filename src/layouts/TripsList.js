@@ -126,7 +126,7 @@ class TripsList extends Component {
         // alert('err : '+err);
         Alert('Sorry, something went wrong. Please try again.');
       } else {
-        let isFirstTime = false;
+        const isFirstTime = false;
         let tripData;
 
       if (res == null) {  //for firest time
@@ -146,6 +146,7 @@ class TripsList extends Component {
             tripData.startLoaction = self.state.curLocation;
           }
       }
+
 
         AsyncStorage.setItem('tripData', JSON.stringify(tripData), (err1, res1) => {
           if (err1) {
@@ -190,7 +191,7 @@ class TripsList extends Component {
           }
         });
       }
-    });
+    }); 
   }
 
   render() {

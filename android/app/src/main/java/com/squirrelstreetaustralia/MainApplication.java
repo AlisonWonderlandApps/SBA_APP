@@ -6,7 +6,9 @@ import android.util.Log;
 import com.facebook.react.ReactApplication;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.react.rnspinkit.RNSpinkitPackage;
+import com.keyee.pdfview.PDFView;
 import com.airbnb.android.react.maps.MapsPackage;
+import com.RNFetchBlob.RNFetchBlobPackage;
 import com.lwansbrough.RCTCamera.RCTCameraPackage;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
@@ -31,7 +33,9 @@ public class MainApplication extends Application implements ReactApplication {
           new MainReactPackage(),
             new VectorIconsPackage(),
             new RNSpinkitPackage(),
+            new PDFView(),
             new MapsPackage(),
+            new RNFetchBlobPackage(),
             new RCTCameraPackage()
       );
     }

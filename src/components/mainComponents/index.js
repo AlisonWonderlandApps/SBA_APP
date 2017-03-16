@@ -8,3 +8,4 @@ export * from './AccountListItem';
 export * from './NavListSectionTools';
 export * from './NavListSectionTrips';
 export * from './SearchComponent';
+export * from './CategoryListItem';

@@ -44,6 +44,10 @@ import {
 //load accounts should get all user accounts (not their info)
 export const loadAccounts = (AuthStr) => {
   return function (dispatch) {
+  console.log('load', AuthStr);
+
+  AsyncStorage.setItem('AuthStr', AuthStr);
+
   axios.get(ssApiQueryURL.user, { headers: { Authorization: AuthStr } })
       .then(response => {
         const accArr = response.data.accounts;
@@ -129,6 +133,11 @@ export const loadAccountsSuccess = (accs) => {
 };
 
 export const loadAccountsFail = (err) => {
+//calls function to get receipts too.
+//export const setCurAccountID = (accObj, id) => {
+  //AsyncStorage.setItem('curAccountId', id);
+
+//  console.log('curAccount', id);
   return function (dispatch) {
     console.log('fail');
     dispatch({

@@ -123,6 +123,7 @@ export const ADD_RECEIPT = 'add_receipt';
 export const CATEGORY_SEARCH = 'filter_by_category';
 export const CATEGORY_SEARCH_SUCCESS = 'filter_by_category_success';
 export const CATEGORY_SEARCH_FAIL = 'filter_by_category_fail';
+export const RECEIPTS_BY_CATEGORY_ADD = 'add_receipt_by_category_item';
 
 //PhotosActions
 export const PHOTO_ADD = 'add_a_photo';

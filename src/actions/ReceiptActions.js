@@ -54,12 +54,15 @@ import {
   RECEIPT_DELETE,
   RECEIPT_DELETE_SUCCESS,
   RECEIPT_DELETE_FAIL,
+  RECEIPTS_BY_CATEGORY_ADD,
   CATEGORY_SEARCH,
   CATEGORY_SEARCH_SUCCESS,
   CATEGORY_SEARCH_FAIL
   //SET_TRIP_DISTANCE
 } from './types';
 
+const cats = [];
+let index = 0;
 
 export const addNewReceipt = (doc) => {
   return {
@@ -100,8 +103,7 @@ export const fetchReceipts = (AuthStr, accountId) => {
         dispatch(fetchTrips(AuthStr, accountId)); //fetch trips
         dispatch(fetchProcessing(AuthStr, accountId)); //fetch processing
         dispatch(fetchReimbursables(AuthStr, accountId)); //fetch reimburseablesß
-        console.log('fetch');
-        dispatch(setReceiptsList(response.data.documents));
+        dispatch(setReceiptsList(AuthStr, accountId, response.data.documents));
 
         if (length > 0) {
           let i = 0;
@@ -127,7 +129,6 @@ export const fetchReceipts = (AuthStr, accountId) => {
         } else {
           dispatch(fetchMostRecentReceipt(''));
         }
-
         dispatch(fetchReceiptsSuccess(response.data.documents));
       })
       .catch((er) => {
@@ -143,140 +144,11 @@ const fetchReceiptsSuccess = (receipts) => {
   };
 };
 
-const cats = [];
-let index = 0;
-const addToCategoryList = (item) => {
-  cats[index] = item;
-  index++;
-};
-
-const setReceiptsList = (list) => {
-    index = 0;
-    const receiptlist = [];
-    let id = '';
-    let vendor = '';
-    let total = '';
-    let date = '';
-    let category = '';
-    if (list.length === 0) {
-      return receiptlist;
-    }
-    for (let i = 0; i < list.length; i++) {
-      id = list[i].id;
-      vendor = list[i].vendor;
-      if (list[i].total === undefined) {
-        total = '$ unknown';
-      }	else {
-        total = '$'.concat(list[i].total.toFixed(2));
-      }
-      if (list[i].issued === undefined) {
-        const formattedDate = new Date(list[i].uploaded).toString();
-        let year = formattedDate.substring(11, 15);
-        year = ' '.concat(year);
-        date = formattedDate.substring(4, 10).concat(year);
-      } else {
-        const formattedDate = new Date(list[i].issued).toString();
-        let year = formattedDate.substring(11, 15);
-        year = ' '.concat(year);
-        date = formattedDate.substring(4, 10).concat(year);
-      }
-      if (list[i].categories === undefined) {
-        category = 'No categories';
-      } else if (list[i].categories.length < 1) {
-        category = 'No categories';
-      } else {
-        let j = 0;
-        category += list[i].categories[j];
-        addToCategoryList(list[i].categories[j]);
-        for (j = 1; j < list[i].categories.length; j++) {
-          category += ', '.concat(list[i].categories[j]);
-          addToCategoryList(list[i].categories[j]);
-        }
-      }
-
-      receiptlist[i] = {
-        id,
-        vendor,
-        total,
-        date,
-        category
-      };
-      id = '';
-      vendor = '';
-      total = '';
-      date = '';
-      category = '';
-    }
-    const uniqueCats = cats.filter((item, i, ar) => {
-      return ar.indexOf(item) === i;
-    });
-    console.log('unique', uniqueCats);
-    return function (dispatch) {
-      dispatch({
-        type: CATEGORIES_FETCH_SUCCESS,
-        payload: uniqueCats
-      });
-      dispatch({
-        type: SET_LIST,
-        payload: receiptlist
-      });
-    };
-};
-
 const fetchReceiptsFail = (err) => {
   console.log('RECEIPTS ERROR', err);
   return {
     type: RECEIPTS_FETCH_FAIL,
     payload: err
-  };
-};
-
-const fetchMostRecentReceipt = (aRec) => {
-  return {
-    type: SET_LATEST_RECEIPT,
-    payload: aRec
-  };
-};
-
-const setVendor = (data) => {
-  return {
-    type: SET_VENDOR,
-    payload: data
-  };
-};
-
-const setDate = (date) => {
-  const formattedDate = new Date(date).toString();
-  const dateStr = formattedDate.substring(4, 10);
-  return {
-    type: SET_DATE,
-    payload: dateStr
-  };
-};
-
-const setCategory = (data) => {
-  let stringItem = '';
-  if (data === undefined) {
-    stringItem = 'No categories';
-  } else if (data.length < 1) {
-    stringItem = 'No categories';
-  } else {
-    for (let i = 0; i < data.length; i++) {
-      stringItem += data[i];
-    }
-  }
-  return {
-    type: SET_CATEGORY,
-    payload: stringItem
-  };
-};
-
-const setCost = (cost) => {
-  const currency = '$'.concat(cost.toFixed(2));
-  console.log(currency);
-  return {
-    type: SET_COST,
-    payload: currency
   };
 };
 
@@ -355,6 +227,216 @@ const fetchReimburseFail = (err) => {
   };
 };
 
+const fetchMostRecentReceipt = (aRec) => {
+  return {
+    type: SET_LATEST_RECEIPT,
+    payload: aRec
+  };
+};
+
+const addToCategoryList = (item) => {
+  cats[index] = item;
+  index++;
+};
+
+const setReceiptsList = (AuthStr, accountId, list) => {
+    index = 0;
+    const receiptlist = [];
+    let id = '';
+    let vendor = '';
+    let total = '';
+    let date = '';
+    let category = '';
+    if (list.length === 0) {
+      return receiptlist;
+    }
+    for (let i = 0; i < list.length; i++) {
+      id = list[i].id;
+      vendor = list[i].vendor;
+      if (list[i].total === undefined) {
+        total = '$ ??';
+      }	else {
+        total = '$'.concat(list[i].total.toFixed(2));
+      }
+      if (list[i].issued === undefined) {
+        const formattedDate = new Date(list[i].uploaded).toString();
+        let year = formattedDate.substring(11, 15);
+        year = ' '.concat(year);
+        date = formattedDate.substring(4, 10).concat(year);
+      } else {
+        const formattedDate = new Date(list[i].issued).toString();
+        let year = formattedDate.substring(11, 15);
+        year = ' '.concat(year);
+        date = formattedDate.substring(4, 10).concat(year);
+      }
+      if (list[i].categories === undefined) {
+        category = 'No categories';
+      } else if (list[i].categories.length < 1) {
+        category = 'No categories';
+      } else {
+        let j = 0;
+        category += list[i].categories[j];
+
+        addToCategoryList(list[i].categories[j]);
+        for (j = 1; j < list[i].categories.length; j++) {
+          category += ', '.concat(list[i].categories[j]);
+          addToCategoryList(list[i].categories[j]);
+        }
+      }
+
+      receiptlist[i] = {
+        id,
+        vendor,
+        total,
+        date,
+        category
+      };
+      id = '';
+      vendor = '';
+      total = '';
+      date = '';
+      category = '';
+    }
+    const uniqueCats = cats.filter((item, i, ar) => {
+      return ar.indexOf(item) === i;
+    });
+    uniqueCats.sort();
+    console.log('uniqueCats', uniqueCats);
+    return function (dispatch) {
+      for (let k = 0; k < uniqueCats.length; k++) {
+        sortReceiptsByCategory(AuthStr, accountId, uniqueCats, k);
+      }
+      dispatch(addCategoryReceipt(categoryDataObjArray));
+      dispatch({
+        type: CATEGORIES_FETCH_SUCCESS,
+        payload: uniqueCats
+      });
+      dispatch({
+        type: SET_LIST,
+        payload: receiptlist
+      });
+    };
+};
+
+const setVendor = (data) => {
+  return {
+    type: SET_VENDOR,
+    payload: data
+  };
+};
+
+const setDate = (date) => {
+  const formattedDate = new Date(date).toString();
+  const dateStr = formattedDate.substring(4, 10);
+  return {
+    type: SET_DATE,
+    payload: dateStr
+  };
+};
+
+const setCategory = (data) => {
+  let stringItem = '';
+  if (data === undefined) {
+    stringItem = 'No categories';
+  } else if (data.length < 1) {
+    stringItem = 'No categories';
+  } else {
+    for (let i = 0; i < data.length; i++) {
+      stringItem += data[i];
+    }
+  }
+  return {
+    type: SET_CATEGORY,
+    payload: stringItem
+  };
+};
+
+const setCost = (cost) => {
+  const currency = '$'.concat(cost.toFixed(2));
+  console.log(currency);
+  return {
+    type: SET_COST,
+    payload: currency
+  };
+};
+
+const categoryDataObjArray = [];
+const sortReceiptsByCategory = (AuthStr, accountId, categoryArray, k) => {
+  const receiptsURL = (ssApiQueryURL.accounts).concat(accountId).concat('/documents');
+      console.log('catarray', categoryArray, categoryArray.length);
+      axios.get(receiptsURL,
+        { params: {
+          type: 'receipt',
+          order_by_desc: 'uploaded',
+          trashed: 'false',
+          processing_state: 'PROCESSED',
+          category: categoryArray[k]
+         },
+          headers: { Authorization: AuthStr }
+        }).then(response => {
+          console.log('Category receipts', response.data.documents);
+          const list = response.data.documents;
+          const receiptlist = [];
+          for (let l = 0; l < response.data.totalCountFiltered; l++) {
+                index = 0;
+                let id = '';
+                let vendor = '';
+                let total = '';
+                let date = '';
+                for (let i = 0; i < list.length; i++) {
+                  id = list[i].id;
+                  vendor = list[i].vendor;
+                  if (list[i].total === undefined) {
+                    total = '$ ??';
+                  }	else {
+                    total = '$'.concat(list[i].total.toFixed(2));
+                  }
+                  if (list[i].issued === undefined) {
+                    const formattedDate = new Date(list[i].uploaded).toString();
+                    let year = formattedDate.substring(11, 15);
+                    year = ' '.concat(year);
+                    date = formattedDate.substring(4, 10).concat(year);
+                  } else {
+                    const formattedDate = new Date(list[i].issued).toString();
+                    let year = formattedDate.substring(11, 15);
+                    year = ' '.concat(year);
+                    date = formattedDate.substring(4, 10).concat(year);
+                  }
+
+                  receiptlist[i] = {
+                    id,
+                    vendor,
+                    total,
+                    date,
+                    category: categoryArray[k]
+                  };
+                  id = '';
+                  vendor = '';
+                  total = '';
+                  date = '';
+                }
+          }
+          const dataObj = {
+            length: response.data.totalCountFiltered,
+            category: categoryArray[k],
+            receipts: receiptlist
+          };
+          console.log(dataObj);
+          categoryDataObjArray[k] = dataObj;
+          console.log(categoryDataObjArray);
+        }).catch((er) => {
+          console.log('category fail', er);
+        });
+};
+
+const addCategoryReceipt = (dataObj) => {
+  console.log('addCategoryReceipt');
+  return {
+    type: RECEIPTS_BY_CATEGORY_ADD,
+    payload: dataObj
+  };
+};
+
 export const deleteReceipt = (accId, receiptID) => {
   return function (dispatch) {
     dispatch({
@@ -363,7 +445,7 @@ export const deleteReceipt = (accId, receiptID) => {
     try {
       AsyncStorage.getItem('refreshToken').then((value) => {
         if (value !== null) {
-          dispatch(newToken(accId, value, receiptID));
+          dispatch(newToken(accId, value, receiptID, 1));
         }
       });
     } catch (err) {
@@ -372,7 +454,12 @@ export const deleteReceipt = (accId, receiptID) => {
   };
 };
 
-export const newToken = (accountID, token, receiptID) => {
+/*New token index ->
+1. Delete receipt (trash receipt)
+2. Add receipt
+3. Other?
+*/
+export const newToken = (accountID, token, receiptID = '', newReceipt = {}, num) => {
   console.log('updaterefreshtoken', accountID);
   return function (dispatch) {
   const data = {
@@ -385,7 +472,16 @@ export const newToken = (accountID, token, receiptID) => {
     .then(response => {
       if (response !== null) {
         const AuthStr = 'Bearer '.concat(response.data.access_token);
-        dispatch(trashItem(AuthStr, accountID, receiptID));
+        switch (num) {
+          case 1:
+            dispatch(trashItem(AuthStr, accountID, receiptID));
+            break;
+          case 2:
+            //dispatch(addItem());
+            break;
+          default:
+            break;
+        }
       }
     })
     .catch((err) => {
@@ -398,13 +494,21 @@ export const newToken = (accountID, token, receiptID) => {
       );
       console.log('no auth token', err);
     });
-    return {
-      type: RECEIPT_DELETE_FAIL
-    };
+    switch (num) {
+      case 1:
+          return {
+            type: RECEIPT_DELETE_FAIL
+          };
+      case 2:
+        //dispatch(addItem());
+        break;
+      default:
+        break;
+    }
   };
 };
 
-const trashItem = (AuthStr, accId, receiptId) => {
+const trashItem = (AuthStr, accId, receiptId, receiptIndex) => {
   //axios post here
   console.log('trashy', accId, receiptId, AuthStr);
 
@@ -422,6 +526,11 @@ const trashItem = (AuthStr, accId, receiptId) => {
       })
       .then(response => {
         console.log('DELETE', response.data.documents);
+        //dispatch(deleteFromLists(receiptIndex));
+        return {
+          type: RECEIPT_DELETE_SUCCESS,
+          payload: receiptIndex
+        };
       })
       .catch((er) => {
         console.log('err', er);
@@ -432,7 +541,8 @@ const trashItem = (AuthStr, accId, receiptId) => {
 
 const deleteFailed = (er) => {
   return {
-    type: RECEIPT_DELETE_FAIL
+    type: RECEIPT_DELETE_FAIL,
+    payload: er
   };
 };
 

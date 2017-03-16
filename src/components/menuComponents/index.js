@@ -6,3 +6,4 @@ export * from './LeftAccountsTitle';
 export * from './BackTitle';
 export * from './FilterTitle';
 export * from './BackToReceipts';
+export * from './BackToCats';

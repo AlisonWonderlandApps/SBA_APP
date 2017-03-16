@@ -9,15 +9,12 @@ import {
 	View,
   Alert,
 	TextInput,
-	AsyncStorage
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Spinner from 'react-native-loading-spinner-overlay';
-import { ssApiQueryURL } from '../config/auth';
-import axios from 'axios';
 //import RNFetchBlob from 'react-native-fetch-blob';
 import {
   PRIMARY_HIGHLIGHT_COLOUR,
@@ -34,17 +31,14 @@ import {
  import { HEADER } from '../global/margins';
  import { searchTextChanged, deleteReceipt } from '../actions';
 
-let self;
+ let categoryIndex = '';
 
-class ReceiptsListView extends Component {
+class CategoryReceiptList extends Component {
 
 	constructor(props) {
 		super(props);
-
-		self = this;
-
-		console.log(this.props.receiptList);
-		console.log(this.props.categories);
+    console.log(props);
+    categoryIndex = props.index;
 		this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 	}
 
@@ -100,12 +94,11 @@ class ReceiptsListView extends Component {
 						</Button>
 					</View>
 				<SwipeListView
-						dataSource={this.ds.cloneWithRows(this.props.receiptList)}
+						dataSource={this.ds.cloneWithRows(this.props.categoryReceipts[categoryIndex].receipts)}
 						renderRow={(data) => this.renderRow(data)}
 						renderHiddenRow={(secId, rowId, rowMap) => this.renderHiddenRow(secId, rowId, rowMap)}
 						rightOpenValue={-150}
 						recalculateHiddenLayout
-						previewFirstRow
 				/>
 				<FAB
             onPress={this.onPressFAB}
@@ -328,7 +321,8 @@ const mapStateToProps = ({ accounts, receipts, searchIt }) => {
 		isFetching,
     myReceipts,
 		receiptList,
-		categories
+		categories,
+    categoryReceipts
   } = receipts;
   return {
 		curAccountID,
@@ -336,10 +330,11 @@ const mapStateToProps = ({ accounts, receipts, searchIt }) => {
     myReceipts,
 		receiptList,
 		searchQuery,
-		categories
+		categories,
+    categoryReceipts
   };
 };
 
 export default connect(mapStateToProps, {
 		searchTextChanged, deleteReceipt
-})(ReceiptsListView);
+})(CategoryReceiptList);

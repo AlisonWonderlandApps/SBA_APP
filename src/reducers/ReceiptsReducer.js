@@ -22,6 +22,7 @@ import {
   SET_COST,
   SET_LIST,
   RESET_RECEIPTS,
+  RECEIPTS_BY_CATEGORY_ADD,
   CATEGORY_SEARCH,
   CATEGORY_SEARCH_SUCCESS,
   CATEGORY_SEARCH_FAIL
@@ -43,6 +44,7 @@ const INITIAL_STATE = {
   reimbursableCount: 0,
   latestReceipt: {},
   categories: [],
+  categoryReceipts: [],
   nextPage: false,
 };
 
@@ -168,6 +170,9 @@ export default (state = INITIAL_STATE, action) => {
       };
 
     case RECEIPT_DELETE_SUCCESS:
+    //delete receipts[index] - the payload of this
+    //delete
+
       return {
         ...state,
         isFetching: false
@@ -177,6 +182,14 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         isFetching: false
+      };
+
+    case RECEIPTS_BY_CATEGORY_ADD:
+      return {
+        ...state,
+        categoryReceipts: action.payload
+        //categoryReceipts: state.categoryReceipts.concat(action.payload)
+        //categoryReceipts: [...state.categoryReceipts, action.payload]
       };
 
     case RESET_RECEIPTS:

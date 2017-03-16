@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { ListView } from 'react-native';
 import { connect } from 'react-redux';
-import { BackgroundView, AccountListItem, TitleText } from '../components';
+import { Actions } from 'react-native-router-flux';
+import { BackgroundView, CategoryListItem, TitleText } from '../components';
 import { HEADER } from '../global/margins';
 
 class CategoryList extends Component {
@@ -22,15 +23,17 @@ class CategoryList extends Component {
   onRowPress(rowID) {
     console.log(this.props);
     console.log(rowID);
+    Actions.catReceipts({ index: rowID });
   }
 
   renderRow(rowData, sectionID, rowID) {
     return (
-      <AccountListItem
+      <CategoryListItem
         onPress={this.onRowPress.bind(this, rowID)}
         index={rowID}
         titleLabel={rowData}
         data={this.props}
+        numOfReceipts={this.props.categoryReceipts[rowID].length}
       />
     );
   }
@@ -52,10 +55,12 @@ class CategoryList extends Component {
 
 const mapStateToProps = ({ receipts }) => {
   const {
-    categories
+    categories,
+    categoryReceipts
   } = receipts;
   return {
-    categories
+    categories,
+    categoryReceipts
   };
 };
 
