@@ -160,7 +160,7 @@ class TripsList extends Component {
                         tripData.startLoaction.longitude + '&destinations=' +
                         self.state.curLocation.latitude + ',' +
                         self.state.curLocation.longitude;// + '&key=AIzaSyCPCmrMejmgidQub4d81b9PSpf7aS2J4T0';
-
+console.log("url",url);
               // let url = 'https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins='+
               //           '21.2397122,72.7932964'+ '&destinations=' +
               //           '21.2377655,70.8784624';// + '&key=AIzaSyCPCmrMejmgidQub4d81b9PSpf7aS2J4T0';
@@ -168,14 +168,15 @@ class TripsList extends Component {
               fetch(url)
                 .then((response) => response.json())
                 .then((responseJson) => {
+                  console.log("responseJson",responseJson);
                   const distance = responseJson.rows[0].elements[0].distance.text;
-                  Alert('Trip Distance : ', distance);
+                  alert('Trip Distance : '+ distance);
                   // alert('res : '+JSON.stringify(responseJson));
                 })
                 .catch((error) => {
                   // alert('err : '+error);
                   console.log(error);
-                  Alert('Sorry, something went wrong. Please try again.');
+                  alert('Sorry, something went wrong. Please try again.');
                 });
 
               //******************************************Find Distance end**************************************//
@@ -191,7 +192,7 @@ class TripsList extends Component {
           }
         });
       }
-    }); 
+    });
   }
 
   render() {

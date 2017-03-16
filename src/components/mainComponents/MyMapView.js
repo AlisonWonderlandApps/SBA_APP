@@ -31,7 +31,18 @@ class MyMapView extends Component {
            latitudeDelta: 0.015,
            longitudeDelta: 0.0121,
          }}
-       />
+       >
+       <MapView.Marker
+              coordinate={{
+                latitude: 37.78825,
+                longitude: -122.4324,
+                latitudeDelta: 0.015,
+                longitudeDelta: 0.0121,
+              }}
+              title={'title'}
+              description={'description'}
+             />
+           </MapView>
      </View>
    );
  }
