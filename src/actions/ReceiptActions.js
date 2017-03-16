@@ -461,41 +461,52 @@ export const deleteReceipt = (accId, receiptID) => {
 2. Add receipt
 3. Other?
 */
-export const newToken = (accountID, token, receiptID = '', newReceipt = {}, num) => {
+export const newToken = (accountID, AuthStr, receiptID = '', newReceipt = {}, num) => {
   console.log('updaterefreshtoken', accountID);
   return function (dispatch) {
-  const data = {
-    grant_type: ssAuthConfig.refreshTokenGrantType,
-    client_id: ssAuthConfig.clientId,
-    client_secret: ssAuthConfig.clientSecret,
-    refresh_token: token
-  };
-  axios.post(ssAuthConfig.tokenURL, Querystring.stringify(data))
-    .then(response => {
-      if (response !== null) {
-        const AuthStr = 'Bearer '.concat(response.data.access_token);
-        switch (num) {
-          case 1:
-            dispatch(trashItem(AuthStr, accountID, receiptID));
-            break;
-          case 2:
-            dispatch(addItem(AuthStr, accountID, newReceipt));
-            break;
-          default:
-            break;
-        }
-      }
-    })
-    .catch((err) => {
-      Alert.alert(
-        'Sorry',
-        'An error occurred :(',
-        [
-          { text: 'OK' }
-        ]
-      );
-      console.log('no auth token', err);
-    });
+  // const data = {
+  //   grant_type: ssAuthConfig.refreshTokenGrantType,
+  //   client_id: ssAuthConfig.clientId,
+  //   client_secret: ssAuthConfig.clientSecret,
+  //   refresh_token: token
+  // };
+  // axios.post(ssAuthConfig.tokenURL, Querystring.stringify(data))
+  //   .then(response => {
+  //     if (response !== null) {
+  //       const AuthStr = 'Bearer '.concat(response.data.access_token);
+  //       switch (num) {
+  //         case 1:
+  //           dispatch(trashItem(AuthStr, accountID, receiptID));
+  //           break;
+  //         case 2:
+  //           dispatch(addItem(AuthStr, accountID, newReceipt));
+  //           break;
+  //         default:
+  //           break;
+  //       }
+  //     }
+  //   })
+  //   .catch((err) => {
+  //     Alert.alert(
+  //       'Sorry',
+  //       'An error occurred :(',
+  //       [
+  //         { text: 'OK' }
+  //       ]
+  //     );
+  //     console.log('no auth token', err);
+  //   });
+
+  switch (num) {
+    case 1:
+      dispatch(trashItem(AuthStr, accountID, receiptID));
+      break;
+    case 2:
+      dispatch(addItem(AuthStr, accountID, newReceipt));
+      break;
+    default:
+      break;
+  }
     switch (num) {
       case 1:
           return {
@@ -554,7 +565,7 @@ export const addReceiptFromImage = (AccountId, response, image, source) => {
     });
     //1. get Auth token
     try {
-      AsyncStorage.getItem('refreshToken').then((value) => {
+      AsyncStorage.getItem('AuthStr').then((value) => {
         if (value !== null) {
           dispatch(newToken(AccountId, value, '', receiptObj, 2));
         }
@@ -566,7 +577,7 @@ export const addReceiptFromImage = (AccountId, response, image, source) => {
 };
 
 const addItem = (AuthStr, accountId, receiptObj) => {
-  const requestUrl = ssApiQueryURL.accountsSquirrel.concat(accountId).concat('/documents/');
+  const requestUrl = ssApiQueryURL.accounts.concat(accountId).concat('/documents/');
   console.log('----->requestUrl : ', requestUrl);
 
   RNFetchBlob.fetch('POST', requestUrl, {
@@ -587,9 +598,9 @@ const addItem = (AuthStr, accountId, receiptObj) => {
      ]).then((resp) => {
        const respJSONData = JSON.parse(resp.data);
        const receiptId = respJSONData.id;
-
-       Alert('Receipt uploaded successfully.(Receipt Id : ' + receiptId + ')');
        console.log('--------->resp : ', JSON.stringify(resp));
+       alert('Receipt uploaded successfully.(Receipt Id : ' + receiptId + ')');
+
      }).catch((err) => {
        Alert('Sorry , something went wrong while receipt upload.');
        console.log('--------->err : ', JSON.stringify(err));

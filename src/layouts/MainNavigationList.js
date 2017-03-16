@@ -44,7 +44,14 @@ import {
 
 const ImagePicker = require('react-native-image-picker');
 
+let self;
+
 class MainNavigationList extends Component {
+  constructor(props){
+    super(props);
+
+    self = this;
+  }
 
   shouldComponentUpdate(nextProps) {
     console.log('updateMain', nextProps);
@@ -199,6 +206,7 @@ class MainNavigationList extends Component {
     };
 
   ImagePicker.showImagePicker(options, (response) => {
+    console.log('this.props.curAccountID',self.props.curAccountID);
     console.log('response', response);
       if (response.didCancel) {
         console.log('User cancelled image picker');
@@ -214,9 +222,10 @@ class MainNavigationList extends Component {
           image = response.path;
         }
         const source = { uri: response.uri };
-        this.props.addReceiptFromImage(this.props.curAccountID, response, image, source);
+        self.props.addReceiptFromImage(self.props.curAccountID, response, image, source);
     }
-  }
+  });
+}
 
   processingPressed() {
     console.log('processingPressed');
