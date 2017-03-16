@@ -8,6 +8,7 @@ import com.oblador.vectoricons.VectorIconsPackage;
 import com.react.rnspinkit.RNSpinkitPackage;
 import com.keyee.pdfview.PDFView;
 import com.airbnb.android.react.maps.MapsPackage;
+import com.imagepicker.ImagePickerPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
 import com.lwansbrough.RCTCamera.RCTCameraPackage;
 import com.facebook.react.ReactInstanceManager;
@@ -35,6 +36,7 @@ public class MainApplication extends Application implements ReactApplication {
             new RNSpinkitPackage(),
             new PDFView(),
             new MapsPackage(),
+            new ImagePickerPackage(),
             new RNFetchBlobPackage(),
             new RCTCameraPackage()
       );

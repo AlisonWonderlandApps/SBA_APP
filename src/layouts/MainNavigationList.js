@@ -4,11 +4,22 @@
 */
 
 import React, { Component } from 'react';
-import { Alert, Text, View, TouchableHighlight, TouchableWithoutFeedback } from 'react-native';
+import {
+  Alert,
+  Platform,
+  View,
+  TouchableHighlight,
+  TouchableWithoutFeedback,
+  AsyncStorage
+ } from 'react-native';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/Ionicons';
+import RNFetchBlob from 'react-native-fetch-blob';
+import ImagePicker from 'react-native-image-picker';
+
 import { receiptsFetch } from '../actions';
+import { ssAuthConfig, ssApiQueryURL } from '../config/auth';
 import { layoutStyles } from './styles';
 import { PRIMARY_HIGHLIGHT_COLOUR } from '../global/colours';
 
@@ -16,7 +27,6 @@ import {
   BackgroundView,
   CardSection,
   NavListSectionTools,
-  Tab,
   FAB,
   Banner,
   TitleText,
@@ -165,8 +175,9 @@ class MainNavigationList extends Component {
   }
 
   onPressFAB() {
+    /*
     console.log('FAB pressed');
-    Alert.alert(
+    Alert.Alert(
       'Choose Photo Source',
       null,
       [
@@ -175,6 +186,71 @@ class MainNavigationList extends Component {
         { text: 'Cancel', onPress: () => console.log('cancel'), style: 'cancel' }
       ]
     );
+    */
+
+    const options = {
+      title: 'Choose Photo Source',
+      storageOptions: {
+        skipBackup: true,
+        path: 'images'
+      }
+    };
+
+  ImagePicker.showImagePicker(options, (response) => {
+    console.log('response', response);
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        Alert('Sorry, something went wrong.Please try again.');
+      } else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+      } else {
+        let image;
+        if (Platform.OS === 'ios') {
+          image = response.origURL;
+        } else {
+          image = response.path;
+        }
+        const source = { uri: response.uri };
+        AsyncStorage.getItem('newAccessToken', (err, res) => {
+            if (err) {
+              Alert('Sorry, something went wrong.Please try again.');
+            } else {
+              const accessToken = res;
+              const AuthStr = accessToken;
+              const requestUrl = ssApiQueryURL.accountsSquirrel + this.props.curAccountId + '/documents/';
+
+              console.log('----->requestUrl : '+requestUrl);
+
+              RNFetchBlob.fetch('POST', requestUrl, {
+                   Authorization: AuthStr,
+                   'Content-Type': 'multipart/form-data',
+                 }, [
+                    {
+                      name: 'attachment',
+                      filename: response.fileName,
+                      type: response.type,
+                      //data: RNFetchBlob.wrap(image)
+                    },
+                   { name: 'account', data: this.props.curAccountId },
+                   { name: 'document',
+                        data: JSON.stringify({
+                        processingState: 'NEEDS_SYSTEM_PROCESSING',
+                   }) },
+                 ]).then((resp) => {
+                   const respJSONData = JSON.parse(resp.data);
+                   const receiptId = respJSONData.id;
+
+                   Alert('Receipt uploaded successfully.(Receipt Id : ' + receiptId + ')');
+                   console.log('--------->resp : ', JSON.stringify(resp));
+                 }).catch((err) => {
+                   Alert('Sorry , something went wrong while receipt upload.');
+                   console.log('--------->err : ', JSON.stringify(err));
+                 });
+              }
+            });
+        }
+    });
   }
 
   processingPressed() {

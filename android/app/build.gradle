@@ -130,6 +130,7 @@ dependencies {
     compile project(':react-native-spinkit')
     compile project(':react-native-pdf-view')
     compile project(':react-native-maps')
+    compile project(':react-native-image-picker')
     compile project(':react-native-fetch-blob')
     compile project(':react-native-camera')
     compile fileTree(dir: "libs", include: ["*.jar"])
