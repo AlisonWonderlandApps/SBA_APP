@@ -440,12 +440,12 @@ const addCategoryReceipt = (dataObj) => {
 export const deleteReceipt = (accId, receiptID) => {
   return function (dispatch) {
     dispatch({
-      type: RECEIPT_DELETE
+      type: RECEIPT_DELETE,
     });
     try {
       AsyncStorage.getItem('refreshToken').then((value) => {
         if (value !== null) {
-          dispatch(newToken(accId, value, receiptID, 1));
+          dispatch(newToken(accId, value, receiptID, {}, 1));
         }
       });
     } catch (err) {
@@ -461,6 +461,7 @@ export const deleteReceipt = (accId, receiptID) => {
 */
 export const newToken = (accountID, token, receiptID, newReceipt, num) => {
   console.log('updaterefreshtoken', accountID);
+  return function (dispatch) {
    const data = {
      grant_type: ssAuthConfig.refreshTokenGrantType,
      client_id: ssAuthConfig.clientId,
@@ -472,9 +473,18 @@ export const newToken = (accountID, token, receiptID, newReceipt, num) => {
        if (response !== null) {
          const AuthStr = 'Bearer '.concat(response.data.access_token);
          console.log('AuthStr', AuthStr, num);
-         addItem(AuthStr, accountID, newReceipt);
+        // addItem(AuthStr, accountID, newReceipt);
+        if (num === 1) {
+          console.log('trashItem');
+          dispatch(trashItem(AuthStr, accountID, receiptID));
+        } else if (num === 2) {
+          console.log('Add Item');
+          dispatch(addItem(AuthStr, accountID, newReceipt));
+        }
+        /*
          switch (num) {
            case 1:
+             console.log('trashItem');
              trashItem(AuthStr, accountID, receiptID);
              break;
            case 2:
@@ -483,7 +493,7 @@ export const newToken = (accountID, token, receiptID, newReceipt, num) => {
              break;
            default:
              break;
-         }
+         } */
        }
      }).catch((err) => {
        Alert.alert(
@@ -495,36 +505,47 @@ export const newToken = (accountID, token, receiptID, newReceipt, num) => {
        );
        console.log('no auth token', err);
      });
+  };
 };
 
-const trashItem = (AuthStr, accId, receiptId, receiptIndex) => {
-  //axios post here
-  console.log('trashy', accId, receiptId, AuthStr);
-
-  const deleteURL = (ssApiQueryURL.accounts).concat(accId).concat('/documents/').concat(receiptId);
-    console.log('deleteURL', deleteURL, AuthStr);
-
-    const data = {
-        trashed: 'true'
-    };
-
-    return function (dispatch) {
-    axios.put(deleteURL, Querystring.stringify(data),
-      { //params: { trashed: 'true' },
-        headers: { Authorization: AuthStr }
-      })
+const trashItem = (AuthStr, accountId, receiptID) => {
+  console.log('trashy', accountId, receiptID, AuthStr);
+  const requestUrl = ssApiQueryURL.accounts
+    .concat(accountId).concat('/documents/')
+    .concat(receiptID).concat('/');
+  return function (dispatch) {
+    axios.get(requestUrl, { headers: { Authorization: AuthStr } })
       .then(response => {
-        console.log('DELETE', response.data.documents);
-        //dispatch(deleteFromLists(receiptIndex));
-        return {
-          type: RECEIPT_DELETE_SUCCESS,
-          payload: receiptIndex
-        };
-      })
-      .catch((er) => {
-        console.log('err', er);
-        dispatch(deleteFailed(er));
-      });
+        const responseData = JSON.parse(JSON.stringify(response));
+        console.log('------->responseData', responseData);
+        if (response.status === 200) {
+          const jsonToUpate = responseData.data;
+          jsonToUpate.trashed = true;
+          console.log('------------>jsonToUpate', jsonToUpate);
+
+          RNFetchBlob.fetch('PUT', requestUrl, {
+              Authorization: AuthStr,
+              'Content-Type': 'application/json',
+               }, JSON.stringify(jsonToUpate)).then((resp) => {
+                 console.log('success', resp);
+
+                dispatch(deleteSuccess(AuthStr, accountId));
+                dispatch(fetchReceipts(AuthStr, accountId));
+               }).catch((err) => {
+                 console.log('delete error', err);
+                 dispatch(deleteFailed());
+                 //Alert('Sorry something went wrong. Please try again.');
+               });
+        } else {
+          //Alert('Sorry something went wrong.Please try again. (status code : '
+          //.concat(response.status).concat(')'));
+          dispatch(deleteFailed());
+        }
+      }).catch((error) => {
+            console.log('error', error);
+            //Alert('Sorry something went wrong. Please try again.');
+            dispatch(deleteFailed());
+        });
     };
 };
 
@@ -535,28 +556,9 @@ export const addReceiptFromImage = (AccountId, response, image, source) => {
     source
   };
   return function (dispatch) {
-    //show loading status?
     dispatch({
       type: ADD_RECEIPT
     });
-    //1. get Auth token
-/*    try {
-      AsyncStorage.getItem('refreshToken').then((value) => {
-        if (value !== null) {
-          dispatch(getNewToken(value));
-        } else {
-          dispatch({
-            type: UNAUTH_USER
-          });
-        }
-    });
-    } catch (err) {
-        console.log('no refresh token gotten');
-        dispatch({
-          type: AUTH_ERROR,
-          payload: err
-        });
-    } */
     try {
       AsyncStorage.getItem('refreshToken').then((value) => {
         if (value !== null) {
@@ -594,52 +596,20 @@ const addItem = (AuthStr, accountId, receiptObj) => {
        console.log('--------->resp : ', JSON.stringify(resp));
        Alert('Receipt uploaded successfully.(Receipt Id : ', receiptId, ')');
      }).catch((err) => {
-       Alert('Sorry , something went wrong while receipt upload.');
+       Alert('Sorry, something went wrong.');
        console.log('--------->err : ', JSON.stringify(err));
      });
 };
-  //2.
-  /*      AsyncStorage.getItem('newAccessToken', (err, res) => {
-            if (err) {
-              Alert('Sorry, something went wrong.Please try again.');
-            } else {
-              const accessToken = res;
-              const AuthStr = accessToken;
-              const requestUrl = ssApiQueryURL.accountsSquirrel + this.props.curAccountId + '/documents/';
 
-              console.log('----->requestUrl : '+requestUrl);
-
-              RNFetchBlob.fetch('POST', requestUrl, {
-                   Authorization: AuthStr,
-                   'Content-Type': 'multipart/form-data',
-                 }, [
-                    {
-                      name: 'attachment',
-                      filename: response.fileName,
-                      type: response.type,
-                      //data: RNFetchBlob.wrap(image)
-                    },
-                   { name: 'account', data: this.props.curAccountId },
-                   { name: 'document',
-                        data: JSON.stringify({
-                        processingState: 'NEEDS_SYSTEM_PROCESSING',
-                   }) },
-                 ]).then((resp) => {
-                   const respJSONData = JSON.parse(resp.data);
-                   const receiptId = respJSONData.id;
-
-                   Alert('Receipt uploaded successfully.(Receipt Id : ' + receiptId + ')');
-                   console.log('--------->resp : ', JSON.stringify(resp));
-                 }).catch((err) => {
-                   Alert('Sorry , something went wrong while receipt upload.');
-                   console.log('--------->err : ', JSON.stringify(err));
-                 });
-              }
-            });
-        }
-}; */
+const deleteSuccess = () => {
+  //Alert('Receipt Deleted')
+  return {
+    type: RECEIPT_DELETE_SUCCESS
+  };
+};
 
 const deleteFailed = (er) => {
+  console.log('deleteFailed', er);
   return {
     type: RECEIPT_DELETE_FAIL,
     payload: er
