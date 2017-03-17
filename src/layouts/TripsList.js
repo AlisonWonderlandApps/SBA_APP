@@ -6,7 +6,9 @@ import {
   ListView,
   AsyncStorage,
   TouchableHighlight,
+  StyleSheet
 } from 'react-native';
+import MapView from 'react-native-maps';
 import { connect } from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { BackgroundView, TripsListItem, Button, MyMapView } from '../components';
@@ -15,6 +17,8 @@ import {
   CARD_BACKGROUND_COLOUR,
   BORDER_COLOUR
  } from '../global/colours';
+ import { Actions } from 'react-native-router-flux';
+
 
 let self;
 
@@ -31,8 +35,8 @@ class TripsList extends Component {
       isTripStarted: false,
       buttonText: ' Start Trip ',
       curLocation: {
-        latitude: 25,
-        longitude: 25
+        latitude: 50,
+        longitude: 50
       }
     };
 
@@ -71,6 +75,7 @@ class TripsList extends Component {
 
   updateLocation() {
       navigator.geolocation.getCurrentPosition((position) => {
+        console.log('position',position);
         self.setState({
           curLocation: {
             latitude: position.coords.latitude,
@@ -160,7 +165,7 @@ class TripsList extends Component {
                         tripData.startLoaction.longitude + '&destinations=' +
                         self.state.curLocation.latitude + ',' +
                         self.state.curLocation.longitude;// + '&key=AIzaSyCPCmrMejmgidQub4d81b9PSpf7aS2J4T0';
-console.log("url",url);
+                        console.log("url",url);
               // let url = 'https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins='+
               //           '21.2397122,72.7932964'+ '&destinations=' +
               //           '21.2377655,70.8784624';// + '&key=AIzaSyCPCmrMejmgidQub4d81b9PSpf7aS2J4T0';
@@ -171,12 +176,25 @@ console.log("url",url);
                   console.log("responseJson",responseJson);
                   const distance = responseJson.rows[0].elements[0].distance.text;
                   alert('Trip Distance : '+ distance);
-                  // alert('res : '+JSON.stringify(responseJson));
+
+                  const snapshot = self.refs.map.takeSnapshot({
+                    // width: 300,      // optional, when omitted the view-width is used
+                    // height: 300,     // optional, when omitted the view-height is used
+                    // region: {..},    // iOS only, optional region to render
+                    format: 'png',   // image formats: 'png', 'jpg' (default: 'png')
+                    quality: 0.8,    // image quality: 0..1 (only relevant for jpg, default: 1)
+                    result: 'file'   // result types: 'file', 'base64' (default: 'file')
+                  });
+                  snapshot.then((uri) => {
+                    AsyncStorage.setItem('mapSnapshotUri', uri, function(err,res){
+                        Actions.trippreview();
+                    });
+                  });
                 })
                 .catch((error) => {
                   // alert('err : '+error);
                   console.log(error);
-                  alert('Sorry, something went wrong. Please try again.');
+                  alert('Sorry, something went wrong. Please try again.'+error);
                 });
 
               //******************************************Find Distance end**************************************//
@@ -196,6 +214,14 @@ console.log("url",url);
   }
 
   render() {
+    let curLocation = this.state.curLocation;
+    let locationJSON = {
+      latitude: curLocation.latitude,
+      longitude: curLocation.longitude,
+      latitudeDelta: 0.015,
+      longitudeDelta: 0.0121,
+    };
+
     if (this.props.myTrips.length < 1) {
       return (
         <BackgroundView
@@ -205,7 +231,19 @@ console.log("url",url);
             justifyContent: 'center'
            }}
         >
-          <MyMapView location={this.state.curLocation} />
+          <View style={styles.container}>
+            <MapView
+              style={styles.map}
+              region={locationJSON}
+              ref="map"
+            >
+            <MapView.Marker
+                   coordinate={locationJSON}
+                   title={'title'}
+                   description={'description'}
+                  />
+                </MapView>
+          </View>
           <View style={{ paddingTop: 20 }}>
             <Button onPress={() => this.startOrEndTrip()}>{this.state.buttonText}</Button>
           </View>
@@ -227,7 +265,19 @@ console.log("url",url);
       >
       <View style={{ flex: 1 }}>
         <View style={{ flexGrow: 1 }}>
-          <MyMapView location={this.state.curLocation} />
+          <View style={styles.container}>
+            <MapView
+              style={styles.map}
+              region={locationJSON}
+              ref="map"
+            >
+            <MapView.Marker
+                   coordinate={locationJSON}
+                   title={'title'}
+                   description={'description'}
+                  />
+                </MapView>
+          </View>
           <View style={{ paddingTop: 20 }}>
             <Button onPress={() => this.startOrEndTrip()}>{this.state.buttonText}</Button>
           </View>
@@ -269,7 +319,7 @@ console.log("url",url);
   }
 }
 
-const styles = {
+const styles = StyleSheet.create({
   rowFront: {
     //alignItems: 'center',
     padding: 10,
@@ -278,8 +328,18 @@ const styles = {
     borderBottomWidth: 1,
     justifyContent: 'center',
     //height: 100,
-  }
-};
+  },
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    padding: 10
+  },
+  map: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 0,
+    elevation: -1
+  },
+});
 
 const mapStateToProps = ({ receipts, trips }) => {
   const {

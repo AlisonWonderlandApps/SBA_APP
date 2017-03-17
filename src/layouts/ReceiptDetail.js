@@ -67,7 +67,7 @@ class ReceiptDetail extends Component {
    		// 	let accountId = res[1][1];
 
 				let accountId = '1481900574';
-				let documnetId = "58c2a374e4b04cd8325ff80a";  //pass document id as per row selection
+				let documnetId = "58cb869be4b0a70b542071ca";  //pass document id as per row selection
         let requestUrl = ssApiQueryURL.accounts + accountId + "/documents/" + documnetId + "/";
 
         console.log('----->requestUrl : '+requestUrl);

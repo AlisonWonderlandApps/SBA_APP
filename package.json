@@ -35,6 +35,7 @@
     "react-native-swipe-list-view": "^0.3.3",
     "react-native-switch": "^1.0.5",
     "react-native-vector-icons": "^3.0.0",
+    "react-native-view-shot": "^1.9.1",
     "react-redux": "^5.0.1",
     "redux": "^3.6.0",
     "redux-logger": "^2.7.4",

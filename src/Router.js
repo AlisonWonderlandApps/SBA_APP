@@ -42,6 +42,7 @@ import ReceiptsListView from './layouts/ReceiptsListView';
 import CategoryList from './layouts/CategoryList';
 import ReceiptDetail from './layouts/ReceiptDetail';
 import CategoryReceiptList from './layouts/CategoryReceiptList';
+import TripPreview from './layouts/TripPreview.js';
 
 
 class RouterComponent extends Component {
@@ -338,6 +339,15 @@ class RouterComponent extends Component {
       rightTitle='Next'
       renderRightButton={this.renderRightButton.bind(this.props)}
     />
+
+    <Scene
+          key="trippreview"
+          component={TripPreview}
+          hideNavBar={false}
+          navigationBarStyle={styles.headerStyle}
+          renderTitle={() => <Header />}
+        />
+
 
     </Router>
     );

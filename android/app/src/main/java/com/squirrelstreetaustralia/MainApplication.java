@@ -4,6 +4,7 @@ import android.app.Application;
 import android.util.Log;
 
 import com.facebook.react.ReactApplication;
+import fr.greweb.reactnativeviewshot.RNViewShotPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.react.rnspinkit.RNSpinkitPackage;
 import com.keyee.pdfview.PDFView;
@@ -32,6 +33,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNViewShotPackage(),
             new VectorIconsPackage(),
             new RNSpinkitPackage(),
             new PDFView(),
