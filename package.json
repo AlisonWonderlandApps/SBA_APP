@@ -1,0 +1,59 @@
+{
+  "name": "SquirrelStreetAustralia",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "test": "jest"
+  },
+  "dependencies": {
+    "axios": "^0.15.3",
+    "i": "^0.3.5",
+    "lodash": "^4.17.4",
+    "npm": "^4.0.5",
+    "querystring": "^0.2.0",
+    "react": "~15.4.0-rc.4",
+    "react-native": "0.39.2",
+    "react-native-action-button": "^2.0.17",
+    "react-native-camera": "^0.4.1",
+    "react-native-camera-roll-picker": "^1.1.9",
+    "react-native-communications": "^2.2.1",
+    "react-native-drawer": "^2.3.0",
+    "react-native-fetch-blob": "^0.10.2",
+    "react-native-floating-label-text-input": "^0.1.1",
+    "react-native-floating-labels": "^1.1.2",
+    "react-native-image-picker": "^0.24.0",
+    "react-native-immutable-listview-datasource": "^1.3.1",
+    "react-native-indicator": "^0.6.7",
+    "react-native-loading-spinner-overlay": "^0.4.1",
+    "react-native-maps": "^0.12.2",
+    "react-native-material-design-searchbar": "^1.0.11",
+    "react-native-pdf-view": "^0.3.2",
+    "react-native-router-flux": "^3.37.0",
+    "react-native-simple-modal": "^4.0.1",
+    "react-native-spinkit": "^0.1.5",
+    "react-native-swipe-list-view": "^0.3.3",
+    "react-native-switch": "^1.0.5",
+    "react-native-vector-icons": "^3.0.0",
+    "react-redux": "^5.0.1",
+    "redux": "^3.6.0",
+    "redux-logger": "^2.7.4",
+    "redux-thunk": "^2.1.0",
+    "regex-util": "^1.0.4"
+  },
+  "devDependencies": {
+    "babel-jest": "18.0.0",
+    "babel-preset-react-native": "1.9.1",
+    "eslint-config-rallycoding": "^3.2.0",
+    "jest": "18.1.0",
+    "react-test-renderer": "~15.4.0-rc.4"
+  },
+  "jest": {
+    "preset": "react-native"
+  },
+  "rnpm": {
+    "assets": [
+      "./src/assets/fonts"
+    ]
+  }
+}
