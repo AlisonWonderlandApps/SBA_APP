@@ -10,6 +10,13 @@ import FloatingLabel from 'react-native-floating-labels';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
+const FBSDK = require('react-native-fbsdk');
+const {
+  LoginButton,
+  AccessToken
+} = FBSDK;
+import {GoogleSignin} from 'react-native-google-signin';
+
 
 /*** Import Internal Resources ***/
 import {
@@ -170,12 +177,25 @@ class Login extends Component {
             </CardSection>
           </CardView>
           <View style={socialButtonContainer}>
-            <FacebookButton
-              style={{ flexGrow: 0.9 }}
-              onPress={this.onFBButtonPress.bind(this)}
-            >
-              Facebook Login
-            </FacebookButton>
+            <LoginButton
+          publishPermissions={["publish_actions"]}
+          onLoginFinished={
+            (error, result) => {
+              if (error) {
+                alert("login has error: " + result.error);
+              } else if (result.isCancelled) {
+                alert("login is cancelled.");
+              } else {
+                AccessToken.getCurrentAccessToken().then(
+                  (data) => {
+                    alert(data.accessToken.toString())
+                  }
+                )
+              }
+            }
+          }
+          onLogoutFinished={() => alert("logout.")}/>
+
             <GoogleButton
               style={{ flexGrow: 0.9 }}
               onPress={this.onGoogleButtonPress.bind(this)}
@@ -333,7 +353,26 @@ showAlert(message) {
 
     });
 */
-    this.props.loginGoogleUser();
+    //this.props.loginGoogleUser();
+
+    GoogleSignin.hasPlayServices({ autoResolve: true }).then(() => {
+      GoogleSignin.configure({
+        iosClientId: "848418370745-8nrsm2m9etokfvdn3jtujbh3tflgsdq9.apps.googleusercontent.com", // only for iOS
+      })
+      .then(() => {
+        GoogleSignin.signIn()
+            .then((user) => {
+              alert(user.accessToken);
+            })
+            .catch((err) => {
+              alert('WRONG SIGNIN'+ err);
+            })
+            .done();
+      });
+    })
+    .catch((err) => {
+      alert("Play services error"+err.code+ err.message);
+    })
   }
   /******End ButtonPress helpers ******/
 
