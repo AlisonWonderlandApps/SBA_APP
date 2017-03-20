@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import {
   Alert,
-  Text,
   TextInput,
   View,
+  Text,
   TouchableHighlight,
   ListView
 } from 'react-native';
@@ -16,14 +16,16 @@ import {
   FAB,
   Button,
   Banner,
-  TitleText
+  TitleText,
+  ColourText
 } from '../components';
 import { HEADER } from '../global/margins';
 import {
   PRIMARY_HIGHLIGHT_COLOUR,
   CARD_BACKGROUND_COLOUR,
   SHADOW_COLOUR,
-  BORDER_COLOUR
+  BORDER_COLOUR,
+  BRAND_COLOUR_GREEN
  } from '../global/colours';
 import { searchTextChanged } from '../actions';
 
@@ -104,7 +106,7 @@ class Processing extends Component {
   }
 
   renderRow(data) {
-    //console.log('data', data);
+    console.log('data', data);
     return (
         <TouchableHighlight
           onPress={() => console.log('You touched me', data)}
@@ -112,13 +114,43 @@ class Processing extends Component {
           style={styles.rowFront}
         >
           <View>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }} >
-              <Text> {this.renderDataVendor(data.vendor)} </Text>
-              <Text> {this.renderDataTotal(data.total)} </Text>
+            <View style={{ justifyContent: 'space-between' }} >
+              <TitleText style={{ color: BRAND_COLOUR_GREEN }}> Processing </TitleText>
+              <Text> {this.renderDataDate(data)} </Text>
+              <Text> {this.renderDataCategories(data)} </Text>
             </View>
           </View>
         </TouchableHighlight>
     );
+  }
+
+  renderDataDate(data) {
+    let date = '';
+    if (data.issued === undefined) {
+      const formattedDate = new Date(data.uploaded).toString();
+      let year = formattedDate.substring(11, 15);
+      year = ', '.concat(year);
+      date = formattedDate.substring(4, 10).concat(year);
+    } else {
+      const formattedDate = new Date(data.issued).toString();
+      let year = formattedDate.substring(11, 15);
+      year = ', '.concat(year);
+      date = formattedDate.substring(4, 10).concat(year);
+    }
+    return date;
+  }
+
+  renderDataCategories(data) {
+    let categories = '';
+    if (data.categories === undefined || data.categories.length < 1) {
+      return 'No categories';
+    }
+    categories = data.categories[0];
+    for (let k = 1; k < data.categories.length; k++) {
+        categories += ', '.concat(data.categories[k]);
+    }
+    console.log(categories);
+    return categories;
   }
 
   renderDataVendor(name) {

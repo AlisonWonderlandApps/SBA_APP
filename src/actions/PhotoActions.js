@@ -67,13 +67,6 @@ export const setReceiptCategory = (cat) => {
   };
 };
 
-export const noteChanged = (note) => {
-  return {
-    type: SET_RECEIPT_NOTE,
-    payload: note
-  };
-};
-
 export const usePicture = (bool) => {
   return {
     type: USE_PICTURE,

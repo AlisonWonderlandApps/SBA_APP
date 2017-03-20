@@ -23,6 +23,12 @@ import {
   SET_LIST,
   RESET_RECEIPTS,
   RECEIPTS_BY_CATEGORY_ADD,
+  LOAD_A_RECEIPT,
+  LOAD_A_RECEIPT_SUCCESS,
+  SAVE_IMAGE_DATA,
+  SET_NEW_RECEIPT_CATEGORY,
+  SET_RECEIPT_NOTE,
+  RESET_NEW_RECEIPT
   //CATEGORY_SEARCH,
   //CATEGORY_SEARCH_SUCCESS,
   //CATEGORY_SEARCH_FAIL
@@ -46,6 +52,10 @@ const INITIAL_STATE = {
   categories: [],
   categoryReceipts: [],
   nextPage: false,
+  imageData: {},
+  newReceiptCategory: '',
+  newReceiptNote: '',
+  receiptDetail: {}
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -157,6 +167,7 @@ export default (state = INITIAL_STATE, action) => {
     //console.log('add', this.myReceipts, this.myReceipts.push(action.payload));
       return {
         ...state,
+        isFetching: true,
         myReceipts: [...state.myReceipts, action.payload]
       };
 
@@ -192,6 +203,40 @@ export default (state = INITIAL_STATE, action) => {
         //categoryReceipts: [...state.categoryReceipts, action.payload]
       };
 
+    case LOAD_A_RECEIPT:
+      return { ...state, receiptDetail: action.payload };
+
+    case LOAD_A_RECEIPT_SUCCESS:
+      return {
+        ...state,
+        isFetching: false
+      };
+
+    case SAVE_IMAGE_DATA:
+      return {
+        ...state,
+        imageData: action.payload
+      };
+
+    case SET_NEW_RECEIPT_CATEGORY:
+      return {
+        ...state,
+        newReceiptCategory: action.payload
+      };
+
+    case SET_RECEIPT_NOTE:
+      return {
+        ...state,
+        newReceiptNote: action.payload
+      };
+
+    case RESET_NEW_RECEIPT:
+      return {
+        ...state,
+        newReceiptCategory: '',
+        newReceiptNote: ''
+      };
+
     case RESET_RECEIPTS:
       return {
         errorMsg: '',
@@ -210,6 +255,9 @@ export default (state = INITIAL_STATE, action) => {
         latestReceipt: {},
         categories: [],
         nextPage: false,
+        imageData: {},
+        newReceiptCategory: '',
+        receiptDetail: {}
       };
 
     default:

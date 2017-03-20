@@ -7,12 +7,17 @@ import {
   USER_INFO_FETCH_SUCCESS,
 } from './types';
 
+import {
+  setUserEmail
+} from './AccountActions';
+
 //this gets loaded from accountActions - hence not much work to do
 export const loadUserInfo = (UserData) => {
   console.log('loadUser Info', UserData);
   return function (dispatch) {
     dispatch(loadInfoSuccess(UserData));
     dispatch(loadNameSuccess(UserData.name));
+    dispatch(setUserEmail(UserData.email));
   };
 };
 

@@ -9,15 +9,16 @@ import {
 	View,
   Alert,
 	TextInput,
-	AsyncStorage
+	Platform
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Spinner from 'react-native-loading-spinner-overlay';
-import { ssApiQueryURL } from '../config/auth';
-import axios from 'axios';
+import ImagePicker from 'react-native-image-picker';
+//import { ssApiQueryURL } from '../config/auth';
+//import axios from 'axios';
 //import RNFetchBlob from 'react-native-fetch-blob';
 import {
   PRIMARY_HIGHLIGHT_COLOUR,
@@ -32,7 +33,7 @@ import {
 	TitleText
  } from '../components';
  import { HEADER } from '../global/margins';
- import { searchTextChanged, deleteReceipt } from '../actions';
+ import { searchTextChanged, deleteReceipt, loadAReceipt } from '../actions';
 
 let self;
 
@@ -101,14 +102,14 @@ class ReceiptsListView extends Component {
 					</View>
 				<SwipeListView
 						dataSource={this.ds.cloneWithRows(this.props.receiptList)}
-						renderRow={(data) => this.renderRow(data)}
+						renderRow={(data, rowId) => this.renderRow(data, rowId)}
 						renderHiddenRow={(secId, rowId, rowMap) => this.renderHiddenRow(secId, rowId, rowMap)}
 						rightOpenValue={-150}
 						recalculateHiddenLayout
 						previewFirstRow
 				/>
 				<FAB
-            onPress={this.onPressFAB}
+          onPress={this.onPressFAB}
 				/>
 				<Spinner
 					visible={this.props.isFetching}
@@ -119,15 +120,47 @@ class ReceiptsListView extends Component {
 		);
 	}
 
+	onPressFAB() {
+		const options = {
+			title: 'Choose Photo Source',
+			storageOptions: {
+				skipBackup: true,
+				path: 'images'
+			}
+		};
+
+	ImagePicker.showImagePicker(options, (response) => {
+		console.log('this.props.curAccountID', self.props.curAccountID);
+		console.log('response', response);
+			if (response.didCancel) {
+				console.log('User cancelled image picker');
+			} else if (response.error) {
+				Alert('Sorry, something went wrong.Please try again.');
+			} else if (response.customButton) {
+				console.log('User tapped custom button: ', response.customButton);
+			} else {
+				let image = '';
+				if (Platform.OS === 'ios') {
+					image = response.origURL;
+				} else {
+					image = response.path;
+				}
+				const source = { uri: response.uri };
+				self.props.addReceiptFromImage(self.props.curAccountID, response, image, source);
+		}
+	});
+}
+
 	onSearchChange(text) {
 		this.props.searchTextChanged(text);
 	}
 
-	renderRow(data) {
-		//console.log('data', data);
+	renderRow(data, rowId) {
+		//console.log('data', data, rowId);
 		return (
 				<TouchableHighlight
-					onPress={() => Actions.receiptdetail()}
+					//onPress={() => Actions.receiptdetail()}
+					onPress={() => this.load(data, rowId)}
 					underlayColor={'#AAA'}
 					style={styles.rowFront}
 				>
@@ -143,6 +176,12 @@ class ReceiptsListView extends Component {
 					</View>
 				</TouchableHighlight>
 		);
+	}
+
+	load(data, rowId) {
+		console.log('load', data, rowId);
+		this.props.loadAReceipt(data, rowId);
+		Actions.receiptInfo();
 	}
 
 	renderHiddenRow(secId, rowId, rowMap) {
@@ -169,36 +208,6 @@ class ReceiptsListView extends Component {
 		console.log('secId', secId, 'rowId', rowId, 'rowMap', rowMap);
 		console.log('obj', secId.id, 'acc', this.props.curAccountID);
 		this.props.deleteReceipt(this.props.curAccountID, secId.id);
-			// rowMap[`${secId}${rowId}`].closeRow();
-
-			//**************************Api call start *******************************
-/*			AsyncStorage.multiGet(['AuthStr','curAccountId'],function(err,res)  {
-        if (err) {
-          Alert('Sorry, something went wrong.Please try again.....');
-        } else {
-					let AuthStr = res[0][1];
-     			let accountId = res[1][1];
-
-					let documnetId = "52910d0de4b06f6f8ca3abaa";  //pass document id as per row selection
-          let requestUrl = ssApiQueryURL.accounts + accountId + "/documents/" + documnetId + "/";
-
-          console.log('----->requestUrl : '+requestUrl);
-
-					axios.delete(requestUrl, { headers: { Authorization: AuthStr } })
-				      .then(response => {
-								if (response.status == 204){
-									Alert('Receipt deleted successfully.');
-								}else{
-									Alert('response ==> '+JSON.stringify(response));
-								}
-				      }).catch((error) => {
-				          Alert('Sorry something went wrong.Please try again latter.');
-				      });
-          }
-        });
-
-			//*************************Api call end***********************************
-			*/
 	}
 
 	exportItem(secId, rowId, rowMap) {
@@ -208,6 +217,8 @@ class ReceiptsListView extends Component {
 
   onPressFAB() {
     console.log('FAB pressed');
+	}
+		/*
     Alert.alert(
       'Choose Photo Source',
       null,
@@ -218,6 +229,7 @@ class ReceiptsListView extends Component {
       ]
     );
   }
+	*/
 }
 
 const styles = {
@@ -341,5 +353,5 @@ const mapStateToProps = ({ accounts, receipts, searchIt }) => {
 };
 
 export default connect(mapStateToProps, {
-		searchTextChanged, deleteReceipt
+		searchTextChanged, deleteReceipt, loadAReceipt
 })(ReceiptsListView);

@@ -35,7 +35,8 @@ import {
   LABELS_LOAD,
   PLAN_SET,
   PLANTYPE_SET,
-  DBEMAIL_SET
+  DBEMAIL_SET,
+  SET_USER_EMAIL
 //  ACCOUNT_CREATE_NEW,
 //  ACCOUNT_CHANGE_PLAN,
 //  ACCOUNT_ADD_USER,
@@ -89,6 +90,7 @@ export const setCurAccount = (accObj, id) => {
     dispatch(setPlan(accObj.plan));
     dispatch(setPlanType(accObj.plan.planType));
     dispatch(setDBEmail(accObj.dropboxEmail));
+    //dispatch(setUserEmail(accObj.email));
     dispatch({
       type: GO_TO_MAIN
     });
@@ -237,6 +239,14 @@ export const setDBEmail = (email) => {
   console.log('curPlanName', email);
   return {
     type: DBEMAIL_SET,
+    payload: email
+  };
+};
+
+export const setUserEmail = (email) => {
+  console.log('email', email);
+  return {
+    type: SET_USER_EMAIL,
     payload: email
   };
 };

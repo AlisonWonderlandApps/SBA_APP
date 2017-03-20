@@ -32,7 +32,7 @@ import {
 
 import {
   EMAIL_REGEX,
-  PASSWORD_REGEX
+  //PASSWORD_REGEX
 } from '../config/regex';
 
 import {
@@ -261,7 +261,7 @@ showAlert(message) {
     this.isValidPassword(text);
   }
   //check if its a valid password (strong enough)
-  isValidPassword(text) {
+  isValidPassword() {
   //  if (text.match(PASSWORD_REGEX)) {
       this.props.isPasswordValid(1); //always valid
   //  } else {

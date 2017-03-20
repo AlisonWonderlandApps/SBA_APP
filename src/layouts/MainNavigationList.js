@@ -17,7 +17,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 //import RNFetchBlob from 'react-native-fetch-blob';
 import ImagePicker from 'react-native-image-picker';
 
-import { receiptsFetch, addReceiptFromImage } from '../actions';
+import { receiptsFetch, saveImageData, addReceiptFromImage } from '../actions';
 import { layoutStyles } from './styles';
 import { PRIMARY_HIGHLIGHT_COLOUR } from '../global/colours';
 
@@ -104,6 +104,37 @@ class MainNavigationList extends Component {
   }
 
   renderReceiptsBar() {
+    if (this.props.numOfReceipts === this.props.myTrips.length) {
+      return (
+      <View>
+        <CardSection style={mainStyles.cardSection}>
+          <View style={{ justifyContent: 'space-around', paddingTop: 10, paddingLeft: 5 }}>
+            <TitleText>{ReceiptsStr}</TitleText>
+            <ColourText style={mainStyles.text}>{this.props.tDate}</ColourText>
+            <ColourText style={mainStyles.text}>{this.props.tCost}</ColourText>
+          </View>
+          <View style={{ alignSelf: 'flex-end', paddingRight: 10 }} >
+            <Icon name='ios-arrow-forward' size={50} />
+          </View>
+        </CardSection>
+      </View>
+      );
+    } else if (this.props.numOfReceipts < 1) {
+      return (
+      <View>
+        <CardSection style={mainStyles.cardSection}>
+          <View style={{ justifyContent: 'space-around', paddingTop: 10, paddingLeft: 5 }}>
+            <TitleText>{ReceiptsStr}</TitleText>
+            <ColourText style={mainStyles.text}>No receipts</ColourText>
+            <ColourText style={mainStyles.text}>Add a receipt!</ColourText>
+          </View>
+          <View style={{ alignSelf: 'flex-end', paddingRight: 10 }} >
+            <Icon name='ios-arrow-forward' size={50} />
+          </View>
+        </CardSection>
+      </View>
+      );
+    }
     return (
       <View>
         <CardSection style={mainStyles.cardSection}>
@@ -121,6 +152,22 @@ class MainNavigationList extends Component {
   }
 
   renderTripsBar() {
+    if (this.props.myTrips.length < 1) {
+      return (
+        <View>
+          <CardSection style={mainStyles.cardSection}>
+            <View style={{ justifyContent: 'space-around', paddingTop: 10, paddingLeft: 5 }}>
+              <TitleText>{TripsStr}</TitleText>
+              <ColourText style={mainStyles.text}>No Trips found</ColourText>
+              <ColourText style={mainStyles.text}>Add your first trip</ColourText>
+            </View>
+            <View style={{ alignSelf: 'flex-end', paddingRight: 10 }} >
+              <Icon name='ios-arrow-forward' size={50} />
+            </View>
+          </CardSection>
+        </View>
+      );
+    }
     return (
       <View>
       <CardSection style={mainStyles.cardSection}>
@@ -180,19 +227,6 @@ class MainNavigationList extends Component {
   }
 
   onPressFAB() {
-    /*
-    console.log('FAB pressed');
-    Alert.Alert(
-      'Choose Photo Source',
-      null,
-      [
-        { text: 'Camera', onPress: () => Actions.camera() },
-        { text: 'Photo Library', onPress: () => Actions.photos() },
-        { text: 'Cancel', onPress: () => console.log('cancel'), style: 'cancel' }
-      ]
-    );
-    */
-
     const options = {
       title: 'Choose Photo Source',
       storageOptions: {
@@ -218,7 +252,11 @@ class MainNavigationList extends Component {
           image = response.path;
         }
         const source = { uri: response.uri };
-        self.props.addReceiptFromImage(self.props.curAccountID, response, image, source);
+        self.props.saveImageData(response, image, source);
+        console.log(response, image, source);
+        Actions.save();
+        //Actions.receiptDetail();
+        //self.props.addReceiptFromImage(self.props.curAccountID, response, image, source);
     }
   });
 }
@@ -292,13 +330,15 @@ const mapStateToProps = ({ user, accounts, receipts, trips }) => {
     reimbursableCount,
     latestReceipt,
     rCategory,
-    rCost
+    rCost,
+    numOfReceipts
   } = receipts;
   const {
     latestTrip,
     tVendor,
     tDate,
-    tCost
+    tCost,
+    myTrips
   } = trips;
   return {
     userName,
@@ -313,10 +353,12 @@ const mapStateToProps = ({ user, accounts, receipts, trips }) => {
     rCost,
     tVendor,
     tDate,
-    tCost
+    tCost,
+    numOfReceipts,
+    myTrips
   };
 };
 
 export default connect(mapStateToProps, {
-  receiptsFetch, addReceiptFromImage
+  receiptsFetch, addReceiptFromImage, saveImageData
 })(MainNavigationList);

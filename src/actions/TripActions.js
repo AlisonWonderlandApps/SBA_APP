@@ -65,7 +65,9 @@ const fetchTripsSuccess = (trips) => {
 
 const setDate = (date) => {
   const formattedDate = new Date(date).toString();
-  const dateStr = formattedDate.substring(4, 10);
+  let year = formattedDate.substring(11, 15);
+  year = ', '.concat(year);
+  const dateStr = formattedDate.substring(4, 10).concat(year);
   return {
     type: SET_TRIP_DATE,
     payload: dateStr

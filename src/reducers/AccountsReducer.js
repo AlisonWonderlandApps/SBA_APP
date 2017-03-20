@@ -11,7 +11,8 @@ import {
   GO_TO_ACCOUNTS,
   PLAN_SET,
   PLANTYPE_SET,
-  DBEMAIL_SET
+  DBEMAIL_SET,
+  SET_USER_EMAIL
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -27,7 +28,8 @@ const INITIAL_STATE = {
    curAccountInfo: {},
    plan: [],
    planType: '',
-   dropBoxEmail: ''
+   dropBoxEmail: '',
+   email: ''
  };
 
 export default (state = INITIAL_STATE, action) => {
@@ -71,6 +73,12 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         curAccountName: action.payload
+      };
+
+    case SET_USER_EMAIL:
+      return {
+        ...state,
+        email: action.payload
       };
 
     case GO_TO_MAIN:

@@ -26,9 +26,10 @@ import {
 import { HEADER } from '../global/margins';
 import { PRIMARY_COLOUR, PRIMARY_HIGHLIGHT_COLOUR } from '../global/colours';
 import {
-  setReceiptCategory,
+  setNewReceiptCategory,
   noteChanged,
-  saveReceipt
+  addReceiptFromImage,
+  resetNewReceipt
  } from '../actions';
 
 let imgUri = '';
@@ -37,8 +38,9 @@ class SaveDoc extends Component {
   constructor(props) {
     super(props);
     console.log('propsphoto', this.props);
-  //  console.log('uri', this.props.photoObj[0].uri);
-    imgUri = this.props.attachment.uri;
+    console.log('uri', this.props.imageData);
+    imgUri = this.props.imageData.source.uri;
+    console.log(imgUri);
   }
 
   shouldComponentUpdate(nextProps) {
@@ -74,7 +76,7 @@ class SaveDoc extends Component {
             style={{ fontSize: 16, alignItems: 'flex-start', padding: 5, height: 80 }}
             placeholder='+ tap to add note'
             onChangeText={this.onNoteChanged.bind(this)}
-            value={this.props.note}
+            value={this.props.newReceiptNote}
             multiline
           />
           <View style={{ padding: 5, flexDirection: 'row', width: null }}>
@@ -114,7 +116,7 @@ class SaveDoc extends Component {
 
   onSavePress() {
     console.log('save', this.props);
-    if (this.props.category === '') {
+    if (this.props.newReceiptCategory === '') {
       Alert.alert(
         'Oops!!',
         'Please choose a category for your receipt!',
@@ -123,15 +125,26 @@ class SaveDoc extends Component {
         ]
       );
     } else {
-      this.props.saveReceipt(this.props);
-      Alert.alert(
+      const categories = [];
+      categories[0] = this.props.newReceiptCategory;
+      const submittedBy = 'Submitted by '.concat(this.props.email);
+      categories[1] = submittedBy;
+      console.log(categories);
+      this.props.addReceiptFromImage(
+        this.props.curAccountID,
+        this.props.imageData,
+        categories,
+        new Date(),
+        this.props.newReceiptNote
+      );
+      //this.props.resetNewReceipt();
+    /*  Alert.alert(
         'Squirrel Street',
         'Receipt Saved!',
         [
           { text: 'OK', onPress: () => Actions.main() }
         ]
-      );
-      console.log(this.props.newReceipt);
+      ); */
     }
   }
 
@@ -141,14 +154,20 @@ class SaveDoc extends Component {
   }
 
   onReimburseClick() {
-    this.props.setReceiptCategory('Reimbursable');
-    console.log('reimburseables', this.props.category);
+    this.props.setNewReceiptCategory('Reimbursable');
+    console.log('reimburseables', this.props.newReceiptCategory);
   }
 
   renderReimbursables() {
-    if (this.props.category === 'Reimbursable') {
+    if (this.props.newReceiptCategory === 'Reimbursable') {
       return (
-        <CardSection style={{ justifyContent: 'center', backgroundColor: PRIMARY_HIGHLIGHT_COLOUR, borderWidth: 1, flex: 1 }}>
+        <CardSection
+          style={{
+            justifyContent: 'center',
+            backgroundColor: PRIMARY_HIGHLIGHT_COLOUR,
+            borderWidth: 1,
+            flex: 1 }}
+        >
             <Text
               style={{
                 color: 'white',
@@ -177,14 +196,20 @@ class SaveDoc extends Component {
   }
 
   onDeductClick() {
-    this.props.setReceiptCategory('Deductible');
-    console.log('DeductStr', this.props.category);
+    this.props.setNewReceiptCategory('Deductible');
+    console.log('DeductStr', this.props.newReceiptCategory);
   }
 
   renderDeductibles() {
-    if (this.props.category === 'Deductible') {
+    if (this.props.newReceiptCategory === 'Deductible') {
       return (
-        <CardSection style={{ justifyContent: 'center',backgroundColor: PRIMARY_HIGHLIGHT_COLOUR, borderWidth: 1, flex: 1 }}>
+        <CardSection
+          style={{
+            justifyContent: 'center',
+            backgroundColor: PRIMARY_HIGHLIGHT_COLOUR,
+            borderWidth: 1,
+            flex: 1 }}
+        >
             <Text
               style={{
                 color: 'white',
@@ -213,14 +238,20 @@ class SaveDoc extends Component {
   }
 
   onNotSureClick() {
-    this.props.setReceiptCategory('Not Sure');
-    console.log('NotSureStr', this.props.category);
+    this.props.setNewReceiptCategory('Unknown');
+    console.log('NotSureStr', this.props.newReceiptCategory);
   }
 
   renderNotSure() {
-    if (this.props.category === 'Not Sure') {
+    if (this.props.newReceiptCategory === 'Unknown') {
       return (
-        <CardSection style={{ justifyContent: 'center', backgroundColor: PRIMARY_HIGHLIGHT_COLOUR, borderWidth: 1, flex: 1 }}>
+        <CardSection
+          style={{
+            justifyContent: 'center',
+            backgroundColor: PRIMARY_HIGHLIGHT_COLOUR,
+            borderWidth: 1,
+            flex: 1 }}
+        >
             <Text
               style={{
                 color: 'white',
@@ -247,34 +278,34 @@ class SaveDoc extends Component {
       </CardSection>
     );
   }
-
 }
 
-const mapStateToProps = ({ accounts, receipts, photos }) => {
+const mapStateToProps = ({ accounts, receipts }) => {
   const {
-    curAccount,
-    dropBoxEmail
+    curAccountID,
+    email
   } = accounts;
   const {
-    category,
-    note,
-    newReceipt
+    newReceiptCategory,
+    newReceiptNote,
+    newReceipt,
+    imageData
   } = receipts;
-  const {
-    attachment
-  } = photos;
   return {
-    curAccount,
-    dropBoxEmail,
-    attachment,
-    category,
-    note,
-    newReceipt
+    curAccountID,
+    email,
+    newReceiptCategory,
+    newReceiptNote,
+    newReceipt,
+    imageData
   };
 };
 
 export default connect(mapStateToProps, {
-  setReceiptCategory, noteChanged, saveReceipt
+  setNewReceiptCategory,
+  noteChanged,
+  addReceiptFromImage,
+  resetNewReceipt
 })(SaveDoc);
 
 

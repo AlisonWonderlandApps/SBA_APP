@@ -13,7 +13,8 @@ import { BackgroundView, TripsListItem, Button, MyMapView } from '../components'
 import { HEADER } from '../global/margins';
 import {
   CARD_BACKGROUND_COLOUR,
-  BORDER_COLOUR
+  BORDER_COLOUR,
+  PRIMARY_HIGHLIGHT_COLOUR
  } from '../global/colours';
 
 let self;
@@ -231,9 +232,11 @@ console.log("url",url);
           <View style={{ paddingTop: 20 }}>
             <Button onPress={() => this.startOrEndTrip()}>{this.state.buttonText}</Button>
           </View>
-          <Text> Recent Trips </Text>
+          <View style={styles.rowHeader}>
+            <Text style={{ color: 'white' }}> Recent Trips </Text>
+          </View>
         </View>
-        <View style={{ flexGrow: 0.05, borderWidth: 1, borderBottomWidth: 0, marginTop: 5 }}>
+        <View style={{ flexGrow: 0.05 }}>
           <ListView
             dataSource={this.ds.cloneWithRows(this.props.myTrips)}
             renderRow={(data) => this.renderRow(data)}
@@ -274,6 +277,16 @@ const styles = {
     //alignItems: 'center',
     padding: 10,
     backgroundColor: CARD_BACKGROUND_COLOUR,
+    borderBottomColor: BORDER_COLOUR,
+    borderBottomWidth: 1,
+    justifyContent: 'center',
+    //height: 100,
+  },
+  rowHeader: {
+    //alignItems: 'center',
+    marginTop: 10,
+    padding: 10,
+    backgroundColor: PRIMARY_HIGHLIGHT_COLOUR,
     borderBottomColor: BORDER_COLOUR,
     borderBottomWidth: 1,
     justifyContent: 'center',

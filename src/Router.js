@@ -42,6 +42,8 @@ import ReceiptsListView from './layouts/ReceiptsListView';
 import CategoryList from './layouts/CategoryList';
 import ReceiptDetail from './layouts/ReceiptDetail';
 import CategoryReceiptList from './layouts/CategoryReceiptList';
+import ReceiptInfo from './layouts/ReceiptInfo';
+import ProcessingDetail from './layouts/ProcessingDetail';
 
 
 class RouterComponent extends Component {
@@ -266,15 +268,32 @@ class RouterComponent extends Component {
     />
 
     <Scene
-      key="receiptdetail"
+      key="receiptDetail"
       hideNavBar={false}
       navigationBarStyle={styles.headerStyle}
       renderTitle={() => <Header />}
       component={ReceiptDetail}
-      // rightTitle='Filter'
-      // onRight={() => console.log('right')}
-      //renderRightButton={() => <Icon name="ellipsis-v" size={25} color="#ffffff" />}
-      //hideBackImage
+      renderBackButton={() => this.renderBackToReceiptsButton()}
+    />
+
+    <Scene
+      key="receiptInfo"
+      hideNavBar={false}
+      navigationBarStyle={styles.headerStyle}
+      renderTitle={() => <Header />}
+      component={ReceiptInfo}
+      renderBackButton={() => this.renderBackToReceiptsButton()}
+      //initial
+    />
+
+    <Scene
+      key="processingDetail"
+      hideNavBar={false}
+      navigationBarStyle={styles.headerStyle}
+      renderTitle={() => <Header />}
+      component={ProcessingDetail}
+      renderBackButton={() => this.renderBackToReceiptsButton()}
+      //initial
     />
 
     <Scene

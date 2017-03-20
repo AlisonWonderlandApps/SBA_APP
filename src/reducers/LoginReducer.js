@@ -57,7 +57,8 @@ export default (state = INITIAL_STATE, action) => {
     case LOGIN_USER_SUCCESS:
       return {
         ...state,
-        reset: true
+        reset: true,
+        loading: false
       };
 
     case NEXT_PAGE:

@@ -62,6 +62,7 @@ export const PLAN_FETCH_FAIL = 'fetch_plan_fail';
 export const PLAN_SET = 'set_plan';
 export const PLANTYPE_SET = 'set_plantype';
 export const DBEMAIL_SET = 'dbemail_set';
+export const SET_USER_EMAIL = 'set_user_email';
 
 //AccountActions
 export const GO_TO_MAIN = 'go_to_main';
@@ -108,6 +109,11 @@ export const RECEIPT_ADD_CATEGORY = 'receipt_add_category';
 export const RECEIPT_DELETE_CATEGORY = 'receipt_delete_category';
 export const SET_LIST = 'set_list';
 export const RESET_RECEIPTS = 'reset_receipts';
+export const LOAD_A_RECEIPT = 'load_a_receipt';
+export const LOAD_A_RECEIPT_SUCCESS = 'load_a_receipt_success';
+export const LOAD_A_RECEIPT_FAIL = 'load_a_receipt_fail';
+export const SET_NEW_RECEIPT_CATEGORY = 'set_new_receipt_category';
+export const RESET_NEW_RECEIPT = 'reset_new_receipt_data';
 
 export const PROCESSING_FETCH_FAIL = 'processing_fetch_fail';
 export const PROCESSING_FETCH_SUCCESS = 'processing_fetch_success';
@@ -124,6 +130,7 @@ export const CATEGORY_SEARCH = 'filter_by_category';
 export const CATEGORY_SEARCH_SUCCESS = 'filter_by_category_success';
 export const CATEGORY_SEARCH_FAIL = 'filter_by_category_fail';
 export const RECEIPTS_BY_CATEGORY_ADD = 'add_receipt_by_category_item';
+export const SAVE_IMAGE_DATA = 'save_image_data';
 
 //PhotosActions
 export const PHOTO_ADD = 'add_a_photo';

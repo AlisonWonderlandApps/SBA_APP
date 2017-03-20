@@ -41,7 +41,7 @@ class ReceiptDetail extends Component {
 
   getReceiptDetail() {
 		//**************************Api call start *******************************
-		AsyncStorage.multiGet(['AuthStr', 'curAccountId'], (err, res) => {
+/*		AsyncStorage.multiGet(['AuthStr', 'curAccountId'], (err, res) => {
       if (err) {
         ////alert('Sorry, something went wrong.Please try again.....');
       } else {
@@ -121,14 +121,14 @@ class ReceiptDetail extends Component {
 						});
         }
       });
-
+*/
 		//*************************Api call end***********************************
   }
 
 onNavigationStateChange(navState) {
     const WbURL = navState.url;
     const lastPart = WbURL.substr(WbURL.lastIndexOf('.') + 1);
-    ////alert(JSON.stringify(navState))
+    ////Alert(JSON.stringify(navState))
     if (lastPart === 'pdf') {
         const DEFAULT_URL = { uri: 'http://docs.google.com/gview?embedded=true&url='.concat(WbURL) };
         self.setState({ url: DEFAULT_URL });
@@ -175,7 +175,10 @@ renderPdfViewer() {
 							</Text>
             </View>
 
-            <View style={[styles.receiptDetailTextView, { borderBottomColor: 'white', borderBottomWidth: 0 }]}>
+            <View
+							style={[styles.receiptDetailTextView,
+							{ borderBottomColor: 'white', borderBottomWidth: 0 }]}
+						>
               <Text style={styles.receiptDetailText}>Note : </Text>
               <Text style={styles.receiptDetailText}>{receiptDetail.note}</Text>
             </View>
@@ -224,7 +227,8 @@ const styles = {
     wifth: 100
   },
 	pdfViewPatent: {
-		width: window.width,
+		//width: window.width,
+		width: 300,
 		height: 500,
 		justifyContent: 'center',
 		// backgroundColor : 'pink'

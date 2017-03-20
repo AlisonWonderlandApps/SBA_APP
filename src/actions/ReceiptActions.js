@@ -20,10 +20,11 @@
 
 */
 
-import { AsyncStorage, Alert } from 'react-native';
+import { AsyncStorage, Alert, Platform } from 'react-native';
 import axios from 'axios';
 import Querystring from 'querystring';
 import RNFetchBlob from 'react-native-fetch-blob';
+import { Actions } from 'react-native-router-flux';
 import { ssApiQueryURL, ssAuthConfig } from '../config/auth';
 
 import {
@@ -55,6 +56,12 @@ import {
   RECEIPT_DELETE_SUCCESS,
   RECEIPT_DELETE_FAIL,
   RECEIPTS_BY_CATEGORY_ADD,
+  LOAD_A_RECEIPT,
+  LOAD_A_RECEIPT_SUCCESS,
+  SAVE_IMAGE_DATA,
+  SET_NEW_RECEIPT_CATEGORY,
+  SET_RECEIPT_NOTE,
+  RESET_NEW_RECEIPT
   //CATEGORY_SEARCH,
   //CATEGORY_SEARCH_SUCCESS,
   //CATEGORY_SEARCH_FAIL
@@ -327,7 +334,9 @@ const setVendor = (data) => {
 
 const setDate = (date) => {
   const formattedDate = new Date(date).toString();
-  const dateStr = formattedDate.substring(4, 10);
+  let year = formattedDate.substring(11, 15);
+  year = ', '.concat(year);
+  const dateStr = formattedDate.substring(4, 10).concat(year);
   return {
     type: SET_DATE,
     payload: dateStr
@@ -394,12 +403,12 @@ const sortReceiptsByCategory = (AuthStr, accountId, categoryArray, k) => {
                   if (list[i].issued === undefined) {
                     const formattedDate = new Date(list[i].uploaded).toString();
                     let year = formattedDate.substring(11, 15);
-                    year = ' '.concat(year);
+                    year = ', '.concat(year);
                     date = formattedDate.substring(4, 10).concat(year);
                   } else {
                     const formattedDate = new Date(list[i].issued).toString();
                     let year = formattedDate.substring(11, 15);
-                    year = ' '.concat(year);
+                    year = ', '.concat(year);
                     date = formattedDate.substring(4, 10).concat(year);
                   }
 
@@ -434,6 +443,25 @@ const addCategoryReceipt = (dataObj) => {
   return {
     type: RECEIPTS_BY_CATEGORY_ADD,
     payload: dataObj
+  };
+};
+
+export const setNewReceiptCategory = (cat) => {
+  return {
+    type: SET_NEW_RECEIPT_CATEGORY,
+    payload: cat
+  };
+};
+
+export const saveImageData = (response, image, source) => {
+  const imageObj = {
+    response,
+    image,
+    source
+  };
+  return {
+    type: SAVE_IMAGE_DATA,
+    payload: imageObj
   };
 };
 
@@ -478,22 +506,12 @@ export const newToken = (accountID, token, receiptID, newReceipt, num) => {
           console.log('trashItem');
           dispatch(trashItem(AuthStr, accountID, receiptID));
         } else if (num === 2) {
-          console.log('Add Item');
+          console.log('Add Item', AuthStr);
           dispatch(addItem(AuthStr, accountID, newReceipt));
+        } else if (num === 3) {
+          console.log('Receipt Detail');
+          //dispatch(getReceiptDetail(AuthStr, accountID));
         }
-        /*
-         switch (num) {
-           case 1:
-             console.log('trashItem');
-             trashItem(AuthStr, accountID, receiptID);
-             break;
-           case 2:
-             console.log('Add Item');
-             addItem(AuthStr, accountID, newReceipt);
-             break;
-           default:
-             break;
-         } */
        }
      }).catch((err) => {
        Alert.alert(
@@ -505,6 +523,20 @@ export const newToken = (accountID, token, receiptID, newReceipt, num) => {
        );
        console.log('no auth token', err);
      });
+  };
+};
+
+export const loadAReceipt = (dataObj, rowId) => {
+  console.log('loadAReceipt', dataObj, rowId);
+  const obj = {
+    data: dataObj,
+    index: rowId
+  };
+  return function (dispatch) {
+    dispatch({
+      type: LOAD_A_RECEIPT,
+      payload: obj
+    });
   };
 };
 
@@ -549,11 +581,14 @@ const trashItem = (AuthStr, accountId, receiptID) => {
     };
 };
 
-export const addReceiptFromImage = (AccountId, response, image, source) => {
+export const addReceiptFromImage = (AccountId, imageData, categs, date, note) => {
   const receiptObj = {
-    response,
-    image,
-    source
+    response: imageData.response,
+    image: imageData.image,
+    source: imageData.source,
+    categories: categs,
+    date,
+    note
   };
   return function (dispatch) {
     dispatch({
@@ -572,9 +607,15 @@ export const addReceiptFromImage = (AccountId, response, image, source) => {
 };
 
 const addItem = (AuthStr, accountId, receiptObj) => {
+  return function (dispatch) {
   const requestUrl = ssApiQueryURL.accounts.concat(accountId).concat('/documents/');
   console.log('----->requestUrl : ', requestUrl, AuthStr, accountId);
-
+  const id = (Platform.OS === 'ios') ? 'SSA_IOS_APP' : 'SSA_Android_APP';
+  const source = {
+    type: 'integration',
+    id,
+    name: 'Squirrel Street Australia App'
+  };
   RNFetchBlob.fetch('POST', requestUrl, {
        Authorization: AuthStr,
        'Content-Type': 'multipart/form-data',
@@ -589,20 +630,34 @@ const addItem = (AuthStr, accountId, receiptObj) => {
        { name: 'document',
             data: JSON.stringify({
             processingState: 'NEEDS_SYSTEM_PROCESSING',
+            uploaded: receiptObj.date,
+            categories: receiptObj.categories,
+            notes: receiptObj.note,
+            type: 'receipt',
+            source
        }) },
      ]).then((resp) => {
        const respJSONData = JSON.parse(resp.data);
        const receiptId = respJSONData.id;
-       console.log('--------->resp : ', JSON.stringify(resp));
-       Alert('Receipt uploaded successfully.(Receipt Id : ', receiptId, ')');
+       console.log('--------->resp : ', JSON.stringify(resp), receiptId);
+       dispatch(resetNewReceipt());
+       dispatch(fetchReceipts(AuthStr, accountId));
      }).catch((err) => {
-       Alert('Sorry, something went wrong.');
+      // Alert('Sorry, something went wrong.');
        console.log('--------->err : ', JSON.stringify(err));
      });
+   };
+};
+
+export const noteChanged = (note) => {
+  return {
+    type: SET_RECEIPT_NOTE,
+    payload: note
+  };
 };
 
 const deleteSuccess = () => {
-  //Alert('Receipt Deleted')
+  //Alert('Receipt Deleted');
   return {
     type: RECEIPT_DELETE_SUCCESS
   };
@@ -613,6 +668,12 @@ const deleteFailed = (er) => {
   return {
     type: RECEIPT_DELETE_FAIL,
     payload: er
+  };
+};
+
+export const resetNewReceipt = () => {
+  return {
+    type: RESET_NEW_RECEIPT
   };
 };
 
