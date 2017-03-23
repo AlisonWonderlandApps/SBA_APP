@@ -25,7 +25,10 @@ const INITIAL_STATE = {
   latestTrip: {},
   isTripStarted: false,
   tripData: {},
-  curLocation: {},
+  curLocation: {
+    latitude: 25,
+    longitude: 25
+  },
   //TODO: fix the beloe shitty code into an object
   tVendor: '', //string
   tDate: '', //string version

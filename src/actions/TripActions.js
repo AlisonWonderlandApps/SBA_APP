@@ -135,17 +135,21 @@ export const endTrip = () => {
 };
 
 export const isTripTracking = () => {
-  //get data from AsyncStorage
-  AsyncStorage.getItem('tripData', (err, res) => {
-    if (err) {
-      Alert('Sorry, something went wrong. Please try again.');
-    } else {
-      return {
-        type: SET_CURRENT_LOCATION,
-        payload: res
-      };
-    }
-  });
+  return function (dispatch) {
+    try {
+      AsyncStorage.getItem('tripData').then((value) => {
+        if (value !== null) {
+          dispatch({
+            type: SET_CURRENT_LOCATION,
+            payload: value
+          });
+        }
+      });
+    } catch (err) {
+        console.log(err);
+        Alert('Sorry, something went wrong. Please try again.');
+      }
+  };
 };
 
 //1. Start a trip

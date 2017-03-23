@@ -6,9 +6,11 @@ import {
   ListView,
   AsyncStorage,
   TouchableHighlight,
+  StyleSheet
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
+import MapView from 'react-native-maps';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { BackgroundView, Button, MyMapView } from '../components';
 import { HEADER } from '../global/margins';
@@ -17,7 +19,7 @@ import {
   BORDER_COLOUR,
   PRIMARY_HIGHLIGHT_COLOUR
 } from '../global/colours';
-import { loadAReceipt } from '../actions';
+import { loadAReceipt, isTripTracking, setCurTripLocation } from '../actions';
 
 let self;
 
@@ -39,8 +41,10 @@ class TripsList extends Component {
       }
     };
 
+    console.log('tracking functions');
+    this.props.isTripTracking();
+    console.log('tripstrack done');
     this.updateLocation();
-    this.setTripBtnText();
   }
 
   shouldComponentUpdate(nextProps) {
@@ -49,36 +53,6 @@ class TripsList extends Component {
     }
     return false;
   }
-
-/*
-  setTripBtnText() {
-    let buttonText = '';
-    AsyncStorage.getItem('tripData', (err, res) => {
-        if (err) {
-          Alert('Sorry, something went wrong. Please try again.');
-        } else {
-          let isFirstTime = false;
-          let tripData;
-
-          if (res == null) {  //for firest time
-            buttonText = ' Start Trip ';
-          } else {
-            tripData = JSON.parse(res);
-
-          if (this.props.isTripStarted) {
-              buttonText = ' End Trip ';
-          } else {
-              buttonText = ' Start Trip ';
-            }
-          }
-
-          self.setState({
-            buttonText
-          });
-        }
-    });
-  }
-  */
 
   renderButtonText() {
     if (this.props.isTripStarted) {
@@ -89,12 +63,11 @@ class TripsList extends Component {
 
   updateLocation() {
       navigator.geolocation.getCurrentPosition((position) => {
-        self.setState({
-          curLocation: {
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude
-          }
-        });
+        const curLocation = {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude
+        };
+        this.props.setCurTripLocation(curLocation);
       },
       (err) => {
         console.log(err);
@@ -106,13 +79,30 @@ class TripsList extends Component {
         maximumAge: 10000
       });
 
+/*
       setTimeout(() => {
         self.updateLocation();
-      }, 5000);
+      }, 5000); */
+  }
+
+  startTrip() {
+
+  }
+
+  endTrip() {
+
   }
 
   startOrEndTrip() {
-    let isTripEnd = false;
+    //let isTripEnd = false;
+
+    if (this.props.isTripStarted) {
+      //put code for updating or whatever here
+    } else {
+      //put code for starting trip here
+    }
+
+
     AsyncStorage.getItem('tripData', (err, res) => {
       if (err) {
         Alert('Sorry, something went wrong. Please try again.');
@@ -144,28 +134,24 @@ class TripsList extends Component {
             console.log(err1, res1);
           } else {
             console.log('hi');
-            if (isTripEnd) {
+            if (!this.props.isTripStarted) {
               //******************************************Find Distance start**************************************//
-              let url = 'https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins='+
-                        tripData.startLoaction.latitude + ',' +
-                        tripData.startLoaction.longitude + '&destinations=' +
-                        self.state.curLocation.latitude + ',' +
-                        self.state.curLocation.longitude;// + '&key=AIzaSyCPCmrMejmgidQub4d81b9PSpf7aS2J4T0';
-                        console.log('url', url);
-              // let url = 'https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins='+
-              //           '21.2397122,72.7932964'+ '&destinations=' +
-              //           '21.2377655,70.8784624';// + '&key=AIzaSyCPCmrMejmgidQub4d81b9PSpf7aS2J4T0';
+              const url = 'https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins='
+                        .concat(tripData.startLoaction.latitude).concat(',')
+                        .concat(tripData.startLoaction.longitude).concat('&destinations=')
+                        .concat(self.state.curLocation.latitude)
+                        .concat(',')
+                        .concat(self.state.curLocation.longitude);
+              console.log('url', url);
 
               fetch(url)
                 .then((response) => response.json())
                 .then((responseJson) => {
                   console.log('responseJson', responseJson);
                   const distance = responseJson.rows[0].elements[0].distance.text;
-                  Alert('Trip Distance : '+ distance);
-                  // alert('res : '+JSON.stringify(responseJson));
+                  Alert('Trip Distance : ', distance);
                 })
                 .catch((error) => {
-                  // alert('err : '+error);
                   console.log(error);
                   Alert('Sorry, something went wrong. Please try again.');
                 });
@@ -196,7 +182,7 @@ class TripsList extends Component {
             justifyContent: 'center'
            }}
         >
-          <MyMapView location={this.state.curLocation} />
+          {this.renderMapView(this.state.curLocation)}
           <View style={{ paddingTop: 20 }}>
             <Button
               onPress={() => this.startOrEndTrip()}
@@ -222,9 +208,9 @@ class TripsList extends Component {
       >
       <View style={{ flex: 1 }}>
         <View style={{ flexGrow: 1 }}>
-          <MyMapView location={this.state.curLocation} />
+          {this.renderMapView(this.state.curLocation)}
           <View style={{ paddingTop: 20 }}>
-            <Button onPress={() => this.startOrEndTrip()}>{this.state.buttonText}</Button>
+            <Button onPress={() => this.startOrEndTrip()}>{this.renderButtonText()}</Button>
           </View>
           <View style={styles.rowHeader}>
             <Text style={{ color: 'white' }}> Recent Trips </Text>
@@ -243,6 +229,33 @@ class TripsList extends Component {
           textStyle={{ color: 'white' }}
         />
       </BackgroundView>
+    );
+  }
+
+  renderMapView(location) {
+    return (
+      <View style={styles.mapContainer}>
+        <MapView
+          style={styles.map}
+          region={{
+            latitude: 37.78825,
+            longitude: -122.4324,
+            latitudeDelta: 0.015,
+            longitudeDelta: 0.0121,
+          }}
+        >
+          <MapView.Marker
+            coordinate={{
+              latitude: 37.78825,
+              longitude: -122.4324,
+              latitudeDelta: 0.015,
+              longitudeDelta: 0.0121,
+              }}
+            title={'title'}
+            description={'description'}
+          />
+        </MapView>
+      </View>
     );
   }
 
@@ -270,7 +283,17 @@ class TripsList extends Component {
   }
 }
 
-const styles = {
+const styles = StyleSheet.create({
+  mapContainer: {
+    flex: 1,
+    alignItems: 'center',
+    padding: 10
+  },
+  map: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 0,
+    elevation: -1
+  },
   rowFront: {
     padding: 10,
     backgroundColor: CARD_BACKGROUND_COLOUR,
@@ -286,7 +309,7 @@ const styles = {
     borderBottomWidth: 1,
     justifyContent: 'center',
   }
-};
+});
 
 const mapStateToProps = ({ trips }) => {
   const {
@@ -305,5 +328,5 @@ const mapStateToProps = ({ trips }) => {
 
 
 export default connect(mapStateToProps, {
-  loadAReceipt
+  loadAReceipt, isTripTracking, setCurTripLocation
 })(TripsList);

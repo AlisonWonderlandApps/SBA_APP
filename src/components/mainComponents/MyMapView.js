@@ -4,7 +4,7 @@ import { View, StyleSheet } from 'react-native';
 import MapView from 'react-native-maps';
 
 const styles = StyleSheet.create({
- container: {
+ mapContainer: {
    flex: 1,
    alignItems: 'center',
    padding: 10
@@ -32,17 +32,17 @@ class MyMapView extends Component {
            longitudeDelta: 0.0121,
          }}
        >
-       <MapView.Marker
-              coordinate={{
-                latitude: 37.78825,
-                longitude: -122.4324,
-                latitudeDelta: 0.015,
-                longitudeDelta: 0.0121,
-              }}
-              title={'title'}
-              description={'description'}
-             />
-           </MapView>
+         <MapView.Marker
+                coordinate={{
+                  latitude: 37.78825,
+                  longitude: -122.4324,
+                  latitudeDelta: 0.015,
+                  longitudeDelta: 0.0121,
+                }}
+                title={'title'}
+                description={'description'}
+          />
+        </MapView>
      </View>
    );
  }
