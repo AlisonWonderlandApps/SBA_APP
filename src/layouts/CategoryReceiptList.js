@@ -19,6 +19,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import {
   PRIMARY_HIGHLIGHT_COLOUR,
   CARD_BACKGROUND_COLOUR,
+	APP_GREEN,
   BORDER_COLOUR,
 	SHADOW_COLOUR
  } from '../global/colours';
@@ -31,7 +32,7 @@ import {
  import { HEADER } from '../global/margins';
  import { searchTextChanged, deleteReceipt } from '../actions';
 
- let categoryIndex = '';
+let categoryIndex = '';
 
 class CategoryReceiptList extends Component {
 
@@ -39,7 +40,8 @@ class CategoryReceiptList extends Component {
 		super(props);
     console.log(props);
     categoryIndex = props.index;
-		console.log(this.props.categoryReceipts, categoryIndex);
+		//console.log(this.props.categoryReceipts, categoryIndex);
+		//console.log('category name', this.props.categories[categoryIndex]);
 		this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 	}
 
@@ -93,6 +95,9 @@ class CategoryReceiptList extends Component {
 						>
 							Search
 						</Button>
+					</View>
+					<View style={styles.rowHeader}>
+						<Text style={{ color: 'black' }}> {this.props.categories[categoryIndex]} </Text>
 					</View>
 				<SwipeListView
 						dataSource={this.ds.cloneWithRows(this.props.categoryReceipts[categoryIndex])}
@@ -162,7 +167,7 @@ class CategoryReceiptList extends Component {
     }	else {
       total = '$'.concat(data.total.toFixed(2));
     }
-      console.log('renderCost', total);
+      //console.log('renderCost', total);
       return total;
     }
 
@@ -318,6 +323,15 @@ const styles = {
 		shadowOpacity: 0.1,
 		shadowRadius: 2,
 	},
+	rowHeader: {
+		//marginTop: 10,
+		padding: 10,
+		backgroundColor: APP_GREEN,
+		borderBottomColor: BORDER_COLOUR,
+		borderBottomWidth: 1,
+		justifyContent: 'center',
+		alignItems: 'center'
+	}
 };
 
 const mapStateToProps = ({ accounts, receipts, searchIt }) => {

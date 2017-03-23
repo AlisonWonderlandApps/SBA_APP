@@ -115,6 +115,7 @@ export const LOAD_A_RECEIPT_SUCCESS = 'load_a_receipt_success';
 export const LOAD_A_RECEIPT_FAIL = 'load_a_receipt_fail';
 export const SET_NEW_RECEIPT_CATEGORY = 'set_new_receipt_category';
 export const RESET_NEW_RECEIPT = 'reset_new_receipt_data';
+export const RECEIPT_EXPORT = 'export_receipt';
 
 export const PROCESSING_FETCH_FAIL = 'processing_fetch_fail';
 export const PROCESSING_FETCH_SUCCESS = 'processing_fetch_success';

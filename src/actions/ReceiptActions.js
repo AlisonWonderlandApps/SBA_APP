@@ -58,7 +58,8 @@ import {
   SAVE_IMAGE_DATA,
   SET_NEW_RECEIPT_CATEGORY,
   SET_RECEIPT_NOTE,
-  RESET_NEW_RECEIPT
+  RESET_NEW_RECEIPT,
+  RECEIPT_EXPORT
   //CATEGORY_SEARCH,
   //CATEGORY_SEARCH_SUCCESS,
   //CATEGORY_SEARCH_FAIL
@@ -401,10 +402,91 @@ export const deleteReceipt = (accId, receiptID) => {
   };
 };
 
+export const exportReceipt = (accId, receiptID) => {
+  //get token
+  return function (dispatch) {
+    try {
+      AsyncStorage.getItem('refreshToken').then((value) => {
+        if (value !== null) {
+          dispatch(newToken(accId, value, receiptID, {}, 3));
+        }
+      });
+    } catch (err) {
+      console.log(err);
+      //Alert('Something went wrong!');
+    }
+  };
+};
+
+const exportDoc = (AuthStr, accountId, receiptID) => {
+  return function (dispatch) {
+    const exportURL = ssApiQueryURL.accounts.concat(accountId).concat('/exports');
+    const jsonForRequest = {
+    emails: 'alihaire900@gmail.com',
+    exportType: 'csv',
+    documents: receiptID
+    };
+
+    RNFetchBlob.fetch('POST', exportURL, {
+    Authorization: AuthStr,
+    'Content-Type': 'application/json',
+    }, JSON.stringify(jsonForRequest)).then((resp) => {
+      console.log(resp);
+      dispatch({
+        type: RECEIPT_EXPORT,
+        payload: resp
+      });
+      //Alert('Receipts exported successfully.');
+    }).catch((err) => {
+      console.log('export error', err);
+      Alert.alert(
+        'Sorry',
+        'An error occurred :(',
+        [
+          { text: 'OK' }
+        ]
+      );
+    });
+  };
+};
+
+
+/*
+  AsyncStorage.multiGet(['AuthStr','curAccountId'],function(err,res) {
+    if(err){
+    alert('Sorry, something went wrong.Please try again.....');
+    }else{
+    let AuthStr = res[0][1];
+    console.log('------------AuthStr : '+AuthStr);
+    //let accountId = res[1][1];
+
+    let accountId = "1481900574";
+    let documnetIdsList = ["52910d0de4b06f6f8ca3abeb"]; //pass document id as per row selection
+    let requestUrl = ssApiQueryURL.accounts + accountId + "/exports";
+    let jsonForRequest = {
+    "emails":["mavani.nitesh@gmail.com"],
+    "exportType":"csv",
+    "documents": documnetIdsList
+    };
+
+    RNFetchBlob.fetch('POST', requestUrl, {
+    Authorization : AuthStr,
+    'Content-Type' : 'application/json',
+    }, JSON.stringify(jsonForRequest)).then((resp) => {
+
+    alert('Receipts exported successfully.');
+    }).catch((err) => {
+    console.log('export error',err);
+    alert('Sorry something went wrong.Please try again latter.'+err);
+    })
+    }
+    });
+*/
+
 /*New token index ->
 1. Delete receipt (trash receipt)
 2. Add receipt
-3. Other?
+3. Export receipt
 */
 export const newToken = (accountID, token, receiptID, newReceipt, num) => {
   console.log('updaterefreshtoken', accountID);
@@ -428,18 +510,18 @@ export const newToken = (accountID, token, receiptID, newReceipt, num) => {
           console.log('Add Item', AuthStr);
           dispatch(addItem(AuthStr, accountID, newReceipt));
         } else if (num === 3) {
-          console.log('Receipt Detail');
-          //dispatch(getReceiptDetail(AuthStr, accountID));
+          console.log('Export receipt', AuthStr);
+          dispatch(exportDoc(AuthStr, accountID, receiptID));
         }
        }
      }).catch((err) => {
-       Alert.alert(
+       /*Alert.alert(
          'Sorry',
          'An error occurred :(',
          [
            { text: 'OK' }
          ]
-       );
+       ); */
        console.log('no auth token', err);
      });
   };

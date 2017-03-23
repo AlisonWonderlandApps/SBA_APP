@@ -30,7 +30,12 @@ import {
 	TitleText
  } from '../components';
  import { HEADER } from '../global/margins';
- import { searchTextChanged, deleteReceipt, loadAReceipt } from '../actions';
+ import {
+	 searchTextChanged,
+	 deleteReceipt,
+	 loadAReceipt,
+	exportReceipt
+	} from '../actions';
 
 let self;
 
@@ -248,9 +253,9 @@ class ReceiptsListView extends Component {
 		this.props.deleteReceipt(this.props.curAccountID, secId.id);
 	}
 
-	exportItem(secId, rowId, rowMap) {
+	exportItem(rowMap, secId, rowId) {
 		console.log('secId', secId, 'rowId', rowId, 'rowMap', rowMap);
-		//this.props.exportReceipt(this.props.curAccountID, secId.id);
+		this.props.exportReceipt(this.props.curAccountID, rowMap.id);
 	}
 
   onPressFAB() {
@@ -389,5 +394,5 @@ const mapStateToProps = ({ accounts, receipts, searchIt }) => {
 };
 
 export default connect(mapStateToProps, {
-		searchTextChanged, deleteReceipt, loadAReceipt
+		searchTextChanged, deleteReceipt, loadAReceipt, exportReceipt
 })(ReceiptsListView);

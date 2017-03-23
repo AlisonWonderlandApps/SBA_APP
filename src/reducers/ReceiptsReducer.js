@@ -28,7 +28,8 @@ import {
   SAVE_IMAGE_DATA,
   SET_NEW_RECEIPT_CATEGORY,
   SET_RECEIPT_NOTE,
-  RESET_NEW_RECEIPT
+  RESET_NEW_RECEIPT,
+  RECEIPT_EXPORT
   //CATEGORY_SEARCH,
   //CATEGORY_SEARCH_SUCCESS,
   //CATEGORY_SEARCH_FAIL
@@ -55,7 +56,8 @@ const INITIAL_STATE = {
   imageData: {},
   newReceiptCategory: '',
   newReceiptNote: '',
-  receiptDetail: {}
+  receiptDetail: {},
+  exportDoc: {}
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -235,6 +237,12 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         newReceiptCategory: '',
         newReceiptNote: ''
+      };
+
+    case RECEIPT_EXPORT:
+      return {
+        ...state,
+        exportDoc: action.payload
       };
 
     case RESET_RECEIPTS:
