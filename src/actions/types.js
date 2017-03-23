@@ -63,6 +63,7 @@ export const PLAN_SET = 'set_plan';
 export const PLANTYPE_SET = 'set_plantype';
 export const DBEMAIL_SET = 'dbemail_set';
 export const SET_USER_EMAIL = 'set_user_email';
+export const SET_PAYMENT_TYPE = 'set_payment_type';
 
 //AccountActions
 export const GO_TO_MAIN = 'go_to_main';
@@ -157,7 +158,9 @@ export const TRIP_UPDATE_INFO = 'trips_edit';
 export const TRIP_DELETE = 'trip_delete';
 export const TRIPS_SEARCH = 'trips_search';
 export const TRIPS_START = 'trips_start';
+export const TRIPS_END = 'trips_end';
 export const RESET_TRIPS = 'reset_trips';
+export const SET_CURRENT_LOCATION = 'set_current_trip_location';
 
 //SearchActions
 export const SEARCH_TEXT_CHANGED = 'search_text_changed';

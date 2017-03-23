@@ -24,7 +24,6 @@ import { AsyncStorage, Alert, Platform } from 'react-native';
 import axios from 'axios';
 import Querystring from 'querystring';
 import RNFetchBlob from 'react-native-fetch-blob';
-import { Actions } from 'react-native-router-flux';
 import { ssApiQueryURL, ssAuthConfig } from '../config/auth';
 
 import {
@@ -50,14 +49,12 @@ import {
   SET_DATE,
   SET_CATEGORY,
   SET_COST,
-  SET_LIST,
   RESET_RECEIPTS,
   RECEIPT_DELETE,
   RECEIPT_DELETE_SUCCESS,
   RECEIPT_DELETE_FAIL,
   RECEIPTS_BY_CATEGORY_ADD,
   LOAD_A_RECEIPT,
-  LOAD_A_RECEIPT_SUCCESS,
   SAVE_IMAGE_DATA,
   SET_NEW_RECEIPT_CATEGORY,
   SET_RECEIPT_NOTE,
@@ -110,7 +107,8 @@ export const fetchReceipts = (AuthStr, accountId) => {
         dispatch(fetchTrips(AuthStr, accountId)); //fetch trips
         dispatch(fetchProcessing(AuthStr, accountId)); //fetch processing
         dispatch(fetchReimbursables(AuthStr, accountId)); //fetch reimburseablesß
-        dispatch(setReceiptsList(AuthStr, accountId, response.data.documents));
+        //dispatch(setReceiptsList(AuthStr, accountId, response.data.documents));
+        dispatch(setCategoriesLists(AuthStr, accountId, response.data.documents));
 
         if (length > 0) {
           let i = 0;
@@ -246,83 +244,44 @@ const addToCategoryList = (item) => {
   index++;
 };
 
-const setReceiptsList = (AuthStr, accountId, list) => {
-    index = 0;
-    const receiptlist = [];
-    let id = '';
-    let vendor = '';
-    let total = '';
-    let date = '';
-    let category = '';
-    if (list.length === 0) {
-      return receiptlist;
-    }
-    for (let i = 0; i < list.length; i++) {
-      id = list[i].id;
-      vendor = list[i].vendor;
-      if (list[i].total === undefined) {
-        total = '$ ??';
-      }	else {
-        total = '$'.concat(list[i].total.toFixed(2));
-      }
-      if (list[i].issued === undefined) {
-        const formattedDate = new Date(list[i].uploaded).toString();
-        let year = formattedDate.substring(11, 15);
-        year = ' '.concat(year);
-        date = formattedDate.substring(4, 10).concat(year);
-      } else {
-        const formattedDate = new Date(list[i].issued).toString();
-        let year = formattedDate.substring(11, 15);
-        year = ' '.concat(year);
-        date = formattedDate.substring(4, 10).concat(year);
-      }
-      if (list[i].categories === undefined) {
-        category = 'No categories';
-      } else if (list[i].categories.length < 1) {
-        category = 'No categories';
-      } else {
-        let j = 0;
-        category += list[i].categories[j];
+const setCategoriesLists = (AuthStr, accountId, list) => {
+  index = 0;
+  const receiptList = [];
+  let category = '';
+  if (list.length === 0) {
+    return receiptList;
+  }
+  for (let i = 0; i < list.length; i++) {
+    if (list[i].categories === undefined) {
+      category = 'No categories';
+    } else if (list[i].categories.length < 1) {
+      category = 'No categories';
+    } else {
+      let j = 0;
+      category += list[i].categories[j];
+      addToCategoryList(list[i].categories[j]);
 
+      for (j = 1; j < list[i].categories.length; j++) {
+        category += ', '.concat(list[i].categories[j]);
         addToCategoryList(list[i].categories[j]);
-        for (j = 1; j < list[i].categories.length; j++) {
-          category += ', '.concat(list[i].categories[j]);
-          addToCategoryList(list[i].categories[j]);
         }
-      }
-
-      receiptlist[i] = {
-        id,
-        vendor,
-        total,
-        date,
-        category
-      };
-      id = '';
-      vendor = '';
-      total = '';
-      date = '';
-      category = '';
     }
-    const uniqueCats = cats.filter((item, i, ar) => {
-      return ar.indexOf(item) === i;
+  }
+  const uniqueCats = cats.filter((item, i, ar) => {
+    return ar.indexOf(item) === i;
+  });
+  uniqueCats.sort();
+  console.log('uniqueCats', uniqueCats);
+  return function (dispatch) {
+    for (let k = 0; k < uniqueCats.length; k++) {
+      sortReceiptsByCategory(AuthStr, accountId, uniqueCats, k);
+    }
+    dispatch(addCategoryReceipt(categoryDataObjArray));
+    dispatch({
+      type: CATEGORIES_FETCH_SUCCESS,
+      payload: uniqueCats
     });
-    uniqueCats.sort();
-    console.log('uniqueCats', uniqueCats);
-    return function (dispatch) {
-      for (let k = 0; k < uniqueCats.length; k++) {
-        sortReceiptsByCategory(AuthStr, accountId, uniqueCats, k);
-      }
-      dispatch(addCategoryReceipt(categoryDataObjArray));
-      dispatch({
-        type: CATEGORIES_FETCH_SUCCESS,
-        payload: uniqueCats
-      });
-      dispatch({
-        type: SET_LIST,
-        payload: receiptlist
-      });
-    };
+  };
 };
 
 const setVendor = (data) => {
@@ -361,8 +320,13 @@ const setCategory = (data) => {
 };
 
 const setCost = (cost) => {
-  const currency = '$'.concat(cost.toFixed(2));
-  console.log(currency);
+  let currency = '';
+  if (cost === undefined) {
+    currency = '$ --';
+  } else {
+    currency = '$'.concat(cost.toFixed(2));
+    console.log(currency);
+  }
   return {
     type: SET_COST,
     payload: currency
@@ -385,54 +349,9 @@ const sortReceiptsByCategory = (AuthStr, accountId, categoryArray, k) => {
         }).then(response => {
           console.log('Category receipts', response.data.documents);
           const list = response.data.documents;
-          const receiptlist = [];
-          for (let l = 0; l < response.data.totalCountFiltered; l++) {
-                index = 0;
-                let id = '';
-                let vendor = '';
-                let total = '';
-                let date = '';
-                for (let i = 0; i < list.length; i++) {
-                  id = list[i].id;
-                  vendor = list[i].vendor;
-                  if (list[i].total === undefined) {
-                    total = '$ ??';
-                  }	else {
-                    total = '$'.concat(list[i].total.toFixed(2));
-                  }
-                  if (list[i].issued === undefined) {
-                    const formattedDate = new Date(list[i].uploaded).toString();
-                    let year = formattedDate.substring(11, 15);
-                    year = ', '.concat(year);
-                    date = formattedDate.substring(4, 10).concat(year);
-                  } else {
-                    const formattedDate = new Date(list[i].issued).toString();
-                    let year = formattedDate.substring(11, 15);
-                    year = ', '.concat(year);
-                    date = formattedDate.substring(4, 10).concat(year);
-                  }
-
-                  receiptlist[i] = {
-                    id,
-                    vendor,
-                    total,
-                    date,
-                    category: categoryArray[k]
-                  };
-                  id = '';
-                  vendor = '';
-                  total = '';
-                  date = '';
-                }
-          }
-          const dataObj = {
-            length: response.data.totalCountFiltered,
-            category: categoryArray[k],
-            receipts: receiptlist
-          };
-          console.log(dataObj);
-          categoryDataObjArray[k] = dataObj;
-          console.log(categoryDataObjArray);
+          console.log('list for', k, list);
+          categoryDataObjArray[k] = list;
+          console.log(categoryDataObjArray[k]);
         }).catch((er) => {
           console.log('category fail', er);
         });
@@ -526,16 +445,12 @@ export const newToken = (accountID, token, receiptID, newReceipt, num) => {
   };
 };
 
-export const loadAReceipt = (dataObj, rowId) => {
-  console.log('loadAReceipt', dataObj, rowId);
-  const obj = {
-    data: dataObj,
-    index: rowId
-  };
+export const loadAReceipt = (dataObj) => {
+  console.log('loadAReceipt', dataObj);
   return function (dispatch) {
     dispatch({
       type: LOAD_A_RECEIPT,
-      payload: obj
+      payload: dataObj
     });
   };
 };
@@ -682,3 +597,86 @@ export const resetReceipts = () => {
     type: RESET_RECEIPTS
   };
 };
+
+
+/*
+const setReceiptsList = (AuthStr, accountId, list) => {
+    index = 0;
+    const receiptlist = [];
+    let id = '';
+    let vendor = '';
+    let total = '';
+    let date = '';
+    let category = '';
+    if (list.length === 0) {
+      return receiptlist;
+    }
+    for (let i = 0; i < list.length; i++) {
+      id = list[i].id;
+      vendor = list[i].vendor;
+      if (list[i].total === undefined) {
+        total = '$ ??';
+      }	else {
+        total = '$'.concat(list[i].total.toFixed(2));
+      }
+      if (list[i].issued === undefined) {
+        const formattedDate = new Date(list[i].uploaded).toString();
+        let year = formattedDate.substring(11, 15);
+        year = ' '.concat(year);
+        date = formattedDate.substring(4, 10).concat(year);
+      } else {
+        const formattedDate = new Date(list[i].issued).toString();
+        let year = formattedDate.substring(11, 15);
+        year = ' '.concat(year);
+        date = formattedDate.substring(4, 10).concat(year);
+      }
+      if (list[i].categories === undefined) {
+        category = 'No categories';
+      } else if (list[i].categories.length < 1) {
+        category = 'No categories';
+      } else {
+        let j = 0;
+        category += list[i].categories[j];
+
+        addToCategoryList(list[i].categories[j]);
+        for (j = 1; j < list[i].categories.length; j++) {
+          category += ', '.concat(list[i].categories[j]);
+          addToCategoryList(list[i].categories[j]);
+          }
+
+      }
+
+      receiptlist[i] = {
+        id,
+        vendor,
+        total,
+        date,
+        category
+      };
+      id = '';
+      vendor = '';
+      total = '';
+      date = '';
+      category = '';
+    }
+    const uniqueCats = cats.filter((item, i, ar) => {
+      return ar.indexOf(item) === i;
+    });
+    uniqueCats.sort();
+    console.log('uniqueCats', uniqueCats);
+    return function (dispatch) {
+      for (let k = 0; k < uniqueCats.length; k++) {
+        sortReceiptsByCategory(AuthStr, accountId, uniqueCats, k);
+      }
+      dispatch(addCategoryReceipt(categoryDataObjArray));
+      dispatch({
+        type: CATEGORIES_FETCH_SUCCESS,
+        payload: uniqueCats
+      });
+      dispatch({
+        type: SET_LIST,
+        payload: receiptlist
+      });
+    };
+};
+*/

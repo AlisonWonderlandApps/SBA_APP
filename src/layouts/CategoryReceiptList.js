@@ -39,6 +39,7 @@ class CategoryReceiptList extends Component {
 		super(props);
     console.log(props);
     categoryIndex = props.index;
+		console.log(this.props.categoryReceipts, categoryIndex);
 		this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 	}
 
@@ -52,7 +53,7 @@ class CategoryReceiptList extends Component {
   }
 
 	render() {
-		if (this.props.receiptList.length < 1) {
+		if (this.props.myReceipts.length < 1) {
 			return (
 				<BackgroundView style={styles.emptyContainer}>
 					<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -94,14 +95,11 @@ class CategoryReceiptList extends Component {
 						</Button>
 					</View>
 				<SwipeListView
-						dataSource={this.ds.cloneWithRows(this.props.categoryReceipts[categoryIndex].receipts)}
+						dataSource={this.ds.cloneWithRows(this.props.categoryReceipts[categoryIndex])}
 						renderRow={(data) => this.renderRow(data)}
 						renderHiddenRow={(secId, rowId, rowMap) => this.renderHiddenRow(secId, rowId, rowMap)}
 						rightOpenValue={-150}
 						recalculateHiddenLayout
-				/>
-				<FAB
-            onPress={this.onPressFAB}
 				/>
 				<Spinner
 					visible={this.props.isFetching}
@@ -117,7 +115,7 @@ class CategoryReceiptList extends Component {
 	}
 
 	renderRow(data) {
-		//console.log('data', data);
+		console.log('data', data);
 		return (
 				<TouchableHighlight
 					onPress={() => Actions.receiptdetail()}
@@ -126,12 +124,12 @@ class CategoryReceiptList extends Component {
 				>
 					<View>
 						<View style={{ flexDirection: 'row', justifyContent: 'space-between' }} >
-							<Text> {`${data.vendor}`} </Text>
-							<Text> {`${data.total}`} </Text>
+							<Text> {data.vendor} </Text>
+							<Text> {this.renderCost(data)} </Text>
 						</View>
 						<View>
-							<Text> {`${data.date}`} </Text>
-							<Text> {`${data.category}`} </Text>
+							<Text> {this.renderDate(data)} </Text>
+							<Text> {this.renderCategories(data)} </Text>
 						</View>
 					</View>
 				</TouchableHighlight>
@@ -144,7 +142,6 @@ class CategoryReceiptList extends Component {
 			<TouchableOpacity
 				style={[styles.backRightBtn, styles.backRightBtnLeft]}
 				onPress={() => (this.exportItem(secId, rowId, rowMap))}
-				// onPress={() => (this.deleteItem(secId, rowId, rowMap))}
 			>
 				<Text style={styles.backTextWhite}>Export</Text>
 			</TouchableOpacity>
@@ -158,59 +155,72 @@ class CategoryReceiptList extends Component {
 		);
 	}
 
+	renderCost(data) {
+    let total = '';
+    if (data.total === undefined) {
+      total = '$ --';
+    }	else {
+      total = '$'.concat(data.total.toFixed(2));
+    }
+      console.log('renderCost', total);
+      return total;
+    }
+
+    renderDate(data) {
+      let date = '';
+      if (data.issued === undefined) {
+        const formattedDate = new Date(data.uploaded).toString();
+        let year = formattedDate.substring(11, 15);
+        year = ' '.concat(year);
+        date = formattedDate.substring(4, 10).concat(year);
+      } else {
+        const formattedDate = new Date(data.issued).toString();
+        let year = formattedDate.substring(11, 15);
+        year = ' '.concat(year);
+        date = formattedDate.substring(4, 10).concat(year);
+      }
+      return date;
+    }
+
+    renderCategories(data) {
+      let category = '';
+      console.log(data);
+      if (data.categories === undefined) {
+        category = 'No categories';
+      } else if (data.categories.length < 1) {
+        category = 'No categories';
+      } else {
+        let j = 0;
+        category = data.categories[j];
+        for (j = 1; j < data.categories.length; j++) {
+          category += ', '.concat(data.categories[j]);
+        }
+        return category;
+      }
+		}
+
 	deleteItem(secId, rowId, rowMap) {
 		console.log('secId', secId, 'rowId', rowId, 'rowMap', rowMap);
 		console.log('obj', secId.id, 'acc', this.props.curAccountID);
-		this.props.deleteReceipt(this.props.curAccountID, secId.id);
-			// rowMap[`${secId}${rowId}`].closeRow();
+		Alert.alert(
+			'Confirmation Required!',
+			'Are you sure you want to delete this receipt?',
+			[
+				{ text: 'OK', onPress: () => this.deleteReceipt(this.props.curAccountID, secId.id) },
+				{ text: 'Cancel', onPress: () => console.log('Cancel pressed') },
+			]
+		);
+	//	this.props.deleteReceipt(this.props.curAccountID, secId.id);
+	}
 
-			//**************************Api call start *******************************
-/*			AsyncStorage.multiGet(['AuthStr','curAccountId'],function(err,res)  {
-        if (err) {
-          Alert('Sorry, something went wrong.Please try again.....');
-        } else {
-					let AuthStr = res[0][1];
-     			let accountId = res[1][1];
-
-					let documnetId = "52910d0de4b06f6f8ca3abaa";  //pass document id as per row selection
-          let requestUrl = ssApiQueryURL.accounts + accountId + "/documents/" + documnetId + "/";
-
-          console.log('----->requestUrl : '+requestUrl);
-
-					axios.delete(requestUrl, { headers: { Authorization: AuthStr } })
-				      .then(response => {
-								if (response.status == 204){
-									Alert('Receipt deleted successfully.');
-								}else{
-									Alert('response ==> '+JSON.stringify(response));
-								}
-				      }).catch((error) => {
-				          Alert('Sorry something went wrong.Please try again latter.');
-				      });
-          }
-        });
-
-			//*************************Api call end***********************************
-			*/
+	deleteReceipt(acct, id) {
+		this.props.deleteReceipt(acct, id);
 	}
 
 	exportItem(secId, rowId, rowMap) {
 		console.log('secId', secId, 'rowId', rowId, 'rowMap', rowMap);
 		//this.props.exportReceipt(this.props.curAccountID, secId.id);
 	}
-
-  onPressFAB() {
-    console.log('FAB pressed');
-    Alert.alert(
-      'Choose Photo Source',
-      null,
-      [
-        { text: 'Camera', onPress: () => Actions.camera() },
-        { text: 'Photo Library', onPress: () => Actions.photos() },
-        { text: 'Cancel', onPress: () => console.log('cancel'), style: 'cancel' }
-      ]
-    );
-  }
 }
 
 const styles = {

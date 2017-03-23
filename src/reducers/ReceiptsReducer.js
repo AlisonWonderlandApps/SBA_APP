@@ -181,9 +181,6 @@ export default (state = INITIAL_STATE, action) => {
       };
 
     case RECEIPT_DELETE_SUCCESS:
-    //delete receipts[index] - the payload of this
-    //delete
-
       return {
         ...state,
         isFetching: false
@@ -204,7 +201,10 @@ export default (state = INITIAL_STATE, action) => {
       };
 
     case LOAD_A_RECEIPT:
-      return { ...state, receiptDetail: action.payload };
+      return {
+        ...state,
+        receiptDetail: action.payload
+      };
 
     case LOAD_A_RECEIPT_SUCCESS:
       return {

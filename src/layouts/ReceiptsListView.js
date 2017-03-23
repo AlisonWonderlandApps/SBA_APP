@@ -17,9 +17,6 @@ import { SwipeListView } from 'react-native-swipe-list-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Spinner from 'react-native-loading-spinner-overlay';
 import ImagePicker from 'react-native-image-picker';
-//import { ssApiQueryURL } from '../config/auth';
-//import axios from 'axios';
-//import RNFetchBlob from 'react-native-fetch-blob';
 import {
   PRIMARY_HIGHLIGHT_COLOUR,
   CARD_BACKGROUND_COLOUR,
@@ -44,6 +41,7 @@ class ReceiptsListView extends Component {
 
 		self = this;
 
+		console.log(self.props.myReceipts);
 		console.log(this.props.receiptList);
 		console.log(this.props.categories);
 		this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
@@ -59,7 +57,7 @@ class ReceiptsListView extends Component {
   }
 
 	render() {
-		if (this.props.receiptList.length < 1) {
+		if (this.props.numOfReceipts < 1) {
 			return (
 				<BackgroundView style={styles.emptyContainer}>
 					<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -101,7 +99,7 @@ class ReceiptsListView extends Component {
 						</Button>
 					</View>
 				<SwipeListView
-						dataSource={this.ds.cloneWithRows(this.props.receiptList)}
+						dataSource={this.ds.cloneWithRows(this.props.myReceipts)}
 						renderRow={(data, rowId) => this.renderRow(data, rowId)}
 						renderHiddenRow={(secId, rowId, rowMap) => this.renderHiddenRow(secId, rowId, rowMap)}
 						rightOpenValue={-150}
@@ -159,7 +157,6 @@ class ReceiptsListView extends Component {
 		//console.log('data', data, rowId);
 		return (
 				<TouchableHighlight
-					//onPress={() => Actions.receiptdetail()}
 					onPress={() => this.load(data, rowId)}
 					underlayColor={'#AAA'}
 					style={styles.rowFront}
@@ -167,16 +164,58 @@ class ReceiptsListView extends Component {
 					<View>
 						<View style={{ flexDirection: 'row', justifyContent: 'space-between' }} >
 							<Text> {`${data.vendor}`} </Text>
-							<Text> {`${data.total}`} </Text>
+							<Text> {this.renderCost(data)} </Text>
 						</View>
 						<View>
-							<Text> {`${data.date}`} </Text>
-							<Text> {`${data.category}`} </Text>
+							<Text> {this.renderDate(data)} </Text>
+							<Text> {this.renderCategories(data)} </Text>
 						</View>
 					</View>
 				</TouchableHighlight>
 		);
 	}
+
+	renderCost(data) {
+		let total = '';
+		if (data.total === undefined) {
+			total = '$ --';
+		}	else {
+			total = '$'.concat(data.total.toFixed(2));
+		}
+		return total;
+	}
+
+	renderDate(data) {
+		let date = '';
+		if (data.issued === undefined) {
+			const formattedDate = new Date(data.uploaded).toString();
+			let year = formattedDate.substring(11, 15);
+			year = ' '.concat(year);
+			date = formattedDate.substring(4, 10).concat(year);
+		} else {
+			const formattedDate = new Date(data.issued).toString();
+			let year = formattedDate.substring(11, 15);
+			year = ' '.concat(year);
+			date = formattedDate.substring(4, 10).concat(year);
+		}
+		return date;
+	}
+
+	renderCategories(data) {
+		let category = '';
+		//console.log(data);
+		if (data.categories === undefined || data.categories.length < 1) {
+			category = 'No categories';
+		} else {
+			let j = 0;
+			category = data.categories[j];
+			for (j = 1; j < data.categories.length; j++) {
+				category += ', '.concat(data.categories[j]);
+			}
+		}
+		//console.log(category);
+		return category;
+}
 
 	load(data, rowId) {
 		console.log('load', data, rowId);
@@ -190,7 +229,6 @@ class ReceiptsListView extends Component {
 			<TouchableOpacity
 				style={[styles.backRightBtn, styles.backRightBtnLeft]}
 				onPress={() => (this.exportItem(secId, rowId, rowMap))}
-				// onPress={() => (this.deleteItem(secId, rowId, rowMap))}
 			>
 				<Text style={styles.backTextWhite}>Export</Text>
 			</TouchableOpacity>
@@ -261,13 +299,11 @@ const styles = {
 		justifyContent: 'center'
 	},
 	rowFront: {
-		//alignItems: 'center',
     padding: 10,
 		backgroundColor: CARD_BACKGROUND_COLOUR,
 		borderBottomColor: BORDER_COLOUR,
 		borderBottomWidth: 1,
-		justifyContent: 'center',
-		//height: 100,
+		justifyContent: 'center'
 	},
 	rowBack: {
 		alignItems: 'center',
@@ -339,16 +375,16 @@ const mapStateToProps = ({ accounts, receipts, searchIt }) => {
   const {
 		isFetching,
     myReceipts,
-		receiptList,
-		categories
+		categories,
+		numOfReceipts
   } = receipts;
   return {
 		curAccountID,
 		isFetching,
     myReceipts,
-		receiptList,
 		searchQuery,
-		categories
+		categories,
+		numOfReceipts
   };
 };
 

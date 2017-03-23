@@ -7,3 +7,5 @@ export * from './BackTitle';
 export * from './FilterTitle';
 export * from './BackToReceipts';
 export * from './BackToCats';
+export * from './BackToProcessing';
+export * from './BackToTrips';

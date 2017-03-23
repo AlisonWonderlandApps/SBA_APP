@@ -15,7 +15,8 @@ import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {
   BackgroundView,
-  Button
+  Button,
+  TitleText
 } from '../components';
 import { HEADER } from '../global/margins';
 import { APP_GREY } from '../global/colours';
@@ -43,18 +44,17 @@ class ProcessingDetail extends Component {
         style={{ padding: 0, flex: 1, justifyContent: 'flex-start', paddingTop: HEADER.height }}
       >
         <View style={{ backgroundColor: 'white', padding: 5 }}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <View>
-              <Text> {this.props.receiptDetail.data.vendor} </Text>
-              <Text> {this.props.receiptDetail.data.date} </Text>
-              <Text> payment type </Text>
-              <Text> {this.props.receiptDetail.data.category} </Text>
+              <TitleText style={{ padding: 5, color: 'green' }}>
+                {this.props.receiptDetail.vendor}
+              </TitleText>
+              <Text> {this.props.receiptDetail.date} </Text>
+              <Text> {this.props.receiptDetail.paymentType} </Text>
+              <Text> {this.props.receiptDetail.categories} </Text>
+              <Text style={{ paddingTop: 20, paddingBottom: 20, paddingLeft: 5 }}>
+                {this.props.receiptDetail.notes}
+              </Text>
             </View>
-            <View>
-              <Text> {this.props.receiptDetail.data.total} </Text>
-              <Text> tax </Text>
-            </View>
-          </View>
           <View style={{ padding: 5, paddingTop: 15, flexDirection: 'row', width: null }}>
             <TouchableOpacity
               style={{ flex: 1, height: 40 }}
@@ -67,7 +67,7 @@ class ProcessingDetail extends Component {
         <View style={{ flex: 1, paddingBottom: 15, padding: 20, justifyContent: 'space-between' }} >
           <Image
             style={{ borderWidth: 1, flex: 1, resizeMode: 'cover', paddingBottom: 10 }}
-            //source={{ uri: imgUri }}
+            source={{ uri: this.props.receiptDetail.imgURL }}
           />
         </View>
         <TouchableHighlight

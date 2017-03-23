@@ -27,7 +27,7 @@ import {
   BORDER_COLOUR,
   BRAND_COLOUR_GREEN
  } from '../global/colours';
-import { searchTextChanged } from '../actions';
+import { searchTextChanged, loadAReceipt } from '../actions';
 
 class Processing extends Component {
 
@@ -105,19 +105,19 @@ class Processing extends Component {
     );
   }
 
-  renderRow(data) {
-    console.log('data', data);
+  renderRow(rowdata) {
+    console.log('data', rowdata);
     return (
         <TouchableHighlight
-          onPress={() => console.log('You touched me', data)}
+          onPress={() => this.goToProcessingDetail(rowdata)}
           underlayColor={'#AAA'}
           style={styles.rowFront}
         >
           <View>
             <View style={{ justifyContent: 'space-between' }} >
               <TitleText style={{ color: BRAND_COLOUR_GREEN }}> Processing </TitleText>
-              <Text> {this.renderDataDate(data)} </Text>
-              <Text> {this.renderDataCategories(data)} </Text>
+              <Text> {this.renderDataDate(rowdata)} </Text>
+              <Text> {this.renderDataCategories(rowdata)} </Text>
             </View>
           </View>
         </TouchableHighlight>
@@ -170,6 +170,48 @@ class Processing extends Component {
 
   onSearchChange(text) {
     this.props.searchTextChanged(text);
+  }
+
+  goToProcessingDetail(data) {
+    console.log('processData', data);
+    const formattedDate = new Date(data.uploaded).toString();
+    let year = formattedDate.substring(11, 15);
+    year = ', '.concat(year);
+    const date = formattedDate.substring(4, 10).concat(year);
+    let categories = '';
+    if (data.categories === undefined || data.categories.length < 1) {
+      categories = 'No categories';
+    } else {
+      categories = data.categories[0];
+      for (let k = 1; k < data.categories.length; k++) {
+          categories += ', '.concat(data.categories[k]);
+      }
+    }
+    let type = '';
+    if (data.paymentType === undefined) {
+      type = 'No payment type';
+    } else {
+      type = data.paymentType;
+    }
+    let myNotes = '';
+    if (data.notes === undefined) {
+      myNotes = 'No notes to show';
+    } else {
+      myNotes = data.notes;
+    }
+    const receiptObj = {
+      id: data.id,
+      vendor: 'Processing',
+      date,
+      paymentType: type,
+      notes: myNotes,
+      categories,
+      imgURL: data.attachment.url
+    };
+    console.log('data.notes', data.notes);
+    console.log('processingDetail', receiptObj);
+    this.props.loadAReceipt(receiptObj);
+    Actions.processingDetail();
   }
 
   onPressFAB() {
@@ -279,5 +321,5 @@ const mapStateToProps = ({ receipts, searchIt }) => {
 
 
 export default connect(mapStateToProps, {
- searchTextChanged
+ searchTextChanged, loadAReceipt
 })(Processing);

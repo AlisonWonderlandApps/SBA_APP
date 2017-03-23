@@ -36,7 +36,8 @@ import {
   PLAN_SET,
   PLANTYPE_SET,
   DBEMAIL_SET,
-  SET_USER_EMAIL
+  SET_USER_EMAIL,
+  SET_PAYMENT_TYPE
 //  ACCOUNT_CREATE_NEW,
 //  ACCOUNT_CHANGE_PLAN,
 //  ACCOUNT_ADD_USER,
@@ -250,3 +251,19 @@ export const setUserEmail = (email) => {
     payload: email
   };
 };
+
+/*
+export const setPaymentType = (pay) => {
+  console.log('payment', pay);
+  let type = '';
+  if (pay === undefined) {
+    type = 'No payment type';
+  } else {
+    type = pay;
+  }
+  return {
+    type: SET_PAYMENT_TYPE,
+    payload: type
+  };
+};
+*/

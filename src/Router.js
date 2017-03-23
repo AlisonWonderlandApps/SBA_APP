@@ -14,7 +14,9 @@ import {
         BackTitle,
         FilterTitle,
         BackToReceipts,
-        BackToCats
+        BackToCats,
+        BackToProcessing,
+        BackToTrips
       } from './components';
 
 import { HEADER } from './global/margins';
@@ -121,13 +123,13 @@ class RouterComponent extends Component {
     return <Text />;
   }
 
-/*  renderBackButton() {
+  renderBackToProcessingButton() {
     return (
-      <BackTitle>
+      <BackToProcessing>
         Back
-      </BackTitle>
+      </BackToProcessing>
     );
-  } */
+  }
 
   renderMainButton() {
     return (
@@ -138,11 +140,21 @@ class RouterComponent extends Component {
   }
 
   renderBackToReceiptsButton() {
-    return (
-      <BackToReceipts>
-        Receipts
-      </BackToReceipts>
-    );
+    console.log('routerReeiptsbut', this.props.receiptDetail.num);
+    if (this.props.receiptDetail.num === 2) {
+      console.log('trips render');
+      return (
+        <BackToTrips>
+          Trips
+        </BackToTrips>
+      );
+    } else {
+      return (
+        <BackToReceipts>
+          Receipts
+        </BackToReceipts>
+      );
+    }
   }
 
   renderBackToCategoriesButton() {
@@ -282,7 +294,7 @@ class RouterComponent extends Component {
       navigationBarStyle={styles.headerStyle}
       renderTitle={() => <Header />}
       component={ReceiptInfo}
-      renderBackButton={() => this.renderBackToReceiptsButton()}
+      //renderBackButton={() => this.renderBackToReceiptsButton()}
       //initial
     />
 
@@ -292,7 +304,7 @@ class RouterComponent extends Component {
       navigationBarStyle={styles.headerStyle}
       renderTitle={() => <Header />}
       component={ProcessingDetail}
-      renderBackButton={() => this.renderBackToReceiptsButton()}
+      renderBackButton={() => this.renderBackToProcessingButton()}
       //initial
     />
 
@@ -400,7 +412,8 @@ const mapStateToProps = ({ user, receipts }) => {
     processingCount,
     reimbursableCount,
     numOfReceipts,
-    categories
+    categories,
+    receiptDetail
   } = receipts;
   return {
     userName,
@@ -408,7 +421,8 @@ const mapStateToProps = ({ user, receipts }) => {
     processingCount,
     reimbursableCount,
     numOfReceipts,
-    categories
+    categories,
+    receiptDetail
   };
 };
 

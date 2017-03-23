@@ -10,7 +10,10 @@ import {
   SET_TRIP_DATE,
   SET_TRIP_COST,
   SET_TRIP_VENDOR,
-  RESET_TRIPS
+  RESET_TRIPS,
+  SET_CURRENT_LOCATION,
+  TRIPS_START,
+  TRIPS_END
 //  SET_TRIP_DISTANCE
 } from '../actions/types';
 
@@ -20,6 +23,10 @@ const INITIAL_STATE = {
   tripsErrorMsg: '',
   myTrips: [],
   latestTrip: {},
+  isTripStarted: false,
+  tripData: {},
+  curLocation: {},
+  //TODO: fix the beloe shitty code into an object
   tVendor: '', //string
   tDate: '', //string version
   tCategory: '', //if multiple in a string
@@ -51,6 +58,15 @@ export default (state = INITIAL_STATE, action) => {
     case SET_TRIP_VENDOR:
       return { ...state, tVendor: action.payload };
 
+    case TRIPS_START:
+      return { ...state, isTripStarted: true };
+
+    case TRIPS_END:
+      return { ...state, isTripsStarted: false };
+
+    case SET_CURRENT_LOCATION:
+      return { ...state, isTripsStarted: true, curLocation: action.payload };
+
     case RESET_TRIPS:
         return {
           isTracking: false, //current trip in progress?
@@ -62,7 +78,10 @@ export default (state = INITIAL_STATE, action) => {
           tDate: '', //string version
           tCategory: '', //if multiple in a string
           tCost: '',
-          tDistance: ''
+          tDistance: '',
+          isTripsStarted: false,
+          curLocation: {},
+          tripData: {}
         };
 
   //  case SET_TRIP_DISTANCE:

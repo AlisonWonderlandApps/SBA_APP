@@ -2,6 +2,7 @@
 * All actions a user can take pertaining to trips
 */
 
+import { AsyncStorage, Alert } from 'react-native';
 import axios from 'axios';
 import { ssApiQueryURL } from '../config/auth';
 
@@ -13,13 +14,19 @@ import {
   SET_TRIP_DATE,
   SET_TRIP_COST,
   SET_TRIP_VENDOR,
-  RESET_TRIPS
+  RESET_TRIPS,
+  SET_CURRENT_LOCATION,
+  TRIPS_START,
+  TRIPS_END
 } from './types';
 
 export const startNewTrip = () => {
   //console.log(this.props.authToken);
 };
 
+export const setLocationData = () => {
+
+};
 
 //0. Fetch all trips
 //done in mainnav
@@ -106,6 +113,39 @@ export const resetTrips = () => {
   return {
     type: RESET_TRIPS
   };
+};
+
+export const setCurTripLocation = (tripData) => {
+  return {
+    type: SET_CURRENT_LOCATION,
+    payload: tripData
+  };
+};
+
+export const startTrip = () => {
+  return {
+    type: TRIPS_START
+  };
+};
+
+export const endTrip = () => {
+  return {
+    type: TRIPS_END
+  };
+};
+
+export const isTripTracking = () => {
+  //get data from AsyncStorage
+  AsyncStorage.getItem('tripData', (err, res) => {
+    if (err) {
+      Alert('Sorry, something went wrong. Please try again.');
+    } else {
+      return {
+        type: SET_CURRENT_LOCATION,
+        payload: res
+      };
+    }
+  });
 };
 
 //1. Start a trip

@@ -45,14 +45,14 @@ class ReceiptInfo extends Component {
         <View style={{ backgroundColor: 'white', padding: 5 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <View>
-              <Text> {this.props.receiptDetail.data.vendor} </Text>
-              <Text> {this.props.receiptDetail.data.date} </Text>
-              <Text> payment type </Text>
-              <Text> {this.props.receiptDetail.data.category} </Text>
+              <Text> {this.props.receiptDetail.vendor} </Text>
+              <Text> {this.renderDate()} </Text>
+              <Text> {this.renderPaymentType()} </Text>
+              <Text> {this.renderCategories()} </Text>
             </View>
             <View>
-              <Text> {this.props.receiptDetail.data.total} </Text>
-              <Text> tax </Text>
+              <Text> AUD{this.renderCost()} </Text>
+              <Text> {this.renderTax()} </Text>
             </View>
           </View>
           <View style={{ padding: 5, paddingTop: 15, flexDirection: 'row', width: null }}>
@@ -92,6 +92,71 @@ class ReceiptInfo extends Component {
     );
   }
 
+  renderCost() {
+    const data = this.props.receiptDetail;
+    let total = '';
+    if (data.total === undefined) {
+      total = '$ --';
+    }	else {
+      total = '$'.concat(data.total.toFixed(2));
+    }
+      console.log('renderCost', total);
+      return total;
+    }
+
+    renderDate() {
+      const data = this.props.receiptDetail;
+      let date = '';
+      if (data.issued === undefined) {
+        const formattedDate = new Date(data.uploaded).toString();
+        let year = formattedDate.substring(11, 15);
+        year = ' '.concat(year);
+        date = formattedDate.substring(4, 10).concat(year);
+      } else {
+        const formattedDate = new Date(data.issued).toString();
+        let year = formattedDate.substring(11, 15);
+        year = ' '.concat(year);
+        date = formattedDate.substring(4, 10).concat(year);
+      }
+      return date;
+    }
+
+    renderCategories() {
+      const data = this.props.receiptDetail;
+      let category = '';
+      console.log(data);
+      if (data.categories === undefined) {
+        category = 'No categories';
+      } else if (data.categories.length < 1) {
+        category = 'No categories';
+      } else {
+        let j = 0;
+        category = data.categories[j];
+        for (j = 1; j < data.categories.length; j++) {
+          category += ', '.concat(data.categories[j]);
+        }
+        return category;
+      }
+  }
+
+  renderPaymentType() {
+    const data = this.props.receiptDetail;
+      if (data.paymentType === undefined) {
+        return 'No payment type';
+      } else if (data.type === undefined) {
+        return 'No payment type';
+      }
+      return data.paymentType.type;
+  }
+
+  renderTax() {
+      if (this.props.receiptDetail.tax === undefined) {
+        return 'AUD$ --';
+      }
+      const tax = this.props.receiptDetail.tax;
+      return 'AUD$'.concat(tax.toFixed(2));
+  }
+
   onDeletePress() {
     console.log('delete', this.props);
       Alert.alert(
@@ -106,7 +171,7 @@ class ReceiptInfo extends Component {
 
   deleteReceipt() {
     console.log('delete it');
-    this.props.deleteReceipt(this.props.curAccountID, this.props.receiptDetail.data.id);
+    this.props.deleteReceipt(this.props.curAccountID, this.props.receiptDetail.id);
   }
 
   renderReProcessButton() {
