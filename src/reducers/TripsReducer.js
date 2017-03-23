@@ -13,7 +13,8 @@ import {
   RESET_TRIPS,
   SET_CURRENT_LOCATION,
   TRIPS_START,
-  TRIPS_END
+  TRIPS_END,
+  SET_TRIP_DATA
 //  SET_TRIP_DISTANCE
 } from '../actions/types';
 
@@ -69,6 +70,9 @@ export default (state = INITIAL_STATE, action) => {
 
     case SET_CURRENT_LOCATION:
       return { ...state, isTripsStarted: true, curLocation: action.payload };
+
+    case SET_TRIP_DATA:
+      return { ...state, isTripsStarted: true, tripData: action.payload};
 
     case RESET_TRIPS:
         return {

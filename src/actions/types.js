@@ -161,6 +161,7 @@ export const TRIPS_START = 'trips_start';
 export const TRIPS_END = 'trips_end';
 export const RESET_TRIPS = 'reset_trips';
 export const SET_CURRENT_LOCATION = 'set_current_trip_location';
+export const SET_TRIP_DATA = 'set_trip_data';
 
 //SearchActions
 export const SEARCH_TEXT_CHANGED = 'search_text_changed';

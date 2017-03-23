@@ -17,16 +17,9 @@ import {
   RESET_TRIPS,
   SET_CURRENT_LOCATION,
   TRIPS_START,
-  TRIPS_END
+  TRIPS_END,
+  SET_TRIP_DATA
 } from './types';
-
-export const startNewTrip = () => {
-  //console.log(this.props.authToken);
-};
-
-export const setLocationData = () => {
-
-};
 
 //0. Fetch all trips
 //done in mainnav
@@ -115,6 +108,8 @@ export const resetTrips = () => {
   };
 };
 
+
+/**********RELATED TO TRIPS LIST****************/
 export const setCurTripLocation = (tripData) => {
   return {
     type: SET_CURRENT_LOCATION,
@@ -131,6 +126,22 @@ export const startTrip = () => {
 export const endTrip = () => {
   return {
     type: TRIPS_END
+  };
+};
+
+export const setTripData = (tripData) => {
+  return function (dispatch) {
+    try {
+      AsyncStorage.setItem('tripData', JSON.stringify(tripData)).then((value) => {
+        console.log(value);
+        dispatch({
+          type: SET_TRIP_DATA,
+          payload: tripData
+        });
+      });
+    } catch (err) {
+      console.log(err);
+    }
   };
 };
 
