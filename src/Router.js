@@ -31,10 +31,6 @@ import AccountsList from './layouts/AccountsList';
 import APITest from './layouts/APITest';
 import MainNavigationList from './layouts/MainNavigationList';
 import TripsList from './layouts/TripsList';
-//import ReceiptsList from './layouts/ReceiptsList';
-import Photos from './layouts/Photos';
-import CameraPic from './layouts/Camera';
-import CameraStill from './layouts/CameraStill';
 import Settings from './layouts/Settings';
 import Tools from './layouts/Tools';
 import SaveDoc from './layouts/SaveDoc';
@@ -42,7 +38,6 @@ import Processing from './layouts/Processing';
 import Reimbursables from './layouts/Reimbursables';
 import ReceiptsListView from './layouts/ReceiptsListView';
 import CategoryList from './layouts/CategoryList';
-import ReceiptDetail from './layouts/ReceiptDetail';
 import CategoryReceiptList from './layouts/CategoryReceiptList';
 import ReceiptInfo from './layouts/ReceiptInfo';
 import ProcessingDetail from './layouts/ProcessingDetail';
@@ -220,34 +215,6 @@ class RouterComponent extends Component {
     />
 
     <Scene
-      key="photos"
-      component={Photos}
-      hideNavBar={false}
-      navigationBarStyle={styles.headerStyle}
-      renderTitle={() => <Header />}
-      rightTitle='Add'
-      onRight={() => Actions.save()}
-    />
-
-    <Scene
-      key="camera"
-      component={CameraPic}
-      hideNavBar={false}
-      navigationBarStyle={styles.headerStyle}
-      renderTitle={() => <Header />}
-      //initial
-    />
-
-    <Scene
-      key="cameraPic"
-      component={CameraStill}
-      hideNavBar={false}
-      navigationBarStyle={styles.headerStyle}
-      renderTitle={() => <Header />}
-      //initial
-    />
-
-    <Scene
       key="main"
       component={MainNavigationList}
       hideNavBar={false}
@@ -277,15 +244,6 @@ class RouterComponent extends Component {
       renderRightButton={() => this.renderFilterButton(1)}
       renderBackButton={() => this.renderMainButton()}
       //hideBackImage
-    />
-
-    <Scene
-      key="receiptDetail"
-      hideNavBar={false}
-      navigationBarStyle={styles.headerStyle}
-      renderTitle={() => <Header />}
-      component={ReceiptDetail}
-      renderBackButton={() => this.renderBackToReceiptsButton()}
     />
 
     <Scene

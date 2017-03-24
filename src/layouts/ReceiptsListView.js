@@ -168,7 +168,7 @@ class ReceiptsListView extends Component {
 				>
 					<View>
 						<View style={{ flexDirection: 'row', justifyContent: 'space-between' }} >
-							<Text> {`${data.vendor}`} </Text>
+							<Text> {this.renderName(data)} </Text>
 							<Text> {this.renderCost(data)} </Text>
 						</View>
 						<View>
@@ -178,6 +178,14 @@ class ReceiptsListView extends Component {
 					</View>
 				</TouchableHighlight>
 		);
+	}
+
+	renderName(data) {
+		console.log(data);
+		if (data.vendor === undefined) {
+			return 'Unknown';
+		}
+		return data.vendor;
 	}
 
 	renderCost(data) {
