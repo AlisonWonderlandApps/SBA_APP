@@ -422,9 +422,9 @@ const exportDoc = (AuthStr, accountId, receiptID) => {
   return function (dispatch) {
     const exportURL = ssApiQueryURL.accounts.concat(accountId).concat('/exports');
     const jsonForRequest = {
-    emails: 'alihaire900@gmail.com',
-    exportType: 'csv',
-    documents: receiptID
+    emails: ['alihaire900@gmail.com'],
+    exportType: 'pdf',
+    documents: [receiptID]
     };
 
     RNFetchBlob.fetch('POST', exportURL, {
@@ -449,39 +449,6 @@ const exportDoc = (AuthStr, accountId, receiptID) => {
     });
   };
 };
-
-
-/*
-  AsyncStorage.multiGet(['AuthStr','curAccountId'],function(err,res) {
-    if(err){
-    alert('Sorry, something went wrong.Please try again.....');
-    }else{
-    let AuthStr = res[0][1];
-    console.log('------------AuthStr : '+AuthStr);
-    //let accountId = res[1][1];
-
-    let accountId = "1481900574";
-    let documnetIdsList = ["52910d0de4b06f6f8ca3abeb"]; //pass document id as per row selection
-    let requestUrl = ssApiQueryURL.accounts + accountId + "/exports";
-    let jsonForRequest = {
-    "emails":["mavani.nitesh@gmail.com"],
-    "exportType":"csv",
-    "documents": documnetIdsList
-    };
-
-    RNFetchBlob.fetch('POST', requestUrl, {
-    Authorization : AuthStr,
-    'Content-Type' : 'application/json',
-    }, JSON.stringify(jsonForRequest)).then((resp) => {
-
-    alert('Receipts exported successfully.');
-    }).catch((err) => {
-    console.log('export error',err);
-    alert('Sorry something went wrong.Please try again latter.'+err);
-    })
-    }
-    });
-*/
 
 /*New token index ->
 1. Delete receipt (trash receipt)

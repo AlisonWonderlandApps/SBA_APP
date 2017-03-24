@@ -256,6 +256,7 @@ class ReceiptsListView extends Component {
 	exportItem(rowMap, secId, rowId) {
 		console.log('secId', secId, 'rowId', rowId, 'rowMap', rowMap);
 		this.props.exportReceipt(this.props.curAccountID, rowMap.id);
+		//Actions.export();
 	}
 
   onPressFAB() {
