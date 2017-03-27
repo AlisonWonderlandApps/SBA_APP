@@ -66,13 +66,13 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state, isTripStarted: true };
 
     case TRIPS_END:
-      return { ...state, isTripsStarted: false };
+      return { ...state, isTripStarted: false };
 
     case SET_CURRENT_LOCATION:
-      return { ...state, isTripsStarted: true, curLocation: action.payload };
+      return { ...state, curLocation: action.payload };
 
     case SET_TRIP_DATA:
-      return { ...state, isTripsStarted: true, tripData: action.payload};
+      return { ...state, isTripStarted: true, tripData: action.payload};
 
     case RESET_TRIPS:
         return {

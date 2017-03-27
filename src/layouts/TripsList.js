@@ -19,7 +19,7 @@ import {
   BORDER_COLOUR,
   PRIMARY_HIGHLIGHT_COLOUR
 } from '../global/colours';
-import { loadAReceipt, isTripTracking, setCurTripLocation } from '../actions';
+import { loadAReceipt, isTripTracking, setCurTripLocation, startTrip, endTrip} from '../actions';
 
 let self;
 
@@ -71,7 +71,7 @@ class TripsList extends Component {
       },
       (err) => {
         console.log(err);
-        Alert('Sorry, something went wrong. Please try again.');
+        alert('Sorry, something went wrong. Please try again.');
       },
       {
         enableHighAccuracy: true,
@@ -79,97 +79,94 @@ class TripsList extends Component {
         maximumAge: 10000
       });
 
-/*
+
       setTimeout(() => {
         self.updateLocation();
-      }, 5000); */
+      }, 5000);
   }
 
   startTrip() {
+    AsyncStorage.getItem('tripData', (err, res) => {
+      if (err) {
+        alert('Sorry, something went wrong. Please try again.');
+      } else {
+        let tripData;
 
+        if (res == null) {  //for firest time
+            tripData = {
+              isTripStarted: true,
+              startLocation: self.props.curLocation,
+            };
+        } else {
+            tripData = JSON.parse(res);
+
+            if (tripData.isTripStarted == false) {
+              tripData.isTripStarted = true;
+              tripData.startLocation = self.props.curLocation;
+            }
+        }
+
+        AsyncStorage.setItem('tripData', JSON.stringify(tripData), (err1, res1) => {
+          self.props.startTrip();
+        });
+      }
+    });
   }
 
   endTrip() {
+    AsyncStorage.getItem('tripData', (err, res) => {
+      if (err) {
+        alert('Sorry, something went wrong. Please try again.');
+      } else {
+        let tripData;
 
+        if (res !== null) {  //for firest time
+            tripData = JSON.parse(res);
+
+            if (tripData.isTripStarted == true) {
+              tripData.isTripStarted = false;
+            }
+        }
+
+        //******************************************Find Distance start**************************************//
+        const url = 'https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins='
+                  .concat(tripData.startLocation.latitude).concat(',')
+                  .concat(tripData.startLocation.longitude).concat('&destinations=')
+                  .concat(self.props.curLocation.latitude)
+                  .concat(',')
+                  .concat(self.props.curLocation.longitude);
+        console.log('url', url);
+
+        fetch(url)
+          .then((response) => response.json())
+          .then((responseJson) => {
+            console.log('responseJson', responseJson);
+            const distance = responseJson.rows[0].elements[0].distance.text;
+            alert('Trip Distance : '+ distance);
+
+            AsyncStorage.setItem('tripData', JSON.stringify(tripData), (err1, res1) => {
+              self.props.endTrip();
+            });
+          })
+          .catch((error) => {
+            console.log(error);
+            alert('Sorry, something went wrong. Please try again.');
+          });
+
+        //******************************************Find Distance end**************************************//
+      }
+    });
   }
 
   startOrEndTrip() {
     //let isTripEnd = false;
-
+    console.log('this.props.curLocation : ',this.props.curLocation);
+    console.log('this.state.curLocation : ',this.state.curLocation);
     if (this.props.isTripStarted) {
-      //put code for updating or whatever here
+      this.endTrip();
     } else {
-      //put code for starting trip here
+      this.startTrip();
     }
-
-
-    AsyncStorage.getItem('tripData', (err, res) => {
-      if (err) {
-        Alert('Sorry, something went wrong. Please try again.');
-      } else {
-        const isFirstTime = false;
-        let tripData;
-
-      if (res == null) {  //for firest time
-          tripData = {
-            isTripStarted: true,
-            startLocation: self.state.curLocation,
-          };
-      } else {
-          tripData = JSON.parse(res);
-
-      if (tripData.isTripStarted === true) {
-            tripData.isTripStarted = false;
-            isTripEnd = true;
-            //find distance
-      } else {
-            tripData.isTripStarted = true;
-            tripData.startLoaction = self.state.curLocation;
-          }
-      }
-
-
-        AsyncStorage.setItem('tripData', JSON.stringify(tripData), (err1, res1) => {
-          if (err1) {
-            console.log(err1, res1);
-          } else {
-            console.log('hi');
-            if (!this.props.isTripStarted) {
-              //******************************************Find Distance start**************************************//
-              const url = 'https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins='
-                        .concat(tripData.startLoaction.latitude).concat(',')
-                        .concat(tripData.startLoaction.longitude).concat('&destinations=')
-                        .concat(self.state.curLocation.latitude)
-                        .concat(',')
-                        .concat(self.state.curLocation.longitude);
-              console.log('url', url);
-
-              fetch(url)
-                .then((response) => response.json())
-                .then((responseJson) => {
-                  console.log('responseJson', responseJson);
-                  const distance = responseJson.rows[0].elements[0].distance.text;
-                  Alert('Trip Distance : ', distance);
-                })
-                .catch((error) => {
-                  console.log(error);
-                  Alert('Sorry, something went wrong. Please try again.');
-                });
-
-              //******************************************Find Distance end**************************************//
-
-              self.setState({
-                buttonText: ' Start Trip '
-              });
-            } else {
-              self.setState({
-                buttonText: ' End Trip '
-              });
-            }
-          }
-        });
-      }
-    });
   }
 
   render() {
@@ -182,7 +179,7 @@ class TripsList extends Component {
             justifyContent: 'center'
            }}
         >
-          {this.renderMapView(this.state.curLocation)}
+          {this.renderMapView(this.props.curLocation)}
           <View style={{ paddingTop: 20 }}>
             <Button
               onPress={() => this.startOrEndTrip()}
@@ -208,7 +205,7 @@ class TripsList extends Component {
       >
       <View style={{ flex: 1 }}>
         <View style={{ flexGrow: 1 }}>
-          {this.renderMapView(this.state.curLocation)}
+          {this.renderMapView(this.props.curLocation)}
           <View style={{ paddingTop: 20 }}>
             <Button onPress={() => this.startOrEndTrip()}>{this.renderButtonText()}</Button>
           </View>
@@ -238,16 +235,16 @@ class TripsList extends Component {
         <MapView
           style={styles.map}
           region={{
-            latitude: 37.78825,
-            longitude: -122.4324,
+            latitude: this.props.curLocation.latitude,
+            longitude: this.props.curLocation.longitude,
             latitudeDelta: 0.015,
             longitudeDelta: 0.0121,
           }}
         >
           <MapView.Marker
             coordinate={{
-              latitude: 37.78825,
-              longitude: -122.4324,
+              latitude: this.props.curLocation.latitude,
+              longitude: this.props.curLocation.longitude,
               latitudeDelta: 0.015,
               longitudeDelta: 0.0121,
               }}
@@ -317,16 +314,18 @@ const mapStateToProps = ({ trips }) => {
     isFetchingTrips,
     latestTrip,
     isTripStarted,
+    curLocation
   } = trips;
   return {
     isFetchingTrips,
     isTripStarted,
     myTrips,
     latestTrip,
+    curLocation
   };
 };
 
 
 export default connect(mapStateToProps, {
-  loadAReceipt, isTripTracking, setCurTripLocation
+  loadAReceipt, isTripTracking, setCurTripLocation,startTrip,endTrip
 })(TripsList);
