@@ -41,6 +41,7 @@ import CategoryList from './layouts/CategoryList';
 import CategoryReceiptList from './layouts/CategoryReceiptList';
 import ReceiptInfo from './layouts/ReceiptInfo';
 import ProcessingDetail from './layouts/ProcessingDetail';
+import ExportDoc from './layouts/ExportDoc';
 
 
 class RouterComponent extends Component {
@@ -274,6 +275,16 @@ class RouterComponent extends Component {
       renderTitle={() => <Header />}
       renderBackButton={() => this.renderMainButton()}
       //initial
+    />
+
+    <Scene
+      key="export"
+      component={ExportDoc}
+      hideNavBar={false}
+      navigationBarStyle={styles.headerStyle}
+      renderTitle={() => <Header />}
+      renderBackButton={() => this.renderMainButton()}
+      initial
     />
 
     <Scene

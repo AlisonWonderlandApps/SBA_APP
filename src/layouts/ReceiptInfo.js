@@ -163,17 +163,14 @@ class ReceiptInfo extends Component {
         'Confirmation Required!',
         'Are you sure you want to delete this receipt?',
         [
-          { text: 'OK', onPress: () => this.deleteReceipt() },
+          { text: 'OK',
+          onPress: () =>
+            this.props.deleteReceipt(this.props.curAccountID, this.props.receiptDetail.id) },
           { text: 'Cancel', onPress: () => console.log('Cancel pressed') },
         ]
       );
   }
-
-  deleteReceipt() {
-    console.log('delete it');
-    this.props.deleteReceipt(this.props.curAccountID, this.props.receiptDetail.id);
-  }
-
+  
   renderReProcessButton() {
     return (
           <Button

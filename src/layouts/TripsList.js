@@ -12,14 +12,20 @@ import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import MapView from 'react-native-maps';
 import Spinner from 'react-native-loading-spinner-overlay';
-import { BackgroundView, Button, MyMapView } from '../components';
+import { BackgroundView, Button } from '../components';
 import { HEADER } from '../global/margins';
 import {
   CARD_BACKGROUND_COLOUR,
   BORDER_COLOUR,
   PRIMARY_HIGHLIGHT_COLOUR
 } from '../global/colours';
-import { loadAReceipt, isTripTracking, setCurTripLocation } from '../actions';
+import {
+  loadAReceipt,
+  isTripTracking,
+  setCurTripLocation,
+  startTrip,
+  endTrip
+ } from '../actions';
 
 let self;
 
@@ -79,10 +85,9 @@ class TripsList extends Component {
         maximumAge: 10000
       });
 
-/*
       setTimeout(() => {
         self.updateLocation();
-      }, 5000); */
+      }, 5000);
   }
 
   startTrip() {

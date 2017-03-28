@@ -181,7 +181,6 @@ class ReceiptsListView extends Component {
 	}
 
 	renderName(data) {
-		console.log(data);
 		if (data.vendor === undefined) {
 			return 'Unknown';
 		}
@@ -258,7 +257,15 @@ class ReceiptsListView extends Component {
 	deleteItem(secId, rowId, rowMap) {
 		console.log('secId', secId, 'rowId', rowId, 'rowMap', rowMap);
 		console.log('obj', secId.id, 'acc', this.props.curAccountID);
-		this.props.deleteReceipt(this.props.curAccountID, secId.id);
+		Alert.alert(
+			'Confirmation Required!',
+			'Are you sure you want to delete this receipt?',
+      [
+        { text: 'Delete',
+					onPress: () => this.props.deleteReceipt(this.props.curAccountID, secId.id) },
+        { text: 'Cancel', onPress: () => console.log('cancel'), style: 'cancel' }
+      ]
+    );
 	}
 
 	exportItem(rowMap, secId, rowId) {

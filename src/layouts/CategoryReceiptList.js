@@ -123,7 +123,7 @@ class CategoryReceiptList extends Component {
 		console.log('data', data);
 		return (
 				<TouchableHighlight
-					onPress={() => Actions.receiptdetail()}
+					onPress={() => Actions.receiptInfo()}
 					underlayColor={'#AAA'}
 					style={styles.rowFront}
 				>
@@ -211,15 +211,10 @@ class CategoryReceiptList extends Component {
 			'Confirmation Required!',
 			'Are you sure you want to delete this receipt?',
 			[
-				{ text: 'OK', onPress: () => this.deleteReceipt(this.props.curAccountID, secId.id) },
+				{ text: 'OK', onPress: () => this.props.deleteReceipt(this.props.curAccountID, secId.id) },
 				{ text: 'Cancel', onPress: () => console.log('Cancel pressed') },
 			]
 		);
-	//	this.props.deleteReceipt(this.props.curAccountID, secId.id);
-	}
-
-	deleteReceipt(acct, id) {
-		this.props.deleteReceipt(acct, id);
 	}
 
 	exportItem(secId, rowId, rowMap) {

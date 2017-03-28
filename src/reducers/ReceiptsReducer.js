@@ -265,7 +265,8 @@ export default (state = INITIAL_STATE, action) => {
         nextPage: false,
         imageData: {},
         newReceiptCategory: '',
-        receiptDetail: {}
+        receiptDetail: {},
+        exportDoc: {}
       };
 
     default:
