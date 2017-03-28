@@ -150,9 +150,19 @@ export const isTripTracking = () => {
     try {
       AsyncStorage.getItem('tripData').then((value) => {
         if (value !== null) {
+          let tripData = JSON.parse(value);
+          if(tripData.isTripStarted){
+            dispatch({
+              type: TRIPS_START
+            });
+          }else{
+            dispatch({
+              type: TRIPS_END
+            });
+          }
+        }else{
           dispatch({
-            type: SET_CURRENT_LOCATION,
-            payload: value
+            type: TRIPS_END
           });
         }
       });
