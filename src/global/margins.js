@@ -7,7 +7,7 @@ export const FULL_SCREEN_PADDING = {
 };
 
 export const HEADER = {
-  height: (Platform.OS === 'ios') ? 70 : 50,
+  height: (Platform.OS === 'ios') ? 70 : 70,
   padding: (Platform.OS === 'ios') ? 35 : 15,
   icon: 40
 };

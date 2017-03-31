@@ -67,9 +67,6 @@ class AccountsList extends Component {
           dataSource={this.ds.cloneWithRows(this.props.labelsArray)}
           renderRow={this.renderRow.bind(this)}
         />
-        <FAB
-          onPress={this.addAccount}
-        />
         <Spinner
           visible={this.props.isFetching}
           textContent={'Loading...'}

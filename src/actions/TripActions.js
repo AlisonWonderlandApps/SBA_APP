@@ -151,16 +151,16 @@ export const isTripTracking = () => {
       AsyncStorage.getItem('tripData').then((value) => {
         if (value !== null) {
           let tripData = JSON.parse(value);
-          if(tripData.isTripStarted){
+          if (tripData.isTripStarted) {
             dispatch({
               type: TRIPS_START
             });
-          }else{
+          } else {
             dispatch({
               type: TRIPS_END
             });
           }
-        }else{
+        } else {
           dispatch({
             type: TRIPS_END
           });
@@ -168,7 +168,7 @@ export const isTripTracking = () => {
       });
     } catch (err) {
         console.log(err);
-        Alert('Sorry, something went wrong. Please try again.');
+        Alert('isTripTracking :Sorry, something went wrong. Please try again.');
       }
   };
 };

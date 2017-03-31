@@ -9,6 +9,7 @@ import {
   Alert
 } from 'react-native';
 import { connect } from 'react-redux';
+import contacts from 'react-native-contacts';
 import {
   BackgroundView,
   CardView,
@@ -65,14 +66,52 @@ class Tools extends Component {
 
   onContactAddClick() {
     console.log('contactAdd');
+    const email = this.props.dropBoxEmail;
+    const newContact = {
+      emailAddresses: [{
+        label: 'Squirrel Street Australia',
+        email
+      }],
+      givenName: 'Squirrel Street DropBox'
+    };
+
+    contacts.checkPermission((err, permission) => {
+      if (permission === 'undefined') {
+        contacts.requestPermission(() => {
+          Alert.alert(
+            'undefined',
+            email,
+            [
+              { text: 'Yes', onPress: () => console.log('ok') },
+              { text: 'Cancel' }
+            ]
+          );
+        });
+      }
+      if (permission === 'authorized') {
+        contacts.addContact(newContact, (error) => { console.log(error); });
+      }
+      if (permission === 'denied') {
+        Alert.alert(
+          'denied',
+          email,
+          [
+            { text: 'Yes', onPress: () => console.log('ok') },
+            { text: 'Cancel' }
+          ]
+        );
+      }
+    });
+    //contacts.addContact(newContact, (err) => { console.log(err); });
+/*
     Alert.alert(
-      'Squirrel Street',
-      'Add Contact',
+      newContact.givenName,
+      email,
       [
         { text: 'Yes', onPress: () => console.log('ok') },
         { text: 'Cancel' }
       ]
-    );
+    ); */
   }
 }
 

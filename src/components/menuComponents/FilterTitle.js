@@ -7,7 +7,10 @@ import { HEADER } from '../../global/margins';
 
 const FilterTitle = (props) => {
   return (
-  <TouchableHighlight onPress={() => Actions.categories()} >
+  <TouchableHighlight
+    onPress={() => Actions.categories()}
+    style={style.highlight}
+  >
     <View style={style.container} >
        <Text
         style={[style.navStyle, props.style]}
@@ -21,6 +24,12 @@ const FilterTitle = (props) => {
 };
 
 const style = {
+  highlight:
+  {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: HEADER.height
+  },
   container: {
     paddingTop: 5,
     flexDirection: 'row',

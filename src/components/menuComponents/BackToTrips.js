@@ -7,7 +7,10 @@ import { HEADER } from '../../global/margins';
 
 const BackToTrips = (props) => {
   return (
-    <TouchableHighlight onPress={() => Actions.trips()} >
+    <TouchableHighlight
+      onPress={() => Actions.trips()}
+      style={style.highlight}
+    >
       <View style={style.container} >
           <Icon name="ios-arrow-back" size={22} color="#ffffff" />
            <Text
@@ -21,6 +24,13 @@ const BackToTrips = (props) => {
 };
 
 const style = {
+  highlight:
+  {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: HEADER.height,
+    paddingTop: 5
+  },
   container: {
     paddingTop: 5,
     flexDirection: 'row',

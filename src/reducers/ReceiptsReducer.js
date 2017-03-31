@@ -29,7 +29,12 @@ import {
   SET_NEW_RECEIPT_CATEGORY,
   SET_RECEIPT_NOTE,
   RESET_NEW_RECEIPT,
-  RECEIPT_EXPORT
+  RECEIPT_EXPORT,
+  SEARCH_TEXT_CHANGED,
+  SEARCH_RECEIPTS,
+  SEARCH_PROCESSING,
+  SEARCH_CATEGORY,
+  SET_FETCHING
   //CATEGORY_SEARCH,
   //CATEGORY_SEARCH_SUCCESS,
   //CATEGORY_SEARCH_FAIL
@@ -57,7 +62,9 @@ const INITIAL_STATE = {
   newReceiptCategory: '',
   newReceiptNote: '',
   receiptDetail: {},
-  exportDoc: {}
+  exportDoc: {},
+  searchQuery: '',
+  searchResults: {}
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -165,6 +172,12 @@ export default (state = INITIAL_STATE, action) => {
         errMsg: 'Could not load categories'.concat(action.payload)
       };
 
+    case SET_FETCHING:
+      return {
+        ...state,
+        isFetching: true
+      };
+
     case ADD_RECEIPT:
     //console.log('add', this.myReceipts, this.myReceipts.push(action.payload));
       return {
@@ -217,6 +230,7 @@ export default (state = INITIAL_STATE, action) => {
     case SAVE_IMAGE_DATA:
       return {
         ...state,
+      //  isFetching: true,
         imageData: action.payload
       };
 
@@ -243,6 +257,30 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         exportDoc: action.payload
+      };
+
+    case SEARCH_TEXT_CHANGED:
+      return {
+        ...state,
+        searchQuery: action.payload
+      };
+
+    case SEARCH_RECEIPTS:
+      return {
+        ...state,
+        searchResults: action.payload
+      };
+
+    case SEARCH_PROCESSING:
+      return {
+        ...state,
+        searchResults: action.payload
+      };
+
+    case SEARCH_CATEGORY:
+      return {
+        ...state,
+        searchResults: action.payload
       };
 
     case RESET_RECEIPTS:

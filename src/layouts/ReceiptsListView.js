@@ -31,10 +31,11 @@ import {
  } from '../components';
  import { HEADER } from '../global/margins';
  import {
-	 searchTextChanged,
-	 deleteReceipt,
-	 loadAReceipt,
-	exportReceipt
+	searchTextChanged,
+	deleteReceipt,
+	loadAReceipt,
+	exportReceipt,
+	setFetching
 	} from '../actions';
 
 let self;
@@ -135,10 +136,11 @@ class ReceiptsListView extends Component {
 	ImagePicker.showImagePicker(options, (response) => {
 		console.log('this.props.curAccountID', self.props.curAccountID);
 		console.log('response', response);
+		//self.props.setFetching();
 			if (response.didCancel) {
 				console.log('User cancelled image picker');
 			} else if (response.error) {
-				Alert('Sorry, something went wrong.Please try again.');
+				Alert('Error in ImagePicker', response.error);
 			} else if (response.customButton) {
 				console.log('User tapped custom button: ', response.customButton);
 			} else {
@@ -148,6 +150,7 @@ class ReceiptsListView extends Component {
 				} else {
 					image = response.path;
 				}
+				console.log('image', image);
 				const source = { uri: response.uri };
 				self.props.addReceiptFromImage(self.props.curAccountID, response, image, source);
 		}
@@ -215,7 +218,6 @@ class ReceiptsListView extends Component {
 
 	renderCategories(data) {
 		let category = '';
-		//console.log(data);
 		if (data.categories === undefined || data.categories.length < 1) {
 			category = 'No categories';
 		} else {
@@ -274,21 +276,6 @@ class ReceiptsListView extends Component {
 		//Actions.export();
 	}
 
-  onPressFAB() {
-    console.log('FAB pressed');
-	}
-		/*
-    Alert.alert(
-      'Choose Photo Source',
-      null,
-      [
-        { text: 'Camera', onPress: () => Actions.camera() },
-        { text: 'Photo Library', onPress: () => Actions.photos() },
-        { text: 'Cancel', onPress: () => console.log('cancel'), style: 'cancel' }
-      ]
-    );
-  }
-	*/
 }
 
 const styles = {
@@ -410,5 +397,5 @@ const mapStateToProps = ({ accounts, receipts, searchIt }) => {
 };
 
 export default connect(mapStateToProps, {
-		searchTextChanged, deleteReceipt, loadAReceipt, exportReceipt
+		searchTextChanged, deleteReceipt, loadAReceipt, exportReceipt, setFetching
 })(ReceiptsListView);

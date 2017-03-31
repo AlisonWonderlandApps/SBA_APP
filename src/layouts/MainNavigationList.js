@@ -14,10 +14,15 @@ import {
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/Ionicons';
-//import RNFetchBlob from 'react-native-fetch-blob';
+import Spinner from 'react-native-loading-spinner-overlay';
 import ImagePicker from 'react-native-image-picker';
 
-import { receiptsFetch, saveImageData, addReceiptFromImage } from '../actions';
+import {
+  receiptsFetch,
+  saveImageData,
+  addReceiptFromImage,
+  setFetching
+ } from '../actions';
 import { layoutStyles } from './styles';
 import { PRIMARY_HIGHLIGHT_COLOUR } from '../global/colours';
 
@@ -98,6 +103,11 @@ class MainNavigationList extends Component {
         </TouchableHighlight>
         <FAB
           onPress={this.onPressFAB}
+        />
+        <Spinner
+          visible={this.props.isFetching}
+          textContent={''}
+          textStyle={{ color: 'white' }}
         />
       </BackgroundView>
     );
@@ -230,18 +240,18 @@ class MainNavigationList extends Component {
     const options = {
       title: 'Choose Photo Source',
       storageOptions: {
-        skipBackup: true,
-        path: 'images'
-      }
-    };
+      skipBackup: true,
+      path: 'images'
+    }
+  };
 
-  ImagePicker.showImagePicker(options, (response) => {
-    console.log('this.props.curAccountID', self.props.curAccountID);
-    console.log('response', response);
+    ImagePicker.showImagePicker(options, (response) => {
+      console.log('this.props.curAccountID', self.props.curAccountID);
+      console.log('response', response);
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.error) {
-        Alert('Sorry, something went wrong.Please try again.');
+        Alert('Error in ImagePicker', response.error);
       } else if (response.customButton) {
         console.log('User tapped custom button: ', response.customButton);
       } else {
@@ -251,15 +261,14 @@ class MainNavigationList extends Component {
         } else {
           image = response.path;
         }
+        console.log('image', image);
         const source = { uri: response.uri };
-        self.props.saveImageData(response, image, source);
-        console.log(response, image, source);
-        Actions.save();
-        //Actions.receiptDetail();
         //self.props.addReceiptFromImage(self.props.curAccountID, response, image, source);
-    }
-  });
-}
+        self.props.saveImageData(response, image, source);
+        Actions.save();
+      }
+    });
+  }
 
   processingPressed() {
     console.log('processingPressed');
@@ -278,7 +287,7 @@ class MainNavigationList extends Component {
 
   tripsPressed() {
     console.log('trips', this.props);
-    Actions.trips();
+    Actions.trips2();
   }
 
   toolsPressed() {
@@ -360,5 +369,5 @@ const mapStateToProps = ({ user, accounts, receipts, trips }) => {
 };
 
 export default connect(mapStateToProps, {
-  receiptsFetch, addReceiptFromImage, saveImageData
+  receiptsFetch, addReceiptFromImage, saveImageData, setFetching
 })(MainNavigationList);

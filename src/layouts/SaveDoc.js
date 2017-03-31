@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
+import Spinner from 'react-native-loading-spinner-overlay';
 import {
   BackgroundView,
   CardSection,
@@ -29,7 +30,8 @@ import {
   setNewReceiptCategory,
   noteChanged,
   addReceiptFromImage,
-  resetNewReceipt
+  resetNewReceipt,
+  setFetching
  } from '../actions';
 
 let imgUri = '';
@@ -106,12 +108,13 @@ class SaveDoc extends Component {
             source={{ uri: imgUri }}
           />
         </View>
+        <Spinner
+          visible={this.props.isFetching}
+          textContent={''}
+          textStyle={{ color: 'white' }}
+        />
       </BackgroundView>
     );
-  }
-
-  onPress() {
-    console.log('header save');
   }
 
   onSavePress() {
@@ -126,25 +129,20 @@ class SaveDoc extends Component {
       );
     } else {
       const categories = [];
+      const date = new Date();
+      console.log(date);
       categories[0] = this.props.newReceiptCategory;
       const submittedBy = 'Submitted by '.concat(this.props.email);
       categories[1] = submittedBy;
       console.log(categories);
+      this.props.setFetching();
       this.props.addReceiptFromImage(
         this.props.curAccountID,
         this.props.imageData,
         categories,
-        new Date(),
+        date,
         this.props.newReceiptNote
       );
-      //this.props.resetNewReceipt();
-    /*  Alert.alert(
-        'Squirrel Street',
-        'Receipt Saved!',
-        [
-          { text: 'OK', onPress: () => Actions.main() }
-        ]
-      ); */
     }
   }
 
@@ -289,7 +287,8 @@ const mapStateToProps = ({ accounts, receipts }) => {
     newReceiptCategory,
     newReceiptNote,
     newReceipt,
-    imageData
+    imageData,
+    isFetching
   } = receipts;
   return {
     curAccountID,
@@ -297,7 +296,8 @@ const mapStateToProps = ({ accounts, receipts }) => {
     newReceiptCategory,
     newReceiptNote,
     newReceipt,
-    imageData
+    imageData,
+    isFetching
   };
 };
 
@@ -305,7 +305,8 @@ export default connect(mapStateToProps, {
   setNewReceiptCategory,
   noteChanged,
   addReceiptFromImage,
-  resetNewReceipt
+  resetNewReceipt,
+  setFetching
 })(SaveDoc);
 
 

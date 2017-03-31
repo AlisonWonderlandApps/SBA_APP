@@ -7,7 +7,10 @@ import { HEADER } from '../../global/margins';
 
 const LeftAccountsTitle = (props) => {
   return (
-    <TouchableHighlight onPress={() => Actions.accountslist()} >
+    <TouchableHighlight
+      style={style.highlight}
+      onPress={() => Actions.accountslist()}
+    >
       <View style={style.container} >
           <Icon name="ios-arrow-back" size={22} color="#ffffff" />
            <Text
@@ -21,6 +24,13 @@ const LeftAccountsTitle = (props) => {
 };
 
 const style = {
+  highlight:
+  {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop: 5,
+    height: HEADER.height
+  },
   container: {
     paddingTop: 5,
     flexDirection: 'row',

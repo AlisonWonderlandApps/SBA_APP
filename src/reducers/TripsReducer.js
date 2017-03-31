@@ -72,7 +72,7 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state, curLocation: action.payload };
 
     case SET_TRIP_DATA:
-      return { ...state, isTripStarted: true, tripData: action.payload};
+      return { ...state, isTripStarted: true, tripData: action.payload };
 
     case RESET_TRIPS:
         return {

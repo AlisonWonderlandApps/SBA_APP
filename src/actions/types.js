@@ -133,6 +133,7 @@ export const CATEGORY_SEARCH_SUCCESS = 'filter_by_category_success';
 export const CATEGORY_SEARCH_FAIL = 'filter_by_category_fail';
 export const RECEIPTS_BY_CATEGORY_ADD = 'add_receipt_by_category_item';
 export const SAVE_IMAGE_DATA = 'save_image_data';
+export const SET_FETCHING = 'set_fetching_flag';
 
 //PhotosActions
 export const PHOTO_ADD = 'add_a_photo';
@@ -167,3 +168,6 @@ export const SET_TRIP_DATA = 'set_trip_data';
 //SearchActions
 export const SEARCH_TEXT_CHANGED = 'search_text_changed';
 export const SEARCH_DATA = 'search_data';
+export const SEARCH_RECEIPTS = 'search_receipts';
+export const SEARCH_PROCESSING = 'search_processing';
+export const SEARCH_CATEGORY = 'search_category';

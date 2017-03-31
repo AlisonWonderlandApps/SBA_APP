@@ -13,10 +13,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 import {
   BackgroundView,
-  MySearchBar,
-  FAB,
   Button,
-  Banner,
   TitleText
 } from '../components';
 import { HEADER } from '../global/margins';
@@ -26,7 +23,7 @@ import {
   SHADOW_COLOUR,
   BORDER_COLOUR
  } from '../global/colours';
-import { searchTextChanged } from '../actions';
+import { searchTextChanged, loadAReceipt } from '../actions';
 
 class Reimbursables extends Component {
 
@@ -51,9 +48,6 @@ class Reimbursables extends Component {
           <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             <TitleText> No Receipts </TitleText>
           </View>
-          <FAB
-            onPress={this.onPressFAB}
-          />
         </BackgroundView>
       );
     }
@@ -90,9 +84,6 @@ class Reimbursables extends Component {
           dataSource={this.ds.cloneWithRows(this.props.reimbursableReceipts)}
           renderRow={(data) => this.renderRow(data)}
         />
-        <FAB
-          onPress={this.onPressFAB}
-        />
       </BackgroundView>
     );
   }
@@ -101,35 +92,117 @@ class Reimbursables extends Component {
     //console.log('data', data);
     return (
         <TouchableHighlight
-          onPress={() => console.log('You touched me', data)}
+          onPress={() => this.goToReimbursableDetail(data)}
           underlayColor={'#AAA'}
           style={styles.rowFront}
         >
-          <View>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }} >
-              <Text> {`${data.vendor}`} </Text>
-              <Text> {`${data.total}`} </Text>
-            </View>
+        <View>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }} >
+            <Text> {this.renderName(data)} </Text>
+            <Text> {this.renderCost(data)} </Text>
           </View>
+          <View>
+            <Text> {this.renderDate(data)} </Text>
+            <Text> {this.renderCategories(data)} </Text>
+          </View>
+        </View>
         </TouchableHighlight>
     );
+  }
+
+  renderName(data) {
+		if (data.vendor === undefined) {
+			return 'Unknown';
+		}
+		return data.vendor;
+	}
+
+	renderCost(data) {
+		let total = '';
+		if (data.total === undefined) {
+			total = '$ --';
+		}	else {
+			total = '$'.concat(data.total.toFixed(2));
+		}
+		return total;
+	}
+
+	renderDate(data) {
+		let date = '';
+		if (data.issued === undefined) {
+			const formattedDate = new Date(data.uploaded).toString();
+			let year = formattedDate.substring(11, 15);
+			year = ' '.concat(year);
+			date = formattedDate.substring(4, 10).concat(year);
+		} else {
+			const formattedDate = new Date(data.issued).toString();
+			let year = formattedDate.substring(11, 15);
+			year = ' '.concat(year);
+			date = formattedDate.substring(4, 10).concat(year);
+		}
+		return date;
+	}
+
+	renderCategories(data) {
+		let category = '';
+		//console.log(data);
+		if (data.categories === undefined || data.categories.length < 1) {
+			category = 'No categories';
+		} else {
+			let j = 0;
+			category = data.categories[j];
+			for (j = 1; j < data.categories.length; j++) {
+				category += ', '.concat(data.categories[j]);
+			}
+		}
+		//console.log(category);
+		return category;
   }
 
   onSearchChange(text) {
     this.props.searchTextChanged(text);
   }
 
-  onPressFAB() {
-    console.log('FAB pressed');
-    Alert.alert(
-      'Choose Photo Source',
-      null,
-      [
-        { text: 'Camera', onPress: () => Actions.camera() },
-        { text: 'Photo Library', onPress: () => Actions.photos() },
-        { text: 'Cancel', onPress: () => console.log('cancel'), style: 'cancel' }
-      ]
-    );
+  goToReimbursableDetail(data) {
+    console.log('processData', data);
+    const formattedDate = new Date(data.uploaded).toString();
+    let year = formattedDate.substring(11, 15);
+    year = ', '.concat(year);
+    const date = formattedDate.substring(4, 10).concat(year);
+    let categories = '';
+    if (data.categories === undefined || data.categories.length < 1) {
+      categories = 'No categories';
+    } else {
+      categories = data.categories[0];
+      for (let k = 1; k < data.categories.length; k++) {
+          categories += ', '.concat(data.categories[k]);
+      }
+    }
+    let type = '';
+    if (data.paymentType === undefined) {
+      type = 'No payment type';
+    } else {
+      type = data.paymentType;
+    }
+    let myNotes = '';
+    if (data.notes === undefined) {
+      myNotes = 'No notes to show';
+    } else {
+      myNotes = data.notes;
+    }
+    const receiptObj = {
+      id: data.id,
+      vendor: 'Processing',
+      date,
+      paymentType: type,
+      notes: myNotes,
+      categories,
+      imgURL: data.attachment.url
+    };
+    console.log('data.notes', data.notes);
+    console.log('processingDetail', receiptObj);
+    this.props.loadAReceipt(receiptObj);
+    Actions.reimbursableDetail();
   }
 }
 
@@ -226,5 +299,5 @@ const mapStateToProps = ({ receipts, searchIt }) => {
 
 
 export default connect(mapStateToProps, {
- searchTextChanged
+ searchTextChanged, loadAReceipt
 })(Reimbursables);

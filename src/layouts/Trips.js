@@ -29,7 +29,7 @@ import {
 
 let self;
 
-class TripsList extends Component {
+class Trips extends Component {
   constructor(props) {
     super(props);
     console.log(this.props.myTrips);
@@ -46,14 +46,9 @@ class TripsList extends Component {
         longitude: 25,
         //latitudeDelta: 3,
         //longitudeDelta: 4
-      }
-    };
-
-    console.log('tracking functions');
-    //this.props.isTripTracking();
-    console.log('tripstrack done');
-    //this.updateLocation();
-  }
+        }
+      };
+    }
 
   shouldComponentUpdate(nextProps) {
     if (this.props !== nextProps) {
@@ -62,120 +57,11 @@ class TripsList extends Component {
     return false;
   }
 
-  renderButtonText() {
-    if (this.props.isTripStarted) {
+  renderButtonText(text) {
+    if (text === 'Start Trip') {
       return 'End Trip';
     }
     return 'Start Trip';
-  }
-
-  updateLocation() {
-      navigator.geolocation.getCurrentPosition((position) => {
-        const curLocation = {
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          latitudeDelta: position.coords.latitudeDelta,
-          longitudeDelta: position.coords.longitudeDelta
-        };
-        this.props.setCurTripLocation(curLocation);
-      },
-      (err) => {
-        console.log(err);
-        Alert('Update Location Sorry, something went wrong. Please try again.');
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 20000,
-        maximumAge: 10000
-      });
-
-      setTimeout(() => {
-        self.updateLocation();
-      }, 5000);
-  }
-
-  startTrip() {
-    AsyncStorage.getItem('tripData', (err, res) => {
-      if (err) {
-        Alert('start trip Sorry, something went wrong. Please try again.');
-      } else {
-        let tripData;
-
-        if (res == null) {  //for firest time
-            tripData = {
-              isTripStarted: true,
-              startLocation: self.props.curLocation,
-            };
-        } else {
-            tripData = JSON.parse(res);
-
-            if (tripData.isTripStarted === false) {
-              tripData.isTripStarted = true;
-              tripData.startLocation = self.props.curLocation;
-            }
-        }
-
-        AsyncStorage.setItem('tripData', JSON.stringify(tripData), (err1, res1) => {
-          self.props.startTrip();
-        });
-      }
-    });
-  }
-
-  endTrip() {
-    AsyncStorage.getItem('tripData', (err, res) => {
-      if (err) {
-        Alert('End trip Sorry, something went wrong. Please try again.');
-      } else {
-        let tripData;
-
-        if (res !== null) {  //for firest time
-            tripData = JSON.parse(res);
-
-            if (tripData.isTripStarted === true) {
-              tripData.isTripStarted = false;
-            }
-        }
-
-        //******************************************Find Distance start**************************************//
-        const url = 'https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins='
-                  .concat(tripData.startLocation.latitude).concat(',')
-                  .concat(tripData.startLocation.longitude).concat('&destinations=')
-                  .concat(self.props.curLocation.latitude)
-                  .concat(',')
-                  .concat(self.props.curLocation.longitude);
-        console.log('url', url);
-
-        fetch(url)
-          .then((response) => response.json())
-          .then((responseJson) => {
-            console.log('responseJson', responseJson);
-            const distance = responseJson.rows[0].elements[0].distance.text;
-            Alert('Trip Distance : ', distance);
-
-            AsyncStorage.setItem('tripData', JSON.stringify(tripData), (err1, res1) => {
-              self.props.endTrip();
-            });
-          })
-          .catch((error) => {
-            console.log(error);
-            Alert('tripfetch Sorry, something went wrong. Please try again.');
-          });
-
-        //******************************************Find Distance end**************************************//
-      }
-    });
-  }
-
-  startOrEndTrip() {
-    //let isTripEnd = false;
-    console.log('this.props.curLocation : ', this.props.curLocation);
-    console.log('this.state.curLocation : ', this.state.curLocation);
-    if (this.props.isTripStarted) {
-      this.endTrip();
-    } else {
-      this.startTrip();
-    }
   }
 
   render() {
@@ -191,7 +77,7 @@ class TripsList extends Component {
           {this.renderMapView(this.state.curLocation)}
           <View style={{ paddingTop: 20 }}>
             <Button
-              onPress={() => this.startOrEndTrip()}
+              onPress={() => this.renderButtonText(this.props.children)}
             >
               {this.renderButtonText()}
             </Button>
@@ -216,7 +102,7 @@ class TripsList extends Component {
         <View style={{ flexGrow: 1 }}>
           {this.renderMapView(this.state.curLocation)}
           <View style={{ paddingTop: 20 }}>
-            <Button onPress={() => this.startOrEndTrip()}>{this.renderButtonText()}</Button>
+            <Button onPress={() => this.renderButtonText(this.props.children)}> {this.renderButtonText()} </Button>
           </View>
           <View style={styles.rowHeader}>
             <Text style={{ color: 'white' }}> Recent Trips </Text>
@@ -238,29 +124,18 @@ class TripsList extends Component {
     );
   }
 
-  renderMapView(location) {
+  renderMapView() {
     return (
       <View style={styles.mapContainer}>
         <MapView
           style={styles.map}
           region={{
-            latitude: this.props.curLocation.latitude,
-            longitude: this.props.curLocation.longitude,
+            latitude: 4,
+            longitude: 4,
             latitudeDelta: 0.015,
             longitudeDelta: 0.0121,
           }}
-        >
-          <MapView.Marker
-            coordinate={{
-              latitude: this.state.curLocation.latitude,
-              longitude: this.state.curLocation.longitude,
-              latitudeDelta: 0.015,
-              longitudeDelta: 0.0121,
-              }}
-            title={'title'}
-            description={'description'}
-          />
-        </MapView>
+        />
       </View>
     );
   }
@@ -337,4 +212,4 @@ const mapStateToProps = ({ trips }) => {
 
 export default connect(mapStateToProps, {
   loadAReceipt, isTripTracking, setCurTripLocation, startTrip, endTrip
-})(TripsList);
+})(Trips);

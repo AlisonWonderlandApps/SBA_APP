@@ -41,7 +41,9 @@ import CategoryList from './layouts/CategoryList';
 import CategoryReceiptList from './layouts/CategoryReceiptList';
 import ReceiptInfo from './layouts/ReceiptInfo';
 import ProcessingDetail from './layouts/ProcessingDetail';
+import ReimbursableDetail from './layouts/ReimbursableDetail';
 import ExportDoc from './layouts/ExportDoc';
+import Trips from './layouts/Trips';
 
 
 class RouterComponent extends Component {
@@ -144,13 +146,12 @@ class RouterComponent extends Component {
           Trips
         </BackToTrips>
       );
-    } else {
+    }
       return (
         <BackToReceipts>
           Receipts
         </BackToReceipts>
       );
-    }
   }
 
   renderBackToCategoriesButton() {
@@ -181,6 +182,7 @@ class RouterComponent extends Component {
       hideNavBar={false}
       navigationBarStyle={styles.headerStyle}
       renderTitle={() => <Header />}
+      renderBackButton={() => this.renderMainButton()}
       //initial
     />
 
@@ -237,6 +239,15 @@ class RouterComponent extends Component {
     />
 
     <Scene
+      key="trips2"
+      component={Trips}
+      hideNavBar={false}
+      navigationBarStyle={styles.headerStyle}
+      renderTitle={() => <Header />}
+      renderBackButton={() => this.renderMainButton()}
+    />
+
+    <Scene
       key="receipts"
       hideNavBar={false}
       navigationBarStyle={styles.headerStyle}
@@ -253,7 +264,7 @@ class RouterComponent extends Component {
       navigationBarStyle={styles.headerStyle}
       renderTitle={() => <Header />}
       component={ReceiptInfo}
-      //renderBackButton={() => this.renderBackToReceiptsButton()}
+      renderBackButton={() => this.renderBackToReceiptsButton()}
       //initial
     />
 
@@ -264,6 +275,16 @@ class RouterComponent extends Component {
       renderTitle={() => <Header />}
       component={ProcessingDetail}
       renderBackButton={() => this.renderBackToProcessingButton()}
+      //initial
+    />
+
+    <Scene
+      key="reimbursableDetail"
+      hideNavBar={false}
+      navigationBarStyle={styles.headerStyle}
+      renderTitle={() => <Header />}
+      component={ReimbursableDetail}
+      renderBackButton={() => this.renderBackToReceiptsButton()}
       //initial
     />
 
@@ -284,7 +305,7 @@ class RouterComponent extends Component {
       navigationBarStyle={styles.headerStyle}
       renderTitle={() => <Header />}
       renderBackButton={() => this.renderMainButton()}
-      initial
+      //initial
     />
 
     <Scene

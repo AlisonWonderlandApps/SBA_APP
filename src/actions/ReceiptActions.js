@@ -22,6 +22,7 @@
 
 import { AsyncStorage, Alert, Platform } from 'react-native';
 import axios from 'axios';
+import { Actions } from 'react-native-router-flux';
 import Querystring from 'querystring';
 import RNFetchBlob from 'react-native-fetch-blob';
 import { ssApiQueryURL, ssAuthConfig } from '../config/auth';
@@ -59,7 +60,12 @@ import {
   SET_NEW_RECEIPT_CATEGORY,
   SET_RECEIPT_NOTE,
   RESET_NEW_RECEIPT,
-  RECEIPT_EXPORT
+  RECEIPT_EXPORT,
+  SEARCH_TEXT_CHANGED,
+  SEARCH_RECEIPTS,
+  SEARCH_PROCESSING,
+  SEARCH_CATEGORY,
+  SET_FETCHING
   //CATEGORY_SEARCH,
   //CATEGORY_SEARCH_SUCCESS,
   //CATEGORY_SEARCH_FAIL
@@ -68,6 +74,12 @@ import {
 
 const cats = [];
 let index = 0;
+
+export const setFetching = () => {
+  return {
+    type: SET_FETCHING
+  };
+};
 
 export const addNewReceipt = (doc) => {
   return {
@@ -207,7 +219,7 @@ export const fetchReimbursables = (AuthStr, AccountId) => {
   const reimburseURL = (ssApiQueryURL.accounts).concat(AccountId).concat('/documents');
 
   axios.get(reimburseURL,
-    { params: { q: 'Reimbursable', order_by_desc: 'uploaded' },
+    { params: { q: 'Reimbursable', order_by_desc: 'uploaded', processing_state: 'PROCESSED' },
       headers: { Authorization: AuthStr }
     })
     .then(response => {
@@ -217,7 +229,7 @@ export const fetchReimbursables = (AuthStr, AccountId) => {
       });
       dispatch({
         type: SET_REIMBURSABLE_NUM,
-        payload: response.data.totalCountFiltered
+        payload: response.data.documents.length
       });
       }).catch((er) => {
       console.log('reimburse', er);
@@ -555,9 +567,9 @@ export const addReceiptFromImage = (AccountId, imageData, categs, date, note) =>
     note
   };
   return function (dispatch) {
-    dispatch({
-      type: ADD_RECEIPT
-    });
+  /*  dispatch({
+      type: SAVE_IMAGE_DATA
+    }); */
     try {
       AsyncStorage.getItem('refreshToken').then((value) => {
         if (value !== null) {
@@ -566,6 +578,7 @@ export const addReceiptFromImage = (AccountId, imageData, categs, date, note) =>
       });
     } catch (err) {
       console.log('token', err);
+      Alert('Error in addReceiptFromImage', err);
     }
   };
 };
@@ -604,13 +617,27 @@ const addItem = (AuthStr, accountId, receiptObj) => {
        const respJSONData = JSON.parse(resp.data);
        const receiptId = respJSONData.id;
        console.log('--------->resp : ', JSON.stringify(resp), receiptId);
-       dispatch(resetNewReceipt());
-       dispatch(fetchReceipts(AuthStr, accountId));
+       Alert.alert(
+         'Successfully added receipt!',
+          null,
+         [
+           { text: 'OK',
+             onPress: () => dispatch(reloadReceipts(AuthStr, accountId)) }
+         ]
+       );
      }).catch((err) => {
-      // Alert('Sorry, something went wrong.');
+       Alert('Sorry, Could not add new receipt.');
        console.log('--------->err : ', JSON.stringify(err));
      });
    };
+};
+
+const reloadReceipts = (AuthStr, accountId) => {
+  return function (dispatch) {
+    dispatch(resetNewReceipt());
+    dispatch(fetchReceipts(AuthStr, accountId));
+    Actions.main();
+  };
 };
 
 export const noteChanged = (note) => {
@@ -647,85 +674,30 @@ export const resetReceipts = () => {
   };
 };
 
-
-/*
-const setReceiptsList = (AuthStr, accountId, list) => {
-    index = 0;
-    const receiptlist = [];
-    let id = '';
-    let vendor = '';
-    let total = '';
-    let date = '';
-    let category = '';
-    if (list.length === 0) {
-      return receiptlist;
-    }
-    for (let i = 0; i < list.length; i++) {
-      id = list[i].id;
-      vendor = list[i].vendor;
-      if (list[i].total === undefined) {
-        total = '$ ??';
-      }	else {
-        total = '$'.concat(list[i].total.toFixed(2));
-      }
-      if (list[i].issued === undefined) {
-        const formattedDate = new Date(list[i].uploaded).toString();
-        let year = formattedDate.substring(11, 15);
-        year = ' '.concat(year);
-        date = formattedDate.substring(4, 10).concat(year);
-      } else {
-        const formattedDate = new Date(list[i].issued).toString();
-        let year = formattedDate.substring(11, 15);
-        year = ' '.concat(year);
-        date = formattedDate.substring(4, 10).concat(year);
-      }
-      if (list[i].categories === undefined) {
-        category = 'No categories';
-      } else if (list[i].categories.length < 1) {
-        category = 'No categories';
-      } else {
-        let j = 0;
-        category += list[i].categories[j];
-
-        addToCategoryList(list[i].categories[j]);
-        for (j = 1; j < list[i].categories.length; j++) {
-          category += ', '.concat(list[i].categories[j]);
-          addToCategoryList(list[i].categories[j]);
-          }
-
-      }
-
-      receiptlist[i] = {
-        id,
-        vendor,
-        total,
-        date,
-        category
-      };
-      id = '';
-      vendor = '';
-      total = '';
-      date = '';
-      category = '';
-    }
-    const uniqueCats = cats.filter((item, i, ar) => {
-      return ar.indexOf(item) === i;
-    });
-    uniqueCats.sort();
-    console.log('uniqueCats', uniqueCats);
-    return function (dispatch) {
-      for (let k = 0; k < uniqueCats.length; k++) {
-        sortReceiptsByCategory(AuthStr, accountId, uniqueCats, k);
-      }
-      dispatch(addCategoryReceipt(categoryDataObjArray));
-      dispatch({
-        type: CATEGORIES_FETCH_SUCCESS,
-        payload: uniqueCats
-      });
-      dispatch({
-        type: SET_LIST,
-        payload: receiptlist
-      });
-    };
+export const searchTextChanged = (text) => {
+  return {
+    type: SEARCH_TEXT_CHANGED,
+    payload: text
+  };
 };
-*/
+
+export const searchReceipts = (text) => {
+  return {
+    type: SEARCH_RECEIPTS,
+    payload: text
+  };
+};
+
+export const searchProcessing = (text) => {
+  return {
+    type: SEARCH_PROCESSING,
+    payload: text
+  };
+};
+
+export const searchCategory = (text) => {
+  return {
+    type: SEARCH_CATEGORY,
+    payload: text
+  };
+};

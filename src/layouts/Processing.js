@@ -56,9 +56,6 @@ class Processing extends Component {
           <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             <TitleText> No Receipts </TitleText>
           </View>
-          <FAB
-            onPress={this.onPressFAB}
-          />
         </BackgroundView>
       );
     }
@@ -97,9 +94,6 @@ class Processing extends Component {
         <ListView
           dataSource={this.ds.cloneWithRows(this.props.processingReceipts)}
           renderRow={(data) => this.renderRow(data)}
-        />
-        <FAB
-          onPress={this.onPressFAB}
         />
       </BackgroundView>
     );
