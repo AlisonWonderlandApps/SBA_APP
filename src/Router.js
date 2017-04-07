@@ -44,6 +44,7 @@ import ProcessingDetail from './layouts/ProcessingDetail';
 import ReimbursableDetail from './layouts/ReimbursableDetail';
 import ExportDoc from './layouts/ExportDoc';
 import Trips from './layouts/Trips';
+import ExportReceipt from './layouts/ExportReceipt';
 
 
 class RouterComponent extends Component {
@@ -310,6 +311,15 @@ class RouterComponent extends Component {
       renderTitle={() => <Header />}
       renderBackButton={() => this.renderMainButton()}
       //initial
+    />
+
+    <Scene
+      key="exportReceipt"
+      component={ExportReceipt}
+      hideNavBar={false}
+      navigationBarStyle={styles.headerStyle}
+      renderTitle={() => <Header />}
+      renderBackButton={() => this.renderMainButton()}
     />
 
     <Scene
