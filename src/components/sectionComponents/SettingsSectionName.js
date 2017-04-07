@@ -1,16 +1,14 @@
 
 import React, { Component } from 'react';
 import { Text, TextInput, View } from 'react-native';
-//import { connect } from 'react-redux';
-import { CardSection, TitleText, SmallText } from '../../components';
+import { CardSection, TitleText } from '../../components';
 import { PRIMARY_HIGHLIGHT_COLOUR } from '../../global/colours';
 
 let name = '';
 let email = '';
-
 class SettingsSectionName extends Component {
   constructor(props) {
-    console.log('SettingsSectionName');
+    //console.log('SettingsSectionName');
     super(props);
     name = props.name;
     email = props.email;
@@ -20,7 +18,11 @@ class SettingsSectionName extends Component {
     return (
       <CardSection>
         <View style={styles.name}>
-          <TitleText style={{ paddingLeft: 3, color: PRIMARY_HIGHLIGHT_COLOUR }}> {name} </TitleText>
+          <TitleText
+            style={{ paddingLeft: 3, color: PRIMARY_HIGHLIGHT_COLOUR }}
+          >
+            {name}
+          </TitleText>
           <Text style={{ paddingTop: 5, paddingLeft: 2 }}> {email} </Text>
         </View>
       </CardSection>

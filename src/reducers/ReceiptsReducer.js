@@ -190,9 +190,6 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         isFetching: true
-        //take out of receiptsList
-        //check categories
-        //reload eveything basically.
       };
 
     case RECEIPT_DELETE_SUCCESS:

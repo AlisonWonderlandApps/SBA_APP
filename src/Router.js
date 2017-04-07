@@ -190,12 +190,16 @@ class RouterComponent extends Component {
       key="login"
       hideNavBar="true"
       component={Login}
+      onBack={() => console.log('no back')}
+      //initial
     />
 
     <Scene
       key="signup"
       component={SignUp}
       hideNavBar="true"
+      onBack={() => console.log('no back')}
+      //initial
     />
 
     <Scene

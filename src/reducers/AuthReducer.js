@@ -12,7 +12,7 @@ import {
 const INITIAL_STATE = {
   isLoading: true,
   goToLogin: false,
-  authErrorMsg: '',
+  authErrorMsg: ''
 };
 
 export default (state = INITIAL_STATE, action) => {

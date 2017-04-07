@@ -5,10 +5,11 @@
 
 /*** Import Outside Resources ***/
 import React, { Component } from 'react';
-import { View, Linking, Alert } from 'react-native';
+import { View, Text, Linking, Alert, NetInfo } from 'react-native';
 import FloatingLabel from 'react-native-floating-labels';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 /*** Import Internal Resources ***/
 import {
@@ -21,12 +22,11 @@ import {
   GoogleButton,
   CenterTextView,
   LinkText,
-  FormText,
-  LoadingModal
+  FormText
 } from '../components';
 
 import {
-  layoutSyles,
+  layoutStyles,
   LoginStyles
 } from './styles';
 
@@ -41,8 +41,6 @@ import {
   privacyString,
   SignUpButtonText,
   HaveAccountString,
-  //FBLoginStr,
-  //GoogleLoginStr,
   PasswordLabelStr,
   ValidPasswordLabelStr,
   InvalidPasswordLabelStr,
@@ -52,11 +50,9 @@ import {
   EmailLabelStr,
   ValidEmailLabelStr,
   InvalidEmailLabelStr,
-  loadingStr,
   AlertErrorTitleStr,
-  MissingFieldEntryStr,
-  okStr,
-  noNetworkStr
+  //MissingFieldEntryStr,
+  okStr
  } from './strings';
 
  import {
@@ -69,29 +65,29 @@ import {
    signupUser,
    signupFBUser,
    signupGoogleUser,
-   signupUserSuccess,
-   signupUserFail,
    resetStateSU
  } from '../actions';
 
 /**** CLASS START ****/
 class SignUp extends Component {
 
-  componentWillMount() {
-    if (!this.haveNetworkConnectivity) {
-      this.showAlert(noNetworkStr);
-    }
-    this.props.resetStateSU();
-  }
-
-/*
-  shouldComponentUpdate() {
-    if (this.props !== this.nextProps) {
+  shouldComponentUpdate(nextProps) {
+    if (this.props !== nextProps) {
       return true;
     }
     return false;
   }
-*/
+
+  componentDidUpdate() {
+    if (this.props.goToAccounts) {
+      this.props.resetSU();
+      Actions.accountslist();
+    }
+    if (this.props.goToMain) {
+      this.props.resetSU();
+       Actions.main();
+      }
+  }
 
   render() {
     const {
@@ -103,11 +99,7 @@ class SignUp extends Component {
 
     return (
       <FullScreenView style={{ flex: 1 }}>
-      <LoadingModal text={loadingStr} visible={this.props.loading} />
-        <View style={layoutSyles.loginView}>
-          <LogoSection />
-        </View>
-        <View style={{ paddingTop: 20 }} />
+        <View style={{ paddingTop: 30, padding: 10 }} />
         <View>
           <FormText onPress={this.goToLoginPage}>
             {HaveAccountString}
@@ -121,10 +113,10 @@ class SignUp extends Component {
                     labelStyle={this.renderEmailLabelStyle()}
                     inputStyle={input}
                     style={formInput}
-                    autoFocus
                     autoCapitalize={'none'}
                     returnKeyType='next'
                     onChangeText={this.onEmailChange.bind(this)}
+                    value={this.props.email}
                 >
                   {this.renderEmailLabelText()}
                 </FloatingLabel>
@@ -140,6 +132,7 @@ class SignUp extends Component {
                     password
                     returnKeyType='next'
                     onChangeText={this.onPasswordChange.bind(this)}
+                    value={this.props.password}
                 >
                   {this.renderPasswordLabelText()}
                 </FloatingLabel>
@@ -152,21 +145,30 @@ class SignUp extends Component {
                     labelStyle={this.renderConfirmPasswordLabelStyle()}
                     inputStyle={input}
                     style={formInput}
-                    value={this.value}
                     returnKeyType='done'
                     password
                     onChangeText={this.onPasswordConfirmChange.bind(this)}
+                    value={this.props.confirmPassword}
                 >
                   {this.renderConfirmPasswordLabelText()}
                 </FloatingLabel>
                 </View>
             </CardSection>
             <CardSection>
-              <Button
-                onPress={this.onSignUpButtonPress.bind(this)}
+              <View
+                style={{
+                  flex: 1,
+                  width: null,
+                  alignItems: 'center',
+                  justifyContent: 'center' }}
               >
-                {SignUpButtonText}
-              </Button>
+                <Button
+                  style={{ alignSelf: 'center', width: 120 }}
+                  onPress={this.onSignUpButtonPress.bind(this)}
+                >
+                  {SignUpButtonText}
+                </Button>
+              </View>
             </CardSection>
           </CardView>
           <View style={socialButtonContainer}>
@@ -204,6 +206,14 @@ class SignUp extends Component {
             </LinkText>
           </CenterTextView>
         </View>
+        <View style={layoutStyles.loginView}>
+          <LogoSection />
+        </View>
+        <Spinner
+          visible={this.props.loading}
+          textContent={'Loading...'}
+          textStyle={{ color: 'white' }}
+        />
       </FullScreenView>
     );
   }
@@ -212,7 +222,7 @@ class SignUp extends Component {
   haveNetworkConnectivity() {
     NetInfo.fetch().done((reach) => {
       if (reach === 'none') {
-        console.log('no network');
+      //  console.log('no network');
         return false;
       }
       return true;
@@ -224,14 +234,14 @@ class SignUp extends Component {
       AlertErrorTitleStr,
       message,
       [
-        { text: okStr}
+        { text: okStr }
       ]
     );
   }
 
   renderError() {
-    if(this.props.myerror) {
-      return <ErrorText style={{padding: 10}}> Signup failed </ErrorText>;
+    if (this.props.myerror) {
+      return <Text style={{ padding: 10 }}> Signup failed </Text>;
     }
   }
 
@@ -349,25 +359,43 @@ class SignUp extends Component {
     } = this.props;
 
      if (emailValid === 0 || passwordValid === 0 || passwordMatch === 0) {
-       showAlert(MissingFieldEntryStr);
+       //showAlert(MissingFieldEntryStr);
+      // console.log({ MissingFieldEntryStr });
      } else if (
         emailValid === 1 &&
         passwordValid === 1 &&
         passwordMatch === 1) {
        this.props.signupUser({ email, password });
      } else if (emailValid === 2) {
-       showAlert(InvalidEmailLabelStr);
+       //showAlert(InvalidEmailLabelStr);
+      // console.log({ InvalidEmailLabelStr });
     } else if (passwordValid === 2) {
-      showAlert(InvalidPasswordLabelStr);
+      //showAlert(InvalidPasswordLabelStr);
+    //  console.log({ InvalidPasswordLabelStr });
     } else if (passwordMatch === 2) {
-      showAlert(NoMatchPWStr);
+      //showAlert(NoMatchPWStr);
+    //  console.log({ NoMatchPWStr });
     }
   }
   onFBButtonPress() {
-    console.log('FB Login pressed');
+  //  console.log('FB Login pressed');
+    Alert.alert(
+    'Sorry',
+    'Function not currently available',
+    [
+      { text: 'OK' }
+    ]
+    );
   }
   onGoogleButtonPress() {
-    console.log('Google Login pressed');
+  //  console.log('Google Login pressed');
+    Alert.alert(
+    'Sorry',
+    'Function not currently available',
+    [
+      { text: 'OK' }
+    ]
+    );
   }
   /******End ButtonPress helpers ******/
 
@@ -376,12 +404,15 @@ class SignUp extends Component {
     resetStateSU();
     Actions.login();
   }
+
   onHelpClick() {
     Linking.openURL(helpURL);
   }
+
   onTermsClick() {
     Linking.openURL(termsURL);
   }
+
   onPrivacyClick() {
     Linking.openURL(privacyURL);
   }
@@ -389,7 +420,7 @@ class SignUp extends Component {
 }
 /**** CLASS END ****/
 
-const mapStateToProps = ({ signup }) => {
+const mapStateToProps = ({ signup, login }) => {
   const {
     email,
     emailValid,
@@ -400,6 +431,10 @@ const mapStateToProps = ({ signup }) => {
     myerror,
     loading
   } = signup;
+  const {
+    goToMain,
+    goToAccounts
+  } = login;
   return {
     email,
     emailValid,
@@ -408,7 +443,9 @@ const mapStateToProps = ({ signup }) => {
     confirmPassword,
     passwordMatch,
     myerror,
-    loading
+    loading,
+    goToMain,
+    goToAccounts
   };
 };
 

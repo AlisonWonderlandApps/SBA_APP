@@ -64,6 +64,9 @@ export const PLANTYPE_SET = 'set_plantype';
 export const DBEMAIL_SET = 'dbemail_set';
 export const SET_USER_EMAIL = 'set_user_email';
 export const SET_PAYMENT_TYPE = 'set_payment_type';
+export const UPDATE_USERNAME = 'update_user_name';
+export const UPDATE_USERNAME_SUCCESS = 'update_name_success';
+export const UPDATE_USERNAME_FAIL = 'update_name_fail';
 
 //AccountActions
 export const GO_TO_MAIN = 'go_to_main';

@@ -9,6 +9,9 @@ import {
   USER_SETTING_FETCH_SUCCESS,
   USER_SETTINGS_FETCH_FAIL,
   USER_PLAN_FETCH_SUCCESS,
+  UPDATE_USERNAME,
+  UPDATE_USERNAME_SUCCESS,
+  UPDATE_USERNAME_FAIL
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -18,6 +21,8 @@ const INITIAL_STATE = {
   userPlan: '',
   settings: [], //should come from AsynchStorage
   error: '',
+  updatedSuccess: false,
+  updateError: ''
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -34,6 +39,12 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state };
     case USER_SETTINGS_FETCH_FAIL:
       return { ...state };
+    case UPDATE_USERNAME:
+      return { ...state, userName: action.payload };
+    case UPDATE_USERNAME_SUCCESS:
+      return { ...state, updatedSuccess: true };
+    case UPDATE_USERNAME_FAIL:
+      return { ...state, updatedSuccess: false, updateError: action.payload };
     default:
       return state;
   }

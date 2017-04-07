@@ -91,7 +91,7 @@ const loginUserSuccess = () => {
     };
 };
 
-const saveTokens = (accessToken, refreshToken) => {
+export const saveTokens = (accessToken, refreshToken) => {
   try {
     console.log('access', accessToken);
     AsyncStorage.setItem('accessToken', accessToken);

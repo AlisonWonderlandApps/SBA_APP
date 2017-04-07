@@ -29,7 +29,9 @@ const INITIAL_STATE = {
   emailError: '',
   passwordError: '',
   loading: false,
-  user: '' //???? is this a token??
+  user: '', //???? is this a token??
+  goToMain: false,
+  goToAccounts: false
  };
 
 //WARNING: we need to make sure we actually change the state
@@ -37,8 +39,6 @@ const INITIAL_STATE = {
 //...state is the empty string, then it overwrites with email variable
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case RESET_SU:
-      return INITIAL_STATE;
 
     case EMAIL_CHANGED_SU:
       return { ...state, email: action.payload };
@@ -63,12 +63,13 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state, loading: true, error: '' };
 
     case SIGNUP_USER_SUCCESS:
-      return { ...state, user: action.payload, error: '', loading: false };
+      return { ...state, loading: false };
 
     case SIGNUP_USER_FAIL:
       return {
         ...state,
         password: '',
+        confirmPassword: '',
         loading: false
       }; //resets the password field
 
@@ -86,6 +87,20 @@ export default (state = INITIAL_STATE, action) => {
         loading: true,
         user: action.payload,
         error: ''
+      };
+
+    case RESET_SU:
+      return {
+        //email: '',
+        //emailValid: 0, //0=normal, 1=green(valid), 2=red(invalid)
+        password: '',
+        passwordValid: 0,
+        confirmPassword: '',
+        passwordMatch: 0,
+        emailError: '',
+        passwordError: '',
+        loading: false,
+        user: '' //???? is this a token??
       };
 
     default:

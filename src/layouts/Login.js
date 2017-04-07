@@ -130,7 +130,6 @@ class Login extends Component {
                     labelStyle={this.renderEmailLabelStyle()}
                     inputStyle={input}
                     style={formInput}
-                    autoFocus
                     autoCorrect={false}
                     autoCapitalize='none'
                     returnKeyType='done'
@@ -219,7 +218,6 @@ showAlert(message) {
     ]
   );
 }
-
 /******End General helpers ******/
 
 /******Email helpers ******/
@@ -314,12 +312,25 @@ showAlert(message) {
 
   onFBButtonPress() {
     //get oauth token from fb
-    this.props.loginFBUser();
+    //this.props.loginFBUser();
+    Alert.alert(
+    'Sorry',
+    'Function not currently available',
+    [
+      { text: 'OK' }
+    ]
+  );
   }
   onGoogleButtonPress() {
     //get oauth token from google
     //check if have google play (android)
-
+    Alert.alert(
+    'Sorry',
+    'Function not currently available',
+    [
+      { text: 'OK' }
+    ]
+  );
     /*
     GoogleSignin.hasPlayServices({ autoResolve: true }).then(() => {
       //....
@@ -343,8 +354,9 @@ showAlert(message) {
   }
   //user wants to create an account
   goToSignupPage() {
-    Linking.openURL('https://signup.sbaustralia.com');
-    //Actions.signup();
+    //Linking.openURL('https://signup.sbaustralia.com');
+    console.log('signup');
+    Actions.signup();
   }
   /******End LinkAccess helpers ******/
 }

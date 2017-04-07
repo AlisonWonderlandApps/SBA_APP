@@ -217,7 +217,6 @@ export const fetchReimbursables = (AuthStr, AccountId) => {
   console.log('fetch Reimbursables');
   return function (dispatch) {
   const reimburseURL = (ssApiQueryURL.accounts).concat(AccountId).concat('/documents');
-
   axios.get(reimburseURL,
     { params: { q: 'Reimbursable', order_by_desc: 'uploaded', processing_state: 'PROCESSED' },
       headers: { Authorization: AuthStr }
@@ -415,7 +414,6 @@ export const deleteReceipt = (accId, receiptID) => {
 };
 
 export const exportReceipt = (accId, receiptID) => {
-  //get token
   return function (dispatch) {
     try {
       AsyncStorage.getItem('refreshToken').then((value) => {
@@ -434,9 +432,9 @@ const exportDoc = (AuthStr, accountId, receiptID) => {
   return function (dispatch) {
     const exportURL = ssApiQueryURL.accounts.concat(accountId).concat('/exports');
     const jsonForRequest = {
-    emails: ['alihaire900@gmail.com'],
-    exportType: 'pdf',
-    documents: [receiptID]
+      emails: ['alihaire900@gmail.com'],
+      exportType: 'pdf',
+      documents: [receiptID]
     };
 
     RNFetchBlob.fetch('POST', exportURL, {
@@ -517,7 +515,6 @@ export const loadAReceipt = (dataObj) => {
 };
 
 const trashItem = (AuthStr, accountId, receiptID) => {
-  console.log('trashy', accountId, receiptID, AuthStr);
   const requestUrl = ssApiQueryURL.accounts
     .concat(accountId).concat('/documents/')
     .concat(receiptID).concat('/');
@@ -525,34 +522,27 @@ const trashItem = (AuthStr, accountId, receiptID) => {
     axios.get(requestUrl, { headers: { Authorization: AuthStr } })
       .then(response => {
         const responseData = JSON.parse(JSON.stringify(response));
-        console.log('------->responseData', responseData);
+
         if (response.status === 200) {
           const jsonToUpate = responseData.data;
           jsonToUpate.trashed = true;
-          console.log('------------>jsonToUpate', jsonToUpate);
 
           RNFetchBlob.fetch('PUT', requestUrl, {
               Authorization: AuthStr,
               'Content-Type': 'application/json',
                }, JSON.stringify(jsonToUpate)).then((resp) => {
-                 console.log('success', resp);
-
+                 //console.log('success', resp);
                 dispatch(deleteSuccess(AuthStr, accountId));
                 dispatch(fetchReceipts(AuthStr, accountId));
+                //TODO: THIS NEEDS TO CHANGE!!!!
                }).catch((err) => {
-                 console.log('delete error', err);
-                 dispatch(deleteFailed());
-                 //Alert('Sorry something went wrong. Please try again.');
+                 dispatch(deleteFailed(err));
                });
         } else {
-          //Alert('Sorry something went wrong.Please try again. (status code : '
-          //.concat(response.status).concat(')'));
-          dispatch(deleteFailed());
+          dispatch(deleteFailed('No response status'));
         }
       }).catch((error) => {
-            console.log('error', error);
-            //Alert('Sorry something went wrong. Please try again.');
-            dispatch(deleteFailed());
+            dispatch(deleteFailed(error));
         });
     };
 };
@@ -655,7 +645,14 @@ const deleteSuccess = () => {
 };
 
 const deleteFailed = (er) => {
-  console.log('deleteFailed', er);
+  //console.log('deleteFailed', er);
+  Alert.alert(
+    'Error',
+    'Receipt could not be deleted',
+    [
+      { text: 'Try again', onPress: () => console.log('reprocess'); }
+    ]
+  )
   return {
     type: RECEIPT_DELETE_FAIL,
     payload: er

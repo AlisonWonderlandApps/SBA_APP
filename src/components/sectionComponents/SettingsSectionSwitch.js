@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react';
-import { Text, TextInput, View } from 'react-native';
+import { View } from 'react-native';
 import { Switch } from 'react-native-switch';
 import { CardSection, SettingsText } from '../../components';
 //import { mainStyles } from './styles';
@@ -9,7 +9,7 @@ let label = '';
 
 class SettingsSectionSwitch extends Component {
   constructor(props) {
-    console.log('SettingsSectionLabel');
+    //console.log('SettingsSectionLabel');
     super(props);
     label = props.label;
   }
@@ -51,7 +51,7 @@ const styles = {
     flexDirection: 'row',
     justifyContent: 'flex-end',
     paddingTop: 2,
-    paddingRight: 2
+    paddingRight: 5
   }
 };
 

@@ -2,6 +2,12 @@
 *
 */
 
+//TODO: Fix name to be editable
+//TODO: Fix Usage level
+//TODO: Make toggle buttons functional
+//TODO: Fix links to correct places
+//TODO: Fix link to app store for user to rate
+
 import React, { Component } from 'react';
 import {
   ScrollView,
@@ -10,19 +16,21 @@ import {
   View,
   Linking,
   AsyncStorage,
-  Alert
+  Alert,
+  TextInput
  } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import { email } from 'react-native-communications';
 
+import { updateUserName } from '../actions';
 import { layoutStyles } from './styles';
-import { BACKGROUND_COLOUR } from '../global/colours';
+import { BACKGROUND_COLOUR, PRIMARY_HIGHLIGHT_COLOUR } from '../global/colours';
 import {
   BackgroundView,
   CardView,
   CardSection,
-  SettingsSectionName,
+  TitleText,
   SettingsSectionSwitch,
   SettingsSectionPlan,
   SettingsSectionUsage,
@@ -47,10 +55,7 @@ class Settings extends Component {
       <ScrollView style={{ backgroundColor: BACKGROUND_COLOUR, flex: 1 }}>
       <BackgroundView style={layoutStyles.settingsView}>
         <CardView>
-          <SettingsSectionName
-            name={this.props.userInfo.name}
-            email={this.props.userInfo.email}
-          />
+          this.renderNameSection();
         </CardView>
 
         <CardView>
@@ -140,8 +145,27 @@ class Settings extends Component {
     );
   }
 
+  renderNameSection() {
+    return (
+      <CardSection>
+        <View style={styles.name}>
+          <TitleText
+            style={{ paddingLeft: 3, color: PRIMARY_HIGHLIGHT_COLOUR }}
+          >
+            {this.props.userName}
+          </TitleText>
+          <Text
+            style={{ paddingTop: 5, paddingLeft: 2 }}
+          >
+            {this.props.userInfo.email}
+          </Text>
+        </View>
+      </CardSection>
+    );
+  }
+
   onLogoutClick() {
-    console.log('logoutclick');
+    //console.log('logoutclick');
     Alert.alert(
       'Squirrel Street',
       'Are you sure you want to log out?',
@@ -153,13 +177,13 @@ class Settings extends Component {
   }
 
   logout() {
-      console.log('logout');
+    //  console.log('logout');
       AsyncStorage.clear();
       Actions.login();
   }
 
   onRateClick() {
-    console.log('rateclick');
+  //  console.log('rateclick');
     Alert.alert(
       'Squirrel Street',
       'Do you like this App?',
@@ -172,14 +196,14 @@ class Settings extends Component {
   }
 
   rateApp() {
-    console.log('rate it');
-    const appID = 11111; //TODO: appid
+    //console.log('rate it');
+    //const appID = 11111; //TODO: appid
     //Linking.openURL('itms://itunes.apple.com/app/' + appID);
-    Linking.openURL('itms://itunes.apple.com/app/');
+    //Linking.openURL('itms://itunes.apple.com/app/');
   }
 
   sendFeedback() {
-    console.log('send email');
+    //console.log('send email');
     //email(to, cc, bcc, subject, body)
     email(
       ['help@team.shoeboxed.com.au'],
@@ -200,9 +224,20 @@ class Settings extends Component {
 
 }
 
+const styles = {
+  name: {
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    paddingTop: 5,
+    paddingBottom: 5,
+    padding: 5
+  }
+};
+
 const mapStateToProps = ({ user, accounts, receipts }) => {
   const {
-    userInfo
+    userInfo,
+    userName
   } = user;
   const {
     plan,
@@ -214,6 +249,7 @@ const mapStateToProps = ({ user, accounts, receipts }) => {
   } = receipts;
   return {
     userInfo,
+    userName,
     plan,
     planType,
     curAccountName,

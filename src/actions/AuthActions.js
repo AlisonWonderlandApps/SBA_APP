@@ -1,7 +1,8 @@
 //import axios from 'axios';
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage, Alert } from 'react-native';
 import axios from 'axios';
 import Querystring from 'querystring';
+import { Actions } from 'react-native-router-flux';
 import { ssAuthConfig } from '../config/auth';
 
 import {
@@ -25,23 +26,31 @@ export const isUserLoggedIn = () => {
         if (value !== null) {
           dispatch(getNewToken(value));
         } else {
-          dispatch({
+          //console.log('unauth');
+            dispatch({
             type: UNAUTH_USER
-          });
-        }
-    });
-    } catch (err) {
-        console.log('no refresh token gotten');
-        dispatch({
-          type: AUTH_ERROR,
-          payload: err
-        });
+            });
+          }
+      });
+      } catch (err) {
+        //console.log('no refresh token gotten');
+        Alert.alert(
+          'Error',
+          'No connectivity or not authorised',
+          [
+            { text: 'OK',
+            onPress: () => dispatch({
+                      type: AUTH_ERROR,
+                      payload: err
+                    }) }
+          ]
+        );
     }
   };
 };
 
 export const getNewToken = (refresher) => {
-  console.log('get new auth token');
+//  console.log('get new auth token');
   return function (dispatch) {
     const data = {
       grant_type: ssAuthConfig.refreshTokenGrantType,
@@ -51,7 +60,7 @@ export const getNewToken = (refresher) => {
     };
   axios.post(ssAuthConfig.tokenURL, Querystring.stringify(data))
     .then(response => {
-        console.log(response.data.access_token);
+      //  console.log(response.data.access_token);
         const AuthStr = 'Bearer '.concat(response.data.access_token);
         dispatch(loadAccounts(AuthStr));
         dispatch({
@@ -59,11 +68,18 @@ export const getNewToken = (refresher) => {
         });
     })
     .catch((err) => {
-      console.log('no auth token', err);
-      dispatch({
-        type: AUTH_ERROR,
-        payload: err
-      });
+    //  console.log('no auth token', err);
+      Alert.alert(
+        'Error',
+        'No connectivity or not authorised',
+        [
+          { text: 'OK',
+          onPress: () => dispatch({
+                    type: AUTH_ERROR,
+                    payload: err
+                  }) }
+        ]
+      );
     });
   };
 };

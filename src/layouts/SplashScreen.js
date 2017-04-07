@@ -40,15 +40,10 @@ import {
 class SplashScreen extends Component {
 
   componentWillMount() {
+    //AsyncStorage.clear();
     //function that handles logic of checking if user
     //has a current session. Gets a new oAuth token and
     //accounts info if so.
-    this.props.isUserLoggedIn();
-  }
-
-  componentDidMount() {
-    //AsyncStorage.clear();
-    //Check network connectivity
     if (!this.haveNetworkConnectivity) {
       Alert.alert(
         AlertErrorTitleStr,
@@ -58,39 +53,30 @@ class SplashScreen extends Component {
            text: okStr }
         ]
       );
+    } else {
+      this.props.isUserLoggedIn();
     }
   }
 
   shouldComponentUpdate(nextProps) {
-    console.log('should', this.props.goToLogin, nextProps.goToLogin);
-    if (this.props.goToLogin !== nextProps.goToLogin) {
-      return true; //update to go to LoginPage
-    }
-    if (this.props.userName !== nextProps.userName) {
-      return true; //update name for loading? wth is this
-    }
-    if (this.props.goToMain !== nextProps.goToMain) {
-      return true; //update to go to accounts list or main page
-    }
-    if (this.props.goToAccounts !== nextProps.goToAccounts) {
-      return true; //update to go to accounts list or main page
+    if (this.props !== nextProps) {
+      //console.log('should true', nextProps);
+      this.props = nextProps;
+      return true;
     }
     return false;
   }
 
   componentDidUpdate() {
     if (this.props.goToLogin) {
-      console.log('got to login');
+      //console.log('go to login');
       Actions.login();
-    }
-    if (this.props.goToAccounts) {
+    } else if (this.props.goToAccounts) {
       Actions.accountslist();
-    }
-    if (this.props.goToMain) {
+    } else if (this.props.goToMain) {
        Actions.main();
       }
    }
-
 
   /******General helpers ******/
   haveNetworkConnectivity() {
@@ -99,12 +85,13 @@ class SplashScreen extends Component {
       console.log('no network');
       return false;
     }
-      console.log('lol');
+      //console.log('lol');
       return true;
     });
   }
 
   render() {
+  //  console.log('render', this.props);
     return (
       <FullScreenView style={{ padding: 50, paddingTop: 20, paddingBottom: 20 }}>
         <LogoSection

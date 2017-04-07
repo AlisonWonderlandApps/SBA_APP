@@ -15,7 +15,10 @@ import {
   LOGIN_USER_FAIL,
   NEXT_PAGE,
   RESET_PW,
-  RESET
+  RESET,
+  SIGNUP_USER,
+  SIGNUP_USER_SUCCESS,
+  SIGNUP_USER_FAIL
 } from '../actions/types';
 
 // note: undefined cannot be returned from a reducer
@@ -30,7 +33,8 @@ const INITIAL_STATE = {
   loading: false,
   myerror: false,
   errorMsg: '',
-  nextPage: false
+  nextPage: false,
+  newUserEmail: ''
  };
 
 //WARNING: we need to make sure we actually change the state
@@ -49,6 +53,15 @@ export default (state = INITIAL_STATE, action) => {
 
     case PASSWORD_VALID:
       return { ...state, passwordValid: action.payload, reset: true };
+
+    case SIGNUP_USER:
+      return { ...state, loading: true };
+
+    case SIGNUP_USER_SUCCESS:
+      return { ...state, loading: false };
+
+    case SIGNUP_USER_FAIL:
+      return { ...state, loading: false };
 
       //also use for signup?
     case LOGIN_USER:
