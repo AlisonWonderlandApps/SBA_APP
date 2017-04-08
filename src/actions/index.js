@@ -5,6 +5,5 @@ export * from './SignupActions';
 export * from './UserActions';
 export * from './AccountActions';
 export * from './ReceiptActions';
-export * from './SearchActions';
 export * from './RouterActions';
 export * from './TripActions';

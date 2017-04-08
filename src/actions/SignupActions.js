@@ -90,7 +90,7 @@ export const signupUser = ({ email, password }) => {
 
   axios.post(ssAuthConfig.tokenURL, Querystring.stringify(data))
     .then(response => {
-      console.log('signuptoken', response);
+      //console.log('signuptoken', response);
       const AuthStr = 'Bearer '.concat(response.data.access_token);
       dispatch(signUp(AuthStr, email, password));
       //saveTokens(response.data.access_token, response.data.refresh_token);

@@ -13,11 +13,9 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 import {
   BackgroundView,
-  FAB,
   Button,
   Banner,
   TitleText,
-  ColourText
 } from '../components';
 import { HEADER } from '../global/margins';
 import {
@@ -33,7 +31,7 @@ class Processing extends Component {
 
   constructor(props) {
     super(props);
-    console.log('receipts', this.props.processingReceipts);
+    //console.log('receipts', this.props.processingReceipts);
     this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
   }
 
@@ -100,7 +98,7 @@ class Processing extends Component {
   }
 
   renderRow(rowdata) {
-    console.log('data', rowdata);
+    //console.log('data', rowdata);
     return (
         <TouchableHighlight
           onPress={() => this.goToProcessingDetail(rowdata)}
@@ -143,7 +141,7 @@ class Processing extends Component {
     for (let k = 1; k < data.categories.length; k++) {
         categories += ', '.concat(data.categories[k]);
     }
-    console.log(categories);
+    //console.log(categories);
     return categories;
   }
 
@@ -167,7 +165,7 @@ class Processing extends Component {
   }
 
   goToProcessingDetail(data) {
-    console.log('processData', data);
+    //console.log('processData', data);
     const formattedDate = new Date(data.uploaded).toString();
     let year = formattedDate.substring(11, 15);
     year = ', '.concat(year);
@@ -202,14 +200,14 @@ class Processing extends Component {
       categories,
       imgURL: data.attachment.url
     };
-    console.log('data.notes', data.notes);
-    console.log('processingDetail', receiptObj);
+    //console.log('data.notes', data.notes);
+    //console.log('processingDetail', receiptObj);
     this.props.loadAReceipt(receiptObj);
     Actions.processingDetail();
   }
 
   onPressFAB() {
-    console.log('FAB pressed');
+    //console.log('FAB pressed');
     Alert.alert(
       'Choose Photo Source',
       null,

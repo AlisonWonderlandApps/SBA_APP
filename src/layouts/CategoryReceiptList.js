@@ -38,7 +38,7 @@ class CategoryReceiptList extends Component {
 
 	constructor(props) {
 		super(props);
-    console.log(props);
+    //console.log(props);
     categoryIndex = props.index;
 		//console.log(this.props.categoryReceipts, categoryIndex);
 		//console.log('category name', this.props.categories[categoryIndex]);
@@ -84,7 +84,7 @@ class CategoryReceiptList extends Component {
 										placeholderTextColor='lightgray'
 										onChangeText={this.onSearchChange.bind(this)}
 										value={this.props.searchQuery}
-										onFocus={() => console.log('hi')}
+										//onFocus={() => console.log('hi')}
 									/>
 								</View>
 							</View>
@@ -120,7 +120,7 @@ class CategoryReceiptList extends Component {
 	}
 
 	renderRow(data) {
-		console.log('data', data);
+		//console.log('data', data);
 		return (
 				<TouchableHighlight
 					onPress={() => Actions.receiptInfo()}
@@ -189,7 +189,7 @@ class CategoryReceiptList extends Component {
 
     renderCategories(data) {
       let category = '';
-      console.log(data);
+      //console.log(data);
       if (data.categories === undefined) {
         category = 'No categories';
       } else if (data.categories.length < 1) {
@@ -205,20 +205,20 @@ class CategoryReceiptList extends Component {
 		}
 
 	deleteItem(secId, rowId, rowMap) {
-		console.log('secId', secId, 'rowId', rowId, 'rowMap', rowMap);
-		console.log('obj', secId.id, 'acc', this.props.curAccountID);
+		//console.log('secId', secId, 'rowId', rowId, 'rowMap', rowMap);
+		//console.log('obj', secId.id, 'acc', this.props.curAccountID);
 		Alert.alert(
 			'Confirmation Required!',
 			'Are you sure you want to delete this receipt?',
 			[
 				{ text: 'OK', onPress: () => this.props.deleteReceipt(this.props.curAccountID, secId.id) },
-				{ text: 'Cancel', onPress: () => console.log('Cancel pressed') },
+				{ text: 'Cancel' },
 			]
 		);
 	}
 
 	exportItem(secId, rowId, rowMap) {
-		console.log('secId', secId, 'rowId', rowId, 'rowMap', rowMap);
+		//console.log('secId', secId, 'rowId', rowId, 'rowMap', rowMap);
 		//this.props.exportReceipt(this.props.curAccountID, secId.id);
 	}
 }

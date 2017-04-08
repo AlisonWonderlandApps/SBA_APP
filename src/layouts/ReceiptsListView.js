@@ -47,9 +47,9 @@ class ReceiptsListView extends Component {
 
 		self = this;
 
-		console.log(self.props.myReceipts);
-		console.log(this.props.receiptList);
-		console.log(this.props.categories);
+		//console.log(self.props.myReceipts);
+		//console.log(this.props.receiptList);
+		//console.log(this.props.categories);
 		this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 	}
 
@@ -110,7 +110,7 @@ class ReceiptsListView extends Component {
 						renderHiddenRow={(secId, rowId, rowMap) => this.renderHiddenRow(secId, rowId, rowMap)}
 						rightOpenValue={-150}
 						recalculateHiddenLayout
-						previewFirstRow
+						//previewFirstRow
 				/>
 				<FAB
           onPress={this.onPressFAB}
@@ -134,15 +134,15 @@ class ReceiptsListView extends Component {
 		};
 
 	ImagePicker.showImagePicker(options, (response) => {
-		console.log('this.props.curAccountID', self.props.curAccountID);
-		console.log('response', response);
+		//console.log('this.props.curAccountID', self.props.curAccountID);
+		//console.log('response', response);
 		//self.props.setFetching();
 			if (response.didCancel) {
-				console.log('User cancelled image picker');
+				//console.log('User cancelled image picker');
 			} else if (response.error) {
 				Alert('Error in ImagePicker', response.error);
 			} else if (response.customButton) {
-				console.log('User tapped custom button: ', response.customButton);
+				//console.log('User tapped custom button: ', response.customButton);
 			} else {
 				let image = '';
 				if (Platform.OS === 'ios') {
@@ -150,7 +150,7 @@ class ReceiptsListView extends Component {
 				} else {
 					image = response.path;
 				}
-				console.log('image', image);
+				//console.log('image', image);
 				const source = { uri: response.uri };
 				self.props.addReceiptFromImage(self.props.curAccountID, response, image, source);
 		}
@@ -232,7 +232,7 @@ class ReceiptsListView extends Component {
 }
 
 	load(data, rowId) {
-		console.log('load', data, rowId);
+		//console.log('load', data, rowId);
 		this.props.loadAReceipt(data, rowId);
 		Actions.receiptInfo();
 	}
@@ -257,8 +257,8 @@ class ReceiptsListView extends Component {
 	}
 
 	deleteItem(secId, rowId, rowMap) {
-		console.log('secId', secId, 'rowId', rowId, 'rowMap', rowMap);
-		console.log('obj', secId.id, 'acc', this.props.curAccountID);
+		//console.log('secId', secId, 'rowId', rowId, 'rowMap', rowMap);
+		//console.log('obj', secId.id, 'acc', this.props.curAccountID);
 		Alert.alert(
 			'Confirmation Required!',
 			'Are you sure you want to delete this receipt?',
@@ -271,7 +271,7 @@ class ReceiptsListView extends Component {
 	}
 
 	exportItem(rowMap, secId, rowId) {
-		console.log('secId', secId, 'rowId', rowId, 'rowMap', rowMap);
+		//console.log('secId', secId, 'rowId', rowId, 'rowMap', rowMap);
 		// this.props.exportReceipt(this.props.curAccountID, rowMap.id);
 		//Actions.export();
 

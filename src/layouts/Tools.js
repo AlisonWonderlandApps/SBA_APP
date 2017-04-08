@@ -65,7 +65,7 @@ class Tools extends Component {
   }
 
   onContactAddClick() {
-    console.log('contactAdd');
+    //console.log('contactAdd');
     const email = this.props.dropBoxEmail;
     const newContact = {
       emailAddresses: [{

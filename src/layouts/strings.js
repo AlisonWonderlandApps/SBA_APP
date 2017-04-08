@@ -3,10 +3,10 @@
 export const loadingStr = 'Loading....';
 
 /** Login & SignUp URL's & const strings **/
-export const helpURL = 'https://id.sbaustralia.com/reset';
-export const termsURL = 'https://id.sbaustralia.com/terms-of-service';
-export const privacyURL = 'https://id.sbaustralia.com/privacy';
-export const faqURL = 'https://id.sbaustralia.com/reset';
+export const helpURL = 'https://id.squirrelstreet.com/reset';
+export const termsURL = 'https://id.squirrelstreet.com/terms-of-service';
+export const privacyURL = 'https://id.squirrelstreet.com/privacy';
+export const faqURL = 'https://id.squirrelstreet.com/reset';
 
 export const helpString = 'Need Help?';
 export const termsString = 'Terms & Conditions';
@@ -20,7 +20,7 @@ export const FBLoginStr = 'Facebook Login';
 export const GoogleLoginStr = 'Google Login'; //not working
 export const PasswordLabelStr = 'Password'; //not working @vector use issue
 export const ValidPasswordLabelStr = 'Valid Password Format';
-export const InvalidPasswordLabelStr = 'Password must be at least 4 digits long and include one numeric digit & one alphabetic.';
+export const InvalidPasswordLabelStr = 'Password must be at least 6 digits long';
 export const EmailLabelStr = 'Email';
 export const ValidEmailLabelStr = 'Valid Email Format!';
 export const InvalidEmailLabelStr = 'Invalid Email Address Format :(';

@@ -75,6 +75,7 @@ export const ACCOUNTS_LOAD = 'load_accounts';
 export const LABELS_LOAD = 'load_labels';
 export const SET_CUR_ACCOUNT = 'set_current_account';
 export const SET_CUR_ACCOUNT_NAME = 'set_cur_acc_name';
+export const SET_CUR_ACCOUNT_INDEX = 'set_cur_acc_index';
 export const ACCOUNTS_FETCH = 'accounts_fetch_all';
 export const ACCOUNTS_FETCH_SUCCESS = 'accounts_fetch_success';
 export const ACCOUNTS_FETCH_FAIL = 'accounts_fetch_fail';

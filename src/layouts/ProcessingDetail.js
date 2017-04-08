@@ -27,11 +27,11 @@ import {
 class ProcessingDetail extends Component {
   constructor(props) {
     super(props);
-    console.log(this.props);
+    //console.log(this.props);
   }
 
   shouldComponentUpdate(nextProps) {
-    console.log('should', this.props, nextProps);
+    //console.log('should', this.props, nextProps);
     if (this.props !== nextProps) {
       return true;
     }
@@ -105,7 +105,7 @@ class ProcessingDetail extends Component {
   }
 
   deleteReceipt() {
-    console.log('delete it');
+    //console.log('delete it');
     this.props.deleteReceipt(this.props.curAccountID, this.props.receiptDetail.data.id);
   }
 
@@ -125,7 +125,7 @@ class ProcessingDetail extends Component {
   }
 
   onReProcessClick() {
-    console.log('reprocess doc');
+    //console.log('reprocess doc');
   }
 
 }

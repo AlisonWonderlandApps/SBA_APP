@@ -2,7 +2,6 @@
 * baseStyles
 */
 
-import { HEADER } from '../../global/margins';
 import {
   CARD_BACKGROUND_COLOUR,
   PRIMARY_HIGHLIGHT_COLOUR,

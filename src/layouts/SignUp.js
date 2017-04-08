@@ -292,7 +292,7 @@ class SignUp extends Component {
     this.isValidPassword(text);
   }
   isValidPassword(text) {
-    if (text.match(PASSWORD_REGEX)) {
+    if (text.length > 5) {
       this.props.isPasswordValidS(1);
     } else {
       this.props.isPasswordValidS(2);

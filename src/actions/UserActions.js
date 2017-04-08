@@ -5,6 +5,7 @@ import { AsyncStorage, Alert } from 'react-native';
 import axios from 'axios';
 import Querystring from 'querystring';
 import RNFetchBlob from 'react-native-fetch-blob';
+import { Actions } from 'react-native-router-flux';
 import { ssApiQueryURL, ssAuthConfig } from '../config/auth';
 
 import {
@@ -30,11 +31,17 @@ export const loadUserInfo = (UserData) => {
 };
 
 export const updateUserName = (newName) => {
+  return {
+    type: UPDATE_USERNAME,
+    payload: newName
+  };
+  /*
   return function (dispatch) {
     dispatch({
       type: UPDATE_USERNAME,
       payload: newName
     });
+
     //do this in Background
     try {
       AsyncStorage.getItem('refreshToken').then((value) => {
@@ -46,6 +53,21 @@ export const updateUserName = (newName) => {
       //console.log('token', err);
       Alert('Error in updateUserName', err);
     }
+  }; */
+};
+
+export const updateUserNameInDB = (newName) => {
+  return function (dispatch) {
+      try {
+        AsyncStorage.getItem('refreshToken').then((value) => {
+          if (value !== null) {
+            dispatch(getNewToken(value, newName));
+          }
+        });
+      } catch (err) {
+        //console.log('token', err);
+        Alert('Error in updateUserName', err);
+      }
   };
 };
 
@@ -89,9 +111,10 @@ const updateName = (AuthStr, newName) => {
         RNFetchBlob.fetch('PUT', updateURL, {
             Authorization: AuthStr,
             'Content-Type': 'application/json',
-             }, JSON.stringify(jsonToUpate)).then((resp) => {
-               console.log('success', resp);
-               dispatch(updateSuccess());
+             }, JSON.stringify(jsonToUpate)).then(() => {
+               //console.log('success', resp);
+               dispatch(updateSuccess(newName));
+               Actions.settings();
              }).catch((err) => {
                dispatch(updateFail(err));
              });
@@ -104,9 +127,10 @@ const updateName = (AuthStr, newName) => {
   };
 };
 
-const updateSuccess = () => {
+const updateSuccess = (newName) => {
   return {
     type: UPDATE_USERNAME_SUCCESS,
+    payload: newName
   };
 };
 

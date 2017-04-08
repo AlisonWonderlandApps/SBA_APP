@@ -55,8 +55,11 @@ class MainNavigationList extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    console.log('updateMain', nextProps);
+    //console.log('updateMain', nextProps);
     if (this.props !== nextProps) {
+      if (this.props.userName !== nextProps.userName) {
+        return false;
+      }
       return true;
     }
     return false;
@@ -246,14 +249,14 @@ class MainNavigationList extends Component {
   };
 
     ImagePicker.showImagePicker(options, (response) => {
-      console.log('this.props.curAccountID', self.props.curAccountID);
-      console.log('response', response);
+      //console.log('this.props.curAccountID', self.props.curAccountID);
+      //console.log('response', response);
       if (response.didCancel) {
-        console.log('User cancelled image picker');
+        //console.log('User cancelled image picker');
       } else if (response.error) {
         Alert('Error in ImagePicker', response.error);
       } else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton);
+        //console.log('User tapped custom button: ', response.customButton);
       } else {
         let image = '';
         if (Platform.OS === 'ios') {
@@ -261,7 +264,7 @@ class MainNavigationList extends Component {
         } else {
           image = response.path;
         }
-        console.log('image', image);
+        //console.log('image', image);
         const source = { uri: response.uri };
         //self.props.addReceiptFromImage(self.props.curAccountID, response, image, source);
         self.props.saveImageData(response, image, source);
@@ -271,12 +274,12 @@ class MainNavigationList extends Component {
   }
 
   processingPressed() {
-    console.log('processingPressed');
+    //console.log('processingPressed');
     Actions.processing();
   }
 
   reimburseablePressed() {
-    console.log('reimburseablePressed');
+    //console.log('reimburseablePressed');
     Actions.reimbursables();
   }
 
@@ -286,12 +289,12 @@ class MainNavigationList extends Component {
   }
 
   tripsPressed() {
-    console.log('trips', this.props);
+    //console.log('trips', this.props);
     Actions.trips2();
   }
 
   toolsPressed() {
-    console.log('toolsPressed');
+    //console.log('toolsPressed');
     Actions.tools();
   }
 

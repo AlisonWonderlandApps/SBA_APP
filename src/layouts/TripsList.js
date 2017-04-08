@@ -32,7 +32,7 @@ let self;
 class TripsList extends Component {
   constructor(props) {
     super(props);
-    console.log(this.props.myTrips);
+    //console.log(this.props.myTrips);
 
     this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 
@@ -49,9 +49,9 @@ class TripsList extends Component {
       }
     };
 
-    console.log('tracking functions');
+    //console.log('tracking functions');
     //this.props.isTripTracking();
-    console.log('tripstrack done');
+    //console.log('tripstrack done');
     //this.updateLocation();
   }
 
@@ -80,7 +80,7 @@ class TripsList extends Component {
         this.props.setCurTripLocation(curLocation);
       },
       (err) => {
-        console.log(err);
+        //console.log(err);
         Alert('Update Location Sorry, something went wrong. Please try again.');
       },
       {
@@ -137,19 +137,19 @@ class TripsList extends Component {
             }
         }
 
-        //******************************************Find Distance start**************************************//
+        //***********************Find Distance start*********************//
         const url = 'https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins='
                   .concat(tripData.startLocation.latitude).concat(',')
                   .concat(tripData.startLocation.longitude).concat('&destinations=')
                   .concat(self.props.curLocation.latitude)
                   .concat(',')
                   .concat(self.props.curLocation.longitude);
-        console.log('url', url);
+        //console.log('url', url);
 
         fetch(url)
           .then((response) => response.json())
           .then((responseJson) => {
-            console.log('responseJson', responseJson);
+            //console.log('responseJson', responseJson);
             const distance = responseJson.rows[0].elements[0].distance.text;
             Alert('Trip Distance : ', distance);
 
@@ -158,19 +158,19 @@ class TripsList extends Component {
             });
           })
           .catch((error) => {
-            console.log(error);
+            //console.log(error);
             Alert('tripfetch Sorry, something went wrong. Please try again.');
           });
 
-        //******************************************Find Distance end**************************************//
+        //***************************Find Distance end***************************//
       }
     });
   }
 
   startOrEndTrip() {
     //let isTripEnd = false;
-    console.log('this.props.curLocation : ', this.props.curLocation);
-    console.log('this.state.curLocation : ', this.state.curLocation);
+    //console.log('this.props.curLocation : ', this.props.curLocation);
+    //console.log('this.state.curLocation : ', this.state.curLocation);
     if (this.props.isTripStarted) {
       this.endTrip();
     } else {
@@ -283,7 +283,7 @@ class TripsList extends Component {
   }
 
   onRowPress(rowData, secId, rowId) {
-    console.log('row', rowData, secId, rowId);
+    //console.log('row', rowData, secId, rowId);
     this.props.loadAReceipt(rowData, rowId);
     Actions.receiptInfo();
   }

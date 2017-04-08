@@ -10,7 +10,7 @@ class CategoryList extends Component {
   constructor(props) {
     super(props);
     this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-    console.log(this.props.categories);
+    //console.log(this.props.categories);
   }
 
   shouldComponentUpdate(nextProps) {
@@ -21,8 +21,8 @@ class CategoryList extends Component {
   }
 
   onRowPress(rowID) {
-    console.log(this.props);
-    console.log(rowID);
+    //console.log(this.props);
+    //console.log(rowID);
     Actions.catReceipts({ index: rowID });
   }
 

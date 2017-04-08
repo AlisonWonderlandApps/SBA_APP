@@ -25,13 +25,9 @@ import {
  } from '../actions';
 
 class ReimbursableDetail extends Component {
-  constructor(props) {
-    super(props);
-    console.log(this.props);
-  }
 
   shouldComponentUpdate(nextProps) {
-    console.log('should', this.props, nextProps);
+    //console.log('should', this.props, nextProps);
     if (this.props !== nextProps) {
       return true;
     }
@@ -105,7 +101,7 @@ class ReimbursableDetail extends Component {
   }
 
   deleteReceipt() {
-    console.log('delete it');
+    //console.log('delete it');
     this.props.deleteReceipt(this.props.curAccountID, this.props.receiptDetail.data.id);
   }
 

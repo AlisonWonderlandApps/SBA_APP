@@ -82,10 +82,10 @@ export default (state = INITIAL_STATE, action) => {
       };
 
     case LOGIN_USER_FAIL:
-      console.log('fail reducer');
+      //console.log('fail reducer');
       return {
         ...state,
-        emailValid: 0,
+        password: '',
         passwordValid: 0,
         loading: false,
         reset: true

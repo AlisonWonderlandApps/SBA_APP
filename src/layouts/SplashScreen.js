@@ -60,7 +60,6 @@ class SplashScreen extends Component {
 
   shouldComponentUpdate(nextProps) {
     if (this.props !== nextProps) {
-      //console.log('should true', nextProps);
       this.props = nextProps;
       return true;
     }
@@ -69,7 +68,6 @@ class SplashScreen extends Component {
 
   componentDidUpdate() {
     if (this.props.goToLogin) {
-      //console.log('go to login');
       Actions.login();
     } else if (this.props.goToAccounts) {
       Actions.accountslist();
@@ -82,7 +80,7 @@ class SplashScreen extends Component {
   haveNetworkConnectivity() {
     NetInfo.fetch().done((reach) => {
     if (reach === 'none') {
-      console.log('no network');
+      //console.log('no network');
       return false;
     }
       //console.log('lol');

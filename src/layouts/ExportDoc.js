@@ -4,16 +4,13 @@
 
 import React, { Component } from 'react';
 import {
-  Alert,
   TextInput,
   Text,
   View
 } from 'react-native';
 import { connect } from 'react-redux';
-import Icon from 'react-native-vector-icons/Ionicons';
 import {
   BackgroundView,
-  Button
 } from '../components';
 import { HEADER } from '../global/margins';
 import { APP_GREY } from '../global/colours';
@@ -22,13 +19,9 @@ import {
  } from '../actions';
 
 class ExportDoc extends Component {
-  constructor(props) {
-    super(props);
-    console.log(this.props);
-  }
 
   shouldComponentUpdate(nextProps) {
-    console.log('should', this.props, nextProps);
+    //console.log('should', this.props, nextProps);
     if (this.props !== nextProps) {
       return true;
     }

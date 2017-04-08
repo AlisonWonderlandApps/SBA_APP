@@ -51,7 +51,7 @@ const styles = {
     flexDirection: 'row',
     justifyContent: 'flex-end',
     paddingTop: 2,
-    paddingRight: 5
+    paddingRight: 10
   }
 };
 

@@ -24,7 +24,7 @@ import {
 //0. Fetch all trips
 //done in mainnav
 export const fetchTrips = (AuthStr, AccountId) => {
-  console.log('fetchTrips', AuthStr);
+  //console.log('fetchTrips', AuthStr);
   return function (dispatch) {
     dispatch({
       type: TRIPS_FETCH
@@ -38,9 +38,9 @@ export const fetchTrips = (AuthStr, AccountId) => {
       })
       .then(response => {
         dispatch(fetchTripsSuccess(response.data.documents));
-        console.log('tripsActions', response.data.documents);
+        //console.log('tripsActions', response.data.documents);
         if (response.data.documents.length > 0) {
-          console.log('trips', response.data.documents);
+          //console.log('trips', response.data.documents);
           dispatch(fetchMostRecentTrips(response.data.documents[0]));
           dispatch(setDate(response.data.documents[0].uploaded));
           dispatch(setCost(response.data.documents[0].totalInPreferredCurrency));
@@ -50,7 +50,7 @@ export const fetchTrips = (AuthStr, AccountId) => {
         }
       })
       .catch((er) => {
-        console.log('no trips fetched', er);
+        //console.log('no trips fetched', er);
         dispatch(fetchTripsFail(er));
       });
   };
@@ -133,14 +133,14 @@ export const setTripData = (tripData) => {
   return function (dispatch) {
     try {
       AsyncStorage.setItem('tripData', JSON.stringify(tripData)).then((value) => {
-        console.log(value);
+        //console.log(value);
         dispatch({
           type: SET_TRIP_DATA,
           payload: tripData
         });
       });
     } catch (err) {
-      console.log(err);
+      //console.log(err);
     }
   };
 };
@@ -167,16 +167,8 @@ export const isTripTracking = () => {
         }
       });
     } catch (err) {
-        console.log(err);
+        //console.log(err);
         Alert('isTripTracking :Sorry, something went wrong. Please try again.');
       }
   };
 };
-
-//1. Start a trip
-
-//2. Calculate trip cost / end trip
-
-//3. Add a trip manually??
-
-//4. Edit a trip

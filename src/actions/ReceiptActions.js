@@ -90,14 +90,14 @@ export const addNewReceipt = (doc) => {
 
 //fetches order_by_desc to set latest receipt easily
 export const fetchReceipts = (AuthStr, accountId) => {
-  console.log('fetch receipts');
+  //console.log('fetch receipts');
   return function (dispatch) {
     dispatch({
       type: RECEIPTS_FETCH
     });
 
     const receiptsURL = (ssApiQueryURL.accounts).concat(accountId).concat('/documents');
-    console.log('fetchURL', receiptsURL, AuthStr);
+    //console.log('fetchURL', receiptsURL, AuthStr);
 
     axios.get(receiptsURL,
       { params: {
@@ -109,7 +109,7 @@ export const fetchReceipts = (AuthStr, accountId) => {
         headers: { Authorization: AuthStr }
       })
       .then(response => {
-        console.log('RECEIPTSSSSS', response.data.documents);
+        //console.log('RECEIPTSSSSS', response.data.documents);
         const length = response.data.totalCountFiltered;
 
         dispatch({
@@ -125,10 +125,10 @@ export const fetchReceipts = (AuthStr, accountId) => {
 
         if (length > 0) {
           let i = 0;
-          console.log(response.data.documents);
+          //console.log(response.data.documents);
 
           if (response.data.documents[i].categories === undefined) {
-            console.log('no categories for receipt', response.data.documents[i]);
+            //console.log('no categories for receipt', response.data.documents[i]);
           } else {
             for (let j = 0; j < response.data.documents[i].categories.length; j++) {
               if (response.data.documents[i].categories[j] === 'Trips') {
@@ -163,7 +163,7 @@ const fetchReceiptsSuccess = (receipts) => {
 };
 
 const fetchReceiptsFail = (err) => {
-  console.log('RECEIPTS ERROR', err);
+  //console.log('RECEIPTS ERROR', err);
   return {
     type: RECEIPTS_FETCH_FAIL,
     payload: err
@@ -171,7 +171,7 @@ const fetchReceiptsFail = (err) => {
 };
 
 export const fetchProcessing = (AuthStr, accountId) => {
-  console.log('fetch processing', AuthStr, accountId);
+  //console.log('fetch processing', AuthStr, accountId);
   return function (dispatch) {
   dispatch({
     type: PROCESSING_FETCH
@@ -182,14 +182,14 @@ export const fetchProcessing = (AuthStr, accountId) => {
       headers: { Authorization: AuthStr }
     })
     .then(response => {
-      console.log('processing1: ', response);
+      //console.log('processing1: ', response);
       axios.get(processingURL,
         { params: { processing_state: 'NEEDS_SYSTEM_PROCESSING', order_by_desc: 'uploaded' },
           headers: { Authorization: AuthStr }
         }).then(response2 => {
-          console.log('processing2: ', response2);
+          //console.log('processing2: ', response2);
           const processingArray = (response.data.documents).concat(response2.data.documents);
-          console.log('processingArray: ', processingArray);
+          //console.log('processingArray: ', processingArray);
           dispatch({
             type: PROCESSING_FETCH_SUCCESS,
             payload: processingArray
@@ -201,7 +201,7 @@ export const fetchProcessing = (AuthStr, accountId) => {
         });
     })
     .catch((er) => {
-      console.log('no trips fetched', er);
+      //console.log('no trips fetched', er);
       dispatch(fetchProcessingFail());
     });
   };
@@ -214,7 +214,7 @@ const fetchProcessingFail = () => {
 };
 
 export const fetchReimbursables = (AuthStr, AccountId) => {
-  console.log('fetch Reimbursables');
+  //console.log('fetch Reimbursables');
   return function (dispatch) {
   const reimburseURL = (ssApiQueryURL.accounts).concat(AccountId).concat('/documents');
   axios.get(reimburseURL,
@@ -231,7 +231,7 @@ export const fetchReimbursables = (AuthStr, AccountId) => {
         payload: response.data.documents.length
       });
       }).catch((er) => {
-      console.log('reimburse', er);
+      //console.log('reimburse', er);
       dispatch(fetchReimburseFail(er));
     });
   };
@@ -283,7 +283,7 @@ const setCategoriesLists = (AuthStr, accountId, list) => {
     return ar.indexOf(item) === i;
   });
   uniqueCats.sort();
-  console.log('uniqueCats', uniqueCats);
+  //console.log('uniqueCats', uniqueCats);
   return function (dispatch) {
     for (let k = 0; k < uniqueCats.length; k++) {
       sortReceiptsByCategory(AuthStr, accountId, uniqueCats, k);
@@ -337,7 +337,7 @@ const setCost = (cost) => {
     currency = '$ --';
   } else {
     currency = '$'.concat(cost.toFixed(2));
-    console.log(currency);
+    //console.log(currency);
   }
   return {
     type: SET_COST,
@@ -348,7 +348,7 @@ const setCost = (cost) => {
 const categoryDataObjArray = [];
 const sortReceiptsByCategory = (AuthStr, accountId, categoryArray, k) => {
   const receiptsURL = (ssApiQueryURL.accounts).concat(accountId).concat('/documents');
-      console.log('catarray', categoryArray, categoryArray.length);
+      //console.log('catarray', categoryArray, categoryArray.length);
       axios.get(receiptsURL,
         { params: {
           type: 'receipt',
@@ -359,18 +359,18 @@ const sortReceiptsByCategory = (AuthStr, accountId, categoryArray, k) => {
          },
           headers: { Authorization: AuthStr }
         }).then(response => {
-          console.log('Category receipts', response.data.documents);
+          //console.log('Category receipts', response.data.documents);
           const list = response.data.documents;
-          console.log('list for', k, list);
+          //console.log('list for', k, list);
           categoryDataObjArray[k] = list;
-          console.log(categoryDataObjArray[k]);
+          //console.log(categoryDataObjArray[k]);
         }).catch((er) => {
-          console.log('category fail', er);
+          //console.log('category fail', er);
         });
 };
 
 const addCategoryReceipt = (dataObj) => {
-  console.log('addCategoryReceipt');
+  //console.log('addCategoryReceipt');
   return {
     type: RECEIPTS_BY_CATEGORY_ADD,
     payload: dataObj
@@ -408,7 +408,7 @@ export const deleteReceipt = (accId, receiptID) => {
         }
       });
     } catch (err) {
-      console.log('token', err);
+      //console.log('token', err);
     }
   };
 };
@@ -422,7 +422,7 @@ export const exportReceipt = (accId, receiptID) => {
         }
       });
     } catch (err) {
-      console.log(err);
+      //console.log(err);
       //Alert('Something went wrong!');
     }
   };
@@ -441,14 +441,14 @@ const exportDoc = (AuthStr, accountId, receiptID) => {
     Authorization: AuthStr,
     'Content-Type': 'application/json',
     }, JSON.stringify(jsonForRequest)).then((resp) => {
-      console.log(resp);
+      //console.log(resp);
       dispatch({
         type: RECEIPT_EXPORT,
         payload: resp
       });
       //Alert('Receipts exported successfully.');
     }).catch((err) => {
-      console.log('export error', err);
+      //console.log('export error', err);
       Alert.alert(
         'Sorry',
         'An error occurred :(',
@@ -466,7 +466,7 @@ const exportDoc = (AuthStr, accountId, receiptID) => {
 3. Export receipt
 */
 export const newToken = (accountID, token, receiptID, newReceipt, num) => {
-  console.log('updaterefreshtoken', accountID);
+  //console.log('updaterefreshtoken', accountID);
   return function (dispatch) {
    const data = {
      grant_type: ssAuthConfig.refreshTokenGrantType,
@@ -478,16 +478,16 @@ export const newToken = (accountID, token, receiptID, newReceipt, num) => {
      .then(response => {
        if (response !== null) {
          const AuthStr = 'Bearer '.concat(response.data.access_token);
-         console.log('AuthStr', AuthStr, num);
+         //console.log('AuthStr', AuthStr, num);
         // addItem(AuthStr, accountID, newReceipt);
         if (num === 1) {
-          console.log('trashItem');
+          //console.log('trashItem');
           dispatch(trashItem(AuthStr, accountID, receiptID));
         } else if (num === 2) {
-          console.log('Add Item', AuthStr);
+          //console.log('Add Item', AuthStr);
           dispatch(addItem(AuthStr, accountID, newReceipt));
         } else if (num === 3) {
-          console.log('Export receipt', AuthStr);
+          //console.log('Export receipt', AuthStr);
           dispatch(exportDoc(AuthStr, accountID, receiptID));
         }
        }
@@ -499,13 +499,13 @@ export const newToken = (accountID, token, receiptID, newReceipt, num) => {
            { text: 'OK' }
          ]
        ); */
-       console.log('no auth token', err);
+       //console.log('no auth token', err);
      });
   };
 };
 
 export const loadAReceipt = (dataObj) => {
-  console.log('loadAReceipt', dataObj);
+  //console.log('loadAReceipt', dataObj);
   return function (dispatch) {
     dispatch({
       type: LOAD_A_RECEIPT,
@@ -567,7 +567,7 @@ export const addReceiptFromImage = (AccountId, imageData, categs, date, note) =>
         }
       });
     } catch (err) {
-      console.log('token', err);
+      //console.log('token', err);
       Alert('Error in addReceiptFromImage', err);
     }
   };
@@ -576,7 +576,7 @@ export const addReceiptFromImage = (AccountId, imageData, categs, date, note) =>
 const addItem = (AuthStr, accountId, receiptObj) => {
   return function (dispatch) {
   const requestUrl = ssApiQueryURL.accounts.concat(accountId).concat('/documents/');
-  console.log('----->requestUrl : ', requestUrl, AuthStr, accountId);
+  //console.log('----->requestUrl : ', requestUrl, AuthStr, accountId);
   const id = (Platform.OS === 'ios') ? 'SSA_IOS_APP' : 'SSA_Android_APP';
   const source = {
     type: 'integration',
@@ -606,7 +606,7 @@ const addItem = (AuthStr, accountId, receiptObj) => {
      ]).then((resp) => {
        const respJSONData = JSON.parse(resp.data);
        const receiptId = respJSONData.id;
-       console.log('--------->resp : ', JSON.stringify(resp), receiptId);
+       //console.log('--------->resp : ', JSON.stringify(resp), receiptId);
        Alert.alert(
          'Successfully added receipt!',
           null,
@@ -617,7 +617,7 @@ const addItem = (AuthStr, accountId, receiptObj) => {
        );
      }).catch((err) => {
        Alert('Sorry, Could not add new receipt.');
-       console.log('--------->err : ', JSON.stringify(err));
+       //console.log('--------->err : ', JSON.stringify(err));
      });
    };
 };
@@ -650,9 +650,9 @@ const deleteFailed = (er) => {
     'Error',
     'Receipt could not be deleted',
     [
-      { text: 'Try again', onPress: () => console.log('reprocess'); }
+      { text: 'Try again', onPress: () => console.log('reprocess') }
     ]
-  )
+  );
   return {
     type: RECEIPT_DELETE_FAIL,
     payload: er

@@ -22,13 +22,14 @@ const INITIAL_STATE = {
   settings: [], //should come from AsynchStorage
   error: '',
   updatedSuccess: false,
-  updateError: ''
+  updateError: '',
+  editableName: ''
 };
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case USER_NAME_FETCH:
-      return { ...state, userName: action.payload };
+      return { ...state, userName: action.payload, editableName: action.payload };
     case USER_INFO_FETCH_SUCCESS:
       return { ...state, userLoading: false, userInfo: action.payload };
     case USER_PLAN_FETCH_SUCCESS:
@@ -40,9 +41,9 @@ export default (state = INITIAL_STATE, action) => {
     case USER_SETTINGS_FETCH_FAIL:
       return { ...state };
     case UPDATE_USERNAME:
-      return { ...state, userName: action.payload };
+      return { ...state, editableName: action.payload };
     case UPDATE_USERNAME_SUCCESS:
-      return { ...state, updatedSuccess: true };
+      return { ...state, updatedSuccess: true, userName: action.payload };
     case UPDATE_USERNAME_FAIL:
       return { ...state, updatedSuccess: false, updateError: action.payload };
     default:

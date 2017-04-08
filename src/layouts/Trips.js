@@ -32,7 +32,7 @@ let self;
 class Trips extends Component {
   constructor(props) {
     super(props);
-    console.log(this.props.myTrips);
+    //console.log(this.props.myTrips);
 
     this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 
@@ -158,7 +158,7 @@ class Trips extends Component {
   }
 
   onRowPress(rowData, secId, rowId) {
-    console.log('row', rowData, secId, rowId);
+    //console.log('row', rowData, secId, rowId);
     this.props.loadAReceipt(rowData, rowId);
     Actions.receiptInfo();
   }

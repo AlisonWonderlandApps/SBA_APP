@@ -1,8 +1,8 @@
 
 import React, { Component } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View } from 'react-native';
 
-import { Banner, MySearchBar, ReceiptList, FAB } from '../components';
+import { Banner, MySearchBar } from '../components';
 import { MainNavigationList } from '../layouts/MainNavigationList';
 
 class Receipts extends Component {

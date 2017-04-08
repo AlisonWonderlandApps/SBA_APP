@@ -12,7 +12,7 @@ import {
   TextInput,
 } from 'react-native';
 import { connect } from 'react-redux';
-import { Actions } from 'react-native-router-flux';
+//import { Actions } from 'react-native-router-flux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {
   BackgroundView,
@@ -39,15 +39,16 @@ let imgUri = '';
 class SaveDoc extends Component {
   constructor(props) {
     super(props);
-    console.log('propsphoto', this.props);
-    console.log('uri', this.props.imageData);
+    //console.log('propsphoto', this.props);
+    //console.log('uri', this.props.imageData);
     imgUri = this.props.imageData.source.uri;
-    console.log(imgUri);
+    //console.log(imgUri);
   }
 
   shouldComponentUpdate(nextProps) {
-    console.log('should', this.props, nextProps);
+    //console.log('should', this.props, nextProps);
     if (this.props !== nextProps) {
+      imgUri = this.props.imageData.source.uri;
       return true;
     }
     return false;
@@ -118,7 +119,7 @@ class SaveDoc extends Component {
   }
 
   onSavePress() {
-    console.log('save', this.props);
+    //console.log('save', this.props);
     if (this.props.newReceiptCategory === '') {
       Alert.alert(
         'Oops!!',
@@ -130,11 +131,11 @@ class SaveDoc extends Component {
     } else {
       const categories = [];
       const date = new Date();
-      console.log(date);
+      //console.log(date);
       categories[0] = this.props.newReceiptCategory;
       const submittedBy = 'Submitted by '.concat(this.props.email);
       categories[1] = submittedBy;
-      console.log(categories);
+      //console.log(categories);
       this.props.setFetching();
       this.props.addReceiptFromImage(
         this.props.curAccountID,
@@ -147,13 +148,13 @@ class SaveDoc extends Component {
   }
 
   onNoteChanged(input) {
-    console.log(input);
+    //console.log(input);
     this.props.noteChanged(input);
   }
 
   onReimburseClick() {
     this.props.setNewReceiptCategory('Reimbursable');
-    console.log('reimburseables', this.props.newReceiptCategory);
+    //console.log('reimburseables', this.props.newReceiptCategory);
   }
 
   renderReimbursables() {
@@ -195,7 +196,7 @@ class SaveDoc extends Component {
 
   onDeductClick() {
     this.props.setNewReceiptCategory('Deductible');
-    console.log('DeductStr', this.props.newReceiptCategory);
+    //console.log('DeductStr', this.props.newReceiptCategory);
   }
 
   renderDeductibles() {
@@ -237,7 +238,7 @@ class SaveDoc extends Component {
 
   onNotSureClick() {
     this.props.setNewReceiptCategory('Unknown');
-    console.log('NotSureStr', this.props.newReceiptCategory);
+    //console.log('NotSureStr', this.props.newReceiptCategory);
   }
 
   renderNotSure() {

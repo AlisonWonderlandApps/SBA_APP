@@ -7,8 +7,6 @@ import { Scene, Router, Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 
 import {
-        LeftNavTitle,
-        RightNavTitle,
         RightNameTitle,
         LeftAccountsTitle,
         BackTitle,
@@ -16,7 +14,8 @@ import {
         BackToReceipts,
         BackToCats,
         BackToProcessing,
-        BackToTrips
+        BackToTrips,
+        MainRight
       } from './components';
 
 import { HEADER } from './global/margins';
@@ -28,7 +27,6 @@ import Login from './layouts/Login';
 import SignUp from './layouts/SignUp';
 import Header from './components/menuComponents/Header';
 import AccountsList from './layouts/AccountsList';
-import APITest from './layouts/APITest';
 import MainNavigationList from './layouts/MainNavigationList';
 import TripsList from './layouts/TripsList';
 import Settings from './layouts/Settings';
@@ -48,32 +46,6 @@ import ExportReceipt from './layouts/ExportReceipt';
 
 
 class RouterComponent extends Component {
-/*  shouldComponentUpdate(nextProps) {
-    console.log('update', this.props.userName, nextProps.userName);
-    if (this.props.userName !== nextProps.userName) {
-      return true;
-    }
-    return false;
-  }*/
-
-  renderLeftButton(props) {
-    console.log(props.backTitle);
-      return (
-        <LeftNavTitle onPress={Actions.splashscreen} leftTitle={props.backTitle} />
-      );
-  }
-
-  renderRightButton(props) {
-    console.log(props.rightTitle);
-      return (
-        <RightNavTitle onPress={Actions.login} rightTitle={props.rightTitle} />
-      );
-  }
-
-  renderRightTitle1(props) {
-    console.log('title', props.userName, typeof (this.props.userName));
-    return props.userName;
-  }
 
   renderRightName(name) {
     return (
@@ -132,6 +104,14 @@ class RouterComponent extends Component {
 
   renderMainButton() {
     return (
+      <MainRight>
+        Main
+      </MainRight>
+    );
+  }
+
+  renderMainButtonRight() {
+    return (
       <BackTitle>
         Main
       </BackTitle>
@@ -139,7 +119,7 @@ class RouterComponent extends Component {
   }
 
   renderBackToReceiptsButton() {
-    console.log('routerReeiptsbut', this.props.receiptDetail.num);
+    //console.log('routerReeiptsbut', this.props.receiptDetail.num);
     if (this.props.receiptDetail.num === 2) {
       console.log('trips render');
       return (
@@ -164,8 +144,6 @@ class RouterComponent extends Component {
   }
 
   render() {
-  console.log('name', this.props.userInfo.name);
-
   return (
     <Router>
 
@@ -184,6 +162,7 @@ class RouterComponent extends Component {
       navigationBarStyle={styles.headerStyle}
       renderTitle={() => <Header />}
       renderBackButton={() => this.renderMainButton()}
+      //onBack={() => console.log('no back')}
       //initial
     />
 
@@ -219,6 +198,7 @@ class RouterComponent extends Component {
       navigationBarStyle={styles.headerStyle}
       hideBackImage
       onBack={() => console.log('no back')}
+      //renderRightButton={() => this.renderMainButtonRight()}
     //  onRightTitle={() => console.log('right clicked')}
     />
 
@@ -371,18 +351,6 @@ class RouterComponent extends Component {
       renderBackButton={() => this.renderBackToCategoriesButton()}
     />
 
-    <Scene
-      key="api"
-      component={APITest}
-      hideNavBar={false}
-      navigationBarStyle={styles.headerStyle}
-      renderTitle={() => <Header />}
-      backTitle='< Back'
-      renderBackButton={this.renderLeftButton.bind(this.props)}
-      rightTitle='Next'
-      renderRightButton={this.renderRightButton.bind(this.props)}
-    />
-
     </Router>
     );
   }
@@ -410,7 +378,6 @@ const styles = {
 const mapStateToProps = ({ user, receipts }) => {
   const {
     userName,
-    userInfo
   } = user;
   const {
     processingCount,
@@ -421,7 +388,6 @@ const mapStateToProps = ({ user, receipts }) => {
   } = receipts;
   return {
     userName,
-    userInfo,
     processingCount,
     reimbursableCount,
     numOfReceipts,

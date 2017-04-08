@@ -4,11 +4,7 @@ import { Text, TouchableWithoutFeedback, View } from 'react-native';
 import { CardSection } from '../../components';
 
 class AccountListItem extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-
+  
   render() {
     return (
       <TouchableWithoutFeedback onPress={this.props.onPress.bind(this)} index={this.props.index}>

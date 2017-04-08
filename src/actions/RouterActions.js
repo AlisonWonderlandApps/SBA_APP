@@ -6,7 +6,7 @@ import { FormText } from '../components';
 
 
 export function renderLeftButton(props) {
-  console.log(props.backTitle);
+  //console.log(props.backTitle);
   switch (props.key) {
     case 'api':
     return (
@@ -22,7 +22,7 @@ export function renderLeftButton(props) {
 }
 
 export function renderRightButton(props) {
-  console.log(props.rightTitle);
+  //console.log(props.rightTitle);
   switch (props.key) {
     case 'api':
     return (

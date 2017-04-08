@@ -96,7 +96,7 @@ class Login extends Component {
   }
 
   componentDidUpdate() {
-    console.log('didA', this.props.accountsArr);
+    //console.log('didA', this.props.accountsArr);
     if (this.props.goToAccounts) {
       this.props.resetState();
       Actions.accountslist();
@@ -168,20 +168,7 @@ class Login extends Component {
               </View>
             </CardSection>
           </CardView>
-          <View style={socialButtonContainer}>
-            <FacebookButton
-              style={{ flexGrow: 0.9 }}
-              onPress={this.onFBButtonPress.bind(this)}
-            >
-              Facebook Login
-            </FacebookButton>
-            <GoogleButton
-              style={{ flexGrow: 0.9 }}
-              onPress={this.onGoogleButtonPress.bind(this)}
-            >
-              Google Login
-            </GoogleButton>
-          </View>
+            {this.renderSocialButtons()}
           <CenterTextView>
             <LinkText
               onPress={this.onHelpClick.bind(this)}
@@ -202,11 +189,30 @@ class Login extends Component {
 haveNetworkConnectivity() {
   NetInfo.fetch().done((reach) => {
     if (reach === 'none') {
-      console.log('no network');
+      //console.log('no network');
       return false;
     }
     return true;
   });
+}
+
+renderSocialButtons() {
+  return <View />;
+  /*
+  <View style={socialButtonContainer}>
+    <FacebookButton
+      style={{ flexGrow: 0.9 }}
+      onPress={this.onFBButtonPress.bind(this)}
+    >
+      Facebook Login
+    </FacebookButton>
+    <GoogleButton
+      style={{ flexGrow: 0.9 }}
+      onPress={this.onGoogleButtonPress.bind(this)}
+    >
+      Google Login
+    </GoogleButton>
+  </View> */
 }
 
 showAlert(message) {
@@ -227,7 +233,7 @@ showAlert(message) {
   }
   isValidEmail(text) {
     if (text.match(EMAIL_REGEX)) {
-      console.log('regex match');
+      //console.log('regex match');
       this.props.isEmailValid(1);
     } else {
       this.props.isEmailValid(2);
@@ -260,11 +266,7 @@ showAlert(message) {
   }
   //check if its a valid password (strong enough)
   isValidPassword() {
-  //  if (text.match(PASSWORD_REGEX)) {
       this.props.isPasswordValid(1); //always valid
-  //  } else {
-  //    this.props.isPasswordValid(2);
-  //  }
   }
   renderPasswordLabelStyle() {
     if (this.props.passwordValid === 0) {
@@ -311,8 +313,6 @@ showAlert(message) {
   }
 
   onFBButtonPress() {
-    //get oauth token from fb
-    //this.props.loginFBUser();
     Alert.alert(
     'Sorry',
     'Function not currently available',
@@ -322,8 +322,6 @@ showAlert(message) {
   );
   }
   onGoogleButtonPress() {
-    //get oauth token from google
-    //check if have google play (android)
     Alert.alert(
     'Sorry',
     'Function not currently available',
@@ -352,10 +350,7 @@ showAlert(message) {
   onHelpClick() {
     Linking.openURL(helpURL);
   }
-  //user wants to create an account
   goToSignupPage() {
-    //Linking.openURL('https://signup.sbaustralia.com');
-    console.log('signup');
     Actions.signup();
   }
   /******End LinkAccess helpers ******/

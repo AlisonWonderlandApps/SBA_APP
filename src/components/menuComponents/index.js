@@ -9,3 +9,4 @@ export * from './BackToReceipts';
 export * from './BackToCats';
 export * from './BackToProcessing';
 export * from './BackToTrips';
+export * from './MainRight';

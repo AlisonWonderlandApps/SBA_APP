@@ -26,11 +26,11 @@ import {
 class ReceiptInfo extends Component {
   constructor(props) {
     super(props);
-    console.log(this.props);
+    //console.log(this.props);
   }
 
   shouldComponentUpdate(nextProps) {
-    console.log('should', this.props, nextProps);
+    //console.log('should', this.props, nextProps);
     if (this.props !== nextProps) {
       return true;
     }
@@ -100,7 +100,7 @@ class ReceiptInfo extends Component {
     }	else {
       total = '$'.concat(data.total.toFixed(2));
     }
-      console.log('renderCost', total);
+      //console.log('renderCost', total);
       return total;
     }
 
@@ -124,7 +124,7 @@ class ReceiptInfo extends Component {
     renderCategories() {
       const data = this.props.receiptDetail;
       let category = '';
-      console.log(data);
+      //console.log(data);
       if (data.categories === undefined) {
         category = 'No categories';
       } else if (data.categories.length < 1) {
@@ -158,7 +158,7 @@ class ReceiptInfo extends Component {
   }
 
   onDeletePress() {
-    console.log('delete', this.props);
+    //console.log('delete', this.props);
       Alert.alert(
         'Confirmation Required!',
         'Are you sure you want to delete this receipt?',
@@ -166,11 +166,11 @@ class ReceiptInfo extends Component {
           { text: 'OK',
           onPress: () =>
             this.props.deleteReceipt(this.props.curAccountID, this.props.receiptDetail.id) },
-          { text: 'Cancel', onPress: () => console.log('Cancel pressed') },
+          { text: 'Cancel' },
         ]
       );
   }
-  
+
   renderReProcessButton() {
     return (
           <Button
@@ -187,7 +187,7 @@ class ReceiptInfo extends Component {
   }
 
   onReProcessClick() {
-    console.log('reprocess doc');
+    //console.log('reprocess doc');
   }
 
 }

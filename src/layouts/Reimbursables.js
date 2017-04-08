@@ -164,7 +164,7 @@ class Reimbursables extends Component {
   }
 
   goToReimbursableDetail(data) {
-    console.log('processData', data);
+    //console.log('processData', data);
     const formattedDate = new Date(data.uploaded).toString();
     let year = formattedDate.substring(11, 15);
     year = ', '.concat(year);
@@ -199,8 +199,8 @@ class Reimbursables extends Component {
       categories,
       imgURL: data.attachment.url
     };
-    console.log('data.notes', data.notes);
-    console.log('processingDetail', receiptObj);
+    //console.log('data.notes', data.notes);
+    //console.log('processingDetail', receiptObj);
     this.props.loadAReceipt(receiptObj);
     Actions.reimbursableDetail();
   }

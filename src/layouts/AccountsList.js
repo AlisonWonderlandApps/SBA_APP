@@ -3,7 +3,7 @@ import { Alert, ListView } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
-import { BackgroundView, AccountListItem, TitleText, FAB } from '../components';
+import { BackgroundView, AccountListItem, TitleText } from '../components';
 import { HEADER } from '../global/margins';
 
 import {
@@ -28,19 +28,22 @@ class AccountsList extends Component {
   }
 
   componentDidUpdate() {
-    console.log('did', this.props);
+    //console.log('did', this.props);
     if (this.props.goToMain && (this.props.isFetching === false)) {
-      console.log('gotonext');
+      //console.log('gotonext');
       Actions.main();
     }
   }
 
   onRowPress(rowID) {
-    console.log(this.props);
+    //console.log(this.props);
     console.log(rowID);
     this.props.resetReceipts();
     this.props.resetTrips();
-    this.props.setCurAccount(this.props.accountsArray[rowID], this.props.accountsArray[rowID].id);
+    this.props.setCurAccount(
+      this.props.accountsArray[rowID],
+      this.props.accountsArray[rowID].id,
+      rowID);
   }
 
   getData(key, index, defaultVal = 'default') {
@@ -77,7 +80,7 @@ class AccountsList extends Component {
   }
 
   addAccount() {
-    console.log('add account FAB pressed');
+    //console.log('add account FAB pressed');
     Alert.alert(
       'Sorry',
       'This feature not functional yet :(',

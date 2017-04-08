@@ -1,9 +1,8 @@
 
-import { Platform } from 'react-native';
+//import { Platform } from 'react-native';
 import {
   PRIMARY_COLOUR,
   PRIMARY_HIGHLIGHT_COLOUR,
-  CARD_BACKGROUND_COLOUR,
   BRAND_COLOUR_GREEN,
   BRAND_COLOUR_RED
  } from '../global/colours';

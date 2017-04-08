@@ -37,7 +37,8 @@ import {
   PLANTYPE_SET,
   DBEMAIL_SET,
   SET_USER_EMAIL,
-  SET_PAYMENT_TYPE
+//  SET_PAYMENT_TYPE,
+  SET_CUR_ACCOUNT_INDEX
 //  ACCOUNT_CREATE_NEW,
 //  ACCOUNT_CHANGE_PLAN,
 //  ACCOUNT_ADD_USER,
@@ -46,7 +47,7 @@ import {
 //load accounts should get all user accounts (not their info)
 export const loadAccounts = (AuthStr) => {
   return function (dispatch) {
-  console.log('load', AuthStr);
+  //console.log('load', AuthStr);
 
   //AsyncStorage.setItem('AuthStr', AuthStr);
 
@@ -59,7 +60,7 @@ export const loadAccounts = (AuthStr) => {
         dispatch(loadLabels(sortedAccArr));
         dispatch(loadAccountsSuccess(sortedAccArr));
         if (length < 1) {
-          console.log('theres no accounts!!!!!');
+          //console.log('theres no accounts!!!!!');
         }
         if (length === 1) {
           dispatch({
@@ -72,15 +73,15 @@ export const loadAccounts = (AuthStr) => {
           });
         }
       }).catch((error) => {
-          console.log('error etf ', error);
+          //console.log('error etf ', error);
           dispatch(loadAccountsFail(error));
         });
    };
 };
 
 //calls function to get receipts too.
-export const setCurAccount = (accObj, id) => {
-  console.log('curAccount', accObj);
+export const setCurAccount = (accObj, id, index) => {
+  //console.log('curAccount', accObj);
   return function (dispatch) {
     dispatch({
       type: SET_CUR_ACCOUNT,
@@ -88,10 +89,10 @@ export const setCurAccount = (accObj, id) => {
     });
     dispatch(getReceipts(id));
     dispatch(setCurAccountName(accObj.label));
+    dispatch(setCurAccountIndex(index));
     dispatch(setPlan(accObj.plan));
     dispatch(setPlanType(accObj.plan.planType));
     dispatch(setDBEmail(accObj.dropboxEmail));
-    //dispatch(setUserEmail(accObj.email));
     dispatch({
       type: GO_TO_MAIN
     });
@@ -114,7 +115,7 @@ const sortAccounts = (accArray) => {
 };
 
 export const loadLabels = (accArr) => {
-  console.log('load labels');
+  //console.log('load labels');
   let i;
   const labels = [];
   for (i = 0; i < accArr.length; i++) {
@@ -128,7 +129,7 @@ export const loadLabels = (accArr) => {
 };
 
 export const loadAccountsSuccess = (accs) => {
-  console.log('loadaccsucc');
+  //console.log('loadaccsucc');
       return {
         type: LOAD_ACCOUNTS_SUCCESS,
         payload: accs
@@ -142,7 +143,7 @@ export const loadAccountsFail = (err) => {
 
 //  console.log('curAccount', id);
   return function (dispatch) {
-    console.log('fail');
+    //console.log('fail');
     dispatch({
       type: RESET_PW
     });
@@ -177,13 +178,13 @@ export const getReceipts = (accId) => {
       ]
     );
     Actions.accounts();
-    console.log('no refresh token gotten');
+    //console.log('no refresh token gotten');
   }
 };
 };
 
 export const updateToken = (accountID, token) => {
-  console.log('updaterefreshtoken', accountID);
+  //console.log('updaterefreshtoken', accountID);
   return function (dispatch) {
   const data = {
     grant_type: ssAuthConfig.refreshTokenGrantType,
@@ -207,21 +208,28 @@ export const updateToken = (accountID, token) => {
         ]
       );
       Actions.accounts();
-      console.log('no auth token', err);
+      //console.log('no auth token', err);
     });
   };
 };
 
 export const setCurAccountName = (name) => {
-  console.log('curAccountName', name);
+  //console.log('curAccountName', name);
   return {
     type: SET_CUR_ACCOUNT_NAME,
     payload: name
   };
 };
 
+export const setCurAccountIndex = (index) => {
+  return {
+    type: SET_CUR_ACCOUNT_INDEX,
+    payload: index
+  };
+};
+
 export const setPlan = (plan) => {
-  console.log('curPlan', plan);
+  //console.log('curPlan', plan);
   return {
     type: PLAN_SET,
     payload: plan
@@ -229,7 +237,7 @@ export const setPlan = (plan) => {
 };
 
 export const setPlanType = (ptype) => {
-  console.log('curPlanName', ptype);
+  //console.log('curPlanName', ptype);
   return {
     type: PLANTYPE_SET,
     payload: ptype
@@ -237,7 +245,7 @@ export const setPlanType = (ptype) => {
 };
 
 export const setDBEmail = (email) => {
-  console.log('curPlanName', email);
+  //console.log('curPlanName', email);
   return {
     type: DBEMAIL_SET,
     payload: email
@@ -245,25 +253,9 @@ export const setDBEmail = (email) => {
 };
 
 export const setUserEmail = (email) => {
-  console.log('email', email);
+  //console.log('email', email);
   return {
     type: SET_USER_EMAIL,
     payload: email
   };
 };
-
-/*
-export const setPaymentType = (pay) => {
-  console.log('payment', pay);
-  let type = '';
-  if (pay === undefined) {
-    type = 'No payment type';
-  } else {
-    type = pay;
-  }
-  return {
-    type: SET_PAYMENT_TYPE,
-    payload: type
-  };
-};
-*/

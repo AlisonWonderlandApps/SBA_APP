@@ -16,21 +16,20 @@ import {
   View,
   Linking,
   AsyncStorage,
-  Alert,
-  TextInput
+  Alert
  } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import { email } from 'react-native-communications';
 
-import { updateUserName } from '../actions';
+import { updateUserName, updateUserNameInDB } from '../actions';
 import { layoutStyles } from './styles';
+import { FONT_SIZE_LARGE } from '../global/fonts';
 import { BACKGROUND_COLOUR, PRIMARY_HIGHLIGHT_COLOUR } from '../global/colours';
 import {
   BackgroundView,
   CardView,
   CardSection,
-  TitleText,
   SettingsSectionSwitch,
   SettingsSectionPlan,
   SettingsSectionUsage,
@@ -50,12 +49,22 @@ import {
 } from './strings';
 
 class Settings extends Component {
+
+/*
+  shouldComponentUpdate(nextProps) {
+    if (this.props !== nextProps) {
+      console.log(nextProps);
+      return true;
+    }
+    return false;
+  } */
+
   render() {
     return (
       <ScrollView style={{ backgroundColor: BACKGROUND_COLOUR, flex: 1 }}>
       <BackgroundView style={layoutStyles.settingsView}>
         <CardView>
-          this.renderNameSection();
+          {this.renderNameSection()}
         </CardView>
 
         <CardView>
@@ -105,7 +114,7 @@ class Settings extends Component {
             >
               <View><FormText> {FAQStr} </FormText></View>
             </TouchableHighlight>
-          </CardSection>
+          </CardSection>ß
           <CardSection>
             <TouchableHighlight
               style={{ flex: 1, paddingTop: 5, paddingLeft: 5 }}
@@ -149,11 +158,15 @@ class Settings extends Component {
     return (
       <CardSection>
         <View style={styles.name}>
-          <TitleText
-            style={{ paddingLeft: 3, color: PRIMARY_HIGHLIGHT_COLOUR }}
-          >
-            {this.props.userName}
-          </TitleText>
+          <TextInput
+            style={{ fontSize: FONT_SIZE_LARGE, paddingLeft: 3, color: PRIMARY_HIGHLIGHT_COLOUR }}
+            onChangeText={this.changeName.bind(this)}
+            value={this.props.editableName}
+            underlineColorAndroid={'transparent'}
+            onSubmitEditing={() => this.submitNameChange()}
+            //onEndEditing={() => console.log('end')}
+            //onEndEditing={this.submitNameChange()}
+          />
           <Text
             style={{ paddingTop: 5, paddingLeft: 2 }}
           >
@@ -162,6 +175,15 @@ class Settings extends Component {
         </View>
       </CardSection>
     );
+  }
+
+  changeName(name) {
+    this.props.updateUserName(name);
+    //this.props.updateUserNameInDB(this.props.editableName);
+  }
+
+  submitNameChange() {
+    this.props.updateUserNameInDB(this.props.editableName);
   }
 
   onLogoutClick() {
@@ -237,7 +259,8 @@ const styles = {
 const mapStateToProps = ({ user, accounts, receipts }) => {
   const {
     userInfo,
-    userName
+    userName,
+    editableName
   } = user;
   const {
     plan,
@@ -250,6 +273,7 @@ const mapStateToProps = ({ user, accounts, receipts }) => {
   return {
     userInfo,
     userName,
+    editableName,
     plan,
     planType,
     curAccountName,
@@ -258,5 +282,5 @@ const mapStateToProps = ({ user, accounts, receipts }) => {
 };
 
 export default connect(mapStateToProps, {
-
+  updateUserName, updateUserNameInDB
 })(Settings);

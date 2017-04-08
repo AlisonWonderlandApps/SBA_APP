@@ -79,8 +79,8 @@ export const loginUser = ({ email, password }) => {
        dispatch(loadAccounts('Bearer '.concat(response.data.access_token)));
       })
      .catch((err) => {
-       console.log('error', err);
-       dispatch(loginUserFail());
+       //console.log('error', err);
+       dispatch(loginUserFail(err));
      });
    };
 };
@@ -93,12 +93,12 @@ const loginUserSuccess = () => {
 
 export const saveTokens = (accessToken, refreshToken) => {
   try {
-    console.log('access', accessToken);
+    //console.log('access', accessToken);
     AsyncStorage.setItem('accessToken', accessToken);
-    console.log('refresh', refreshToken);
+    //console.log('refresh', refreshToken);
     AsyncStorage.setItem('refreshToken', refreshToken);
   } catch (err) {
-    console.log('token saving error');
+    //console.log('token saving error');
   }
 };
 
@@ -114,19 +114,18 @@ export const loginGoogleUser = () => {
   };
 };
 
-const loginUserFail = () => {
+const loginUserFail = (error) => {
   return function (dispatch) {
-    console.log('fail');
+    //console.log('fail');
     dispatch({
       type: RESET_PW
     });
     dispatch({
-      type: LOGIN_USER_FAIL,
-      payload: true
+      type: LOGIN_USER_FAIL
     });
     Alert.alert(
       AlertErrorTitleStr,
-      loginFailedStr,
+      loginFailedStr.concat(error),
       [
         { text: okStr }
       ]
@@ -141,7 +140,7 @@ export const resetPassword = () => {
 };
 
 export const resetState = () => {
-      console.log('reset');
+      //console.log('reset');
   return {
     type: RESET
   };

@@ -13,7 +13,8 @@ import {
   PLANTYPE_SET,
   DBEMAIL_SET,
   SET_USER_EMAIL,
-  SET_PAYMENT_TYPE
+  SET_CUR_ACCOUNT_INDEX
+  //SET_PAYMENT_TYPE
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -27,6 +28,7 @@ const INITIAL_STATE = {
    curAccountID: '',
    curAccountName: '',
    curAccountInfo: {},
+   curAccountIndex: -1,
    plan: [],
    planType: '',
    dropBoxEmail: '',
@@ -68,6 +70,12 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         isLoading: true,
         curAccountID: action.payload
+      };
+
+    case SET_CUR_ACCOUNT_INDEX:
+      return {
+        ...state,
+        curAccountIndex: action.payload
       };
 
     case SET_CUR_ACCOUNT_NAME:

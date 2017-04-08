@@ -2,7 +2,7 @@
 import { AsyncStorage, Alert } from 'react-native';
 import axios from 'axios';
 import Querystring from 'querystring';
-import { Actions } from 'react-native-router-flux';
+//import { Actions } from 'react-native-router-flux';
 import { ssAuthConfig } from '../config/auth';
 
 import {
