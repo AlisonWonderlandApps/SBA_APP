@@ -68,7 +68,6 @@ class MainNavigationList extends Component {
   render() {
     return (
       <BackgroundView style={layoutStyles.mainListView}>
-        <Banner> Advert Banner </Banner>
         <View style={{ flexDirection: 'row', width: null }}>
           <TouchableHighlight
             onPress={this.processingPressed.bind(this)}

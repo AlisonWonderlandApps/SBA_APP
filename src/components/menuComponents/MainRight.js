@@ -1,27 +1,34 @@
 
-import React from 'react';
+import React, { Component } from 'react';
 import { View, Text, TouchableHighlight } from 'react-native';
 import { Actions } from 'react-native-router-flux';
+import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { HEADER } from '../../global/margins';
 
-const MainRight = (props) => {
-  return (
-  <TouchableHighlight
-    onPress={() => Actions.main()}
-    style={style.highlight}
-  >
-    <View style={style.container} >
-       <Text
-        style={[style.navStyle, props.style]}
-       >
-          {props.children}
-        </Text>
-        <Icon name="ios-arrow-forward" size={22} color="#ffffff" />
-      </View>
-    </TouchableHighlight>
-  );
-};
+class MainRight extends Component {
+
+  render() {
+    if (this.props.curAccountIndex === -1) {
+      return <Text />;
+    }
+    return (
+    <TouchableHighlight
+      onPress={() => Actions.main()}
+      style={style.highlight}
+    >
+      <View style={style.container} >
+         <Text
+          style={style.navStyle}
+         >
+            Main
+          </Text>
+          <Icon name="ios-arrow-forward" size={22} color="#ffffff" />
+        </View>
+      </TouchableHighlight>
+    );
+  }
+}
 
 const style = {
   highlight:
@@ -43,4 +50,14 @@ const style = {
   }
 };
 
-export { MainRight };
+  const mapStateToProps = ({ accounts }) => {
+    const {
+      curAccountIndex
+    } = accounts;
+    return {
+      curAccountIndex
+    };
+};
+
+export default connect(mapStateToProps, {
+})(MainRight);

@@ -31,7 +31,8 @@ import {
   noteChanged,
   addReceiptFromImage,
   resetNewReceipt,
-  setFetching
+  setFetching,
+  reprocessDocument
  } from '../actions';
 
 let imgUri = '';
@@ -307,7 +308,8 @@ export default connect(mapStateToProps, {
   noteChanged,
   addReceiptFromImage,
   resetNewReceipt,
-  setFetching
+  setFetching,
+  reprocessDocument
 })(SaveDoc);
 
 

@@ -171,20 +171,6 @@ class SignUp extends Component {
               </View>
             </CardSection>
           </CardView>
-          <View style={socialButtonContainer}>
-            <FacebookButton
-              style={{ flexGrow: 1, alignSelf: 'stretch' }}
-              onPress={this.onFBButtonPress.bind(this)}
-            >
-              Facebook Login
-            </FacebookButton>
-            <GoogleButton
-              style={{ alignSelf: 'stretch', flexGrow: 1 }}
-              onPress={this.onGoogleButtonPress.bind(this)}
-            >
-              Google Login
-            </GoogleButton>
-          </View>
           <CenterTextView>
             <LinkText
               style={{ fontStyle: 'normal', textDecorationLine: 'none', padding: 5 }}
@@ -461,3 +447,20 @@ export default connect(mapStateToProps, {
   signupGoogleUser,
   resetStateSU
 })(SignUp);
+
+/*
+<View style={socialButtonContainer}>
+  <FacebookButton
+    style={{ flexGrow: 1, alignSelf: 'stretch' }}
+    onPress={this.onFBButtonPress.bind(this)}
+  >
+    Facebook Login
+  </FacebookButton>
+  <GoogleButton
+    style={{ alignSelf: 'stretch', flexGrow: 1 }}
+    onPress={this.onGoogleButtonPress.bind(this)}
+  >
+    Google Login
+  </GoogleButton>
+</View>
+*/

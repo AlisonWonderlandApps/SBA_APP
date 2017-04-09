@@ -34,7 +34,9 @@ import {
   SEARCH_RECEIPTS,
   SEARCH_PROCESSING,
   SEARCH_CATEGORY,
-  SET_FETCHING
+  SET_FETCHING,
+  REPROCESS_SUCCESS,
+  REPROCESS_FAIL
   //CATEGORY_SEARCH,
   //CATEGORY_SEARCH_SUCCESS,
   //CATEGORY_SEARCH_FAIL
@@ -64,7 +66,8 @@ const INITIAL_STATE = {
   receiptDetail: {},
   exportDoc: {},
   searchQuery: '',
-  searchResults: {}
+  searchResults: {},
+  reprocessSuccess: false
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -254,6 +257,18 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         exportDoc: action.payload
+      };
+
+    case REPROCESS_SUCCESS:
+      return {
+        ...state,
+        reprocessSuccess: true
+      };
+
+    case REPROCESS_FAIL:
+      return {
+        ...state,
+        reprocessSuccess: false
       };
 
     case SEARCH_TEXT_CHANGED:

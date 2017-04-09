@@ -1,27 +1,30 @@
 
-import React from 'react';
+import React, { Component } from 'react';
 import { View, Text, TouchableHighlight } from 'react-native';
 import { Actions } from 'react-native-router-flux';
+import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { HEADER } from '../../global/margins';
 
-const RightNameTitle = (props) => {
-  return (
-  <TouchableHighlight
-    onPress={() => Actions.settings()}
-    style={style.highlight}
-  >
-    <View style={style.container} >
-       <Text
-        style={[style.navStyle, props.style]}
-       >
-          {props.children}
-        </Text>
-        <Icon name="ios-arrow-forward" size={22} color="#ffffff" />
-      </View>
-    </TouchableHighlight>
-  );
-};
+class RightNameTitle extends Component {
+  render() {
+    return (
+    <TouchableHighlight
+      onPress={() => Actions.settings()}
+      style={style.highlight}
+    >
+      <View style={style.container} >
+         <Text
+          style={style.navStyle}
+         >
+            {this.props.userName}
+          </Text>
+          <Icon name="ios-arrow-forward" size={22} color="#ffffff" />
+        </View>
+      </TouchableHighlight>
+    );
+  }
+}
 
 const style = {
   highlight:
@@ -43,12 +46,15 @@ const style = {
   }
 };
 
-export { RightNameTitle };
+const mapStateToProps = ({ user }) => {
+  const {
+    userName
+  } = user;
+  return {
+    userName
+  };
+};
 
-/*
- <Icon
-    name='arrow-forward'
-    size={25}
-    color="#ffffff"
- />
- */
+export default connect(mapStateToProps, {
+
+})(RightNameTitle);

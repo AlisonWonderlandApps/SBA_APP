@@ -138,6 +138,9 @@ export const CATEGORY_SEARCH_FAIL = 'filter_by_category_fail';
 export const RECEIPTS_BY_CATEGORY_ADD = 'add_receipt_by_category_item';
 export const SAVE_IMAGE_DATA = 'save_image_data';
 export const SET_FETCHING = 'set_fetching_flag';
+export const REPROCESS_DOCUMENT = 'reprocess_document';
+export const REPROCESS_SUCCESS = 'reprocess_success';
+export const REPROCESS_FAIL = 'reprocess_fail';
 
 //PhotosActions
 export const PHOTO_ADD = 'add_a_photo';

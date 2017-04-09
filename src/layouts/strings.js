@@ -7,6 +7,7 @@ export const helpURL = 'https://id.squirrelstreet.com/reset';
 export const termsURL = 'https://id.squirrelstreet.com/terms-of-service';
 export const privacyURL = 'https://id.squirrelstreet.com/privacy';
 export const faqURL = 'https://id.squirrelstreet.com/reset';
+export const helpEmail = 'help@team.squirrelStreet.com.au';
 
 export const helpString = 'Need Help?';
 export const termsString = 'Terms & Conditions';

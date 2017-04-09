@@ -1,25 +1,23 @@
 /*
 Purpose is to hold all the screens/routes a user can visit
 */
-import { Text } from 'react-native';
 import React, { Component } from 'react';
-import { Scene, Router, Actions } from 'react-native-router-flux';
-import { connect } from 'react-redux';
+import { Scene, Router, ActionConst } from 'react-native-router-flux';
 
 import {
-        RightNameTitle,
         LeftAccountsTitle,
         BackTitle,
-        FilterTitle,
-        BackToReceipts,
         BackToCats,
-        BackToProcessing,
-        BackToTrips,
-        MainRight
+        BackToProcessing
       } from './components';
 
-import { HEADER } from './global/margins';
-import { PRIMARY_COLOUR, SHADOW_COLOUR } from './global/colours';
+      import { HEADER } from './global/margins';
+      import { PRIMARY_COLOUR, SHADOW_COLOUR } from './global/colours';
+
+import RightNameTitle from './components/menuComponents/RightNameTitle';
+import MainRight from './components/menuComponents/MainRight';
+import FilterTitle from './components/menuComponents/FilterTitle';
+import BackToReceipts from './components/menuComponents/BackToReceipts';
 
 import ErrorScreen from './layouts/ErrorScreen';
 import SplashScreen from './layouts/SplashScreen'; //loadingScreen;
@@ -44,16 +42,7 @@ import ExportDoc from './layouts/ExportDoc';
 import Trips from './layouts/Trips';
 import ExportReceipt from './layouts/ExportReceipt';
 
-
 class RouterComponent extends Component {
-
-  renderRightName(name) {
-    return (
-            <RightNameTitle>
-              {name}
-            </RightNameTitle>
-          );
-  }
 
   renderLeftName() {
     return (
@@ -61,37 +50,6 @@ class RouterComponent extends Component {
             Accounts
           </LeftAccountsTitle>
         );
-  }
-
-  renderFilterButton(num) {
-    let render = false;
-    switch (num) {
-      case 1:
-        if (this.props.categories.length > 0) {
-          render = true;
-        }
-        break;
-      case 2:
-        if (this.props.processingCount > 0) {
-          render = true;
-        }
-        break;
-      case 3:
-        if (this.props.reimbursableCount > 0) {
-          render = true;
-        }
-        break;
-      default:
-        render = false;
-    }
-    if (render) {
-      return (
-        <FilterTitle>
-          Filter
-        </FilterTitle>
-      );
-    }
-    return <Text />;
   }
 
   renderBackToProcessingButton() {
@@ -104,35 +62,10 @@ class RouterComponent extends Component {
 
   renderMainButton() {
     return (
-      <MainRight>
-        Main
-      </MainRight>
-    );
-  }
-
-  renderMainButtonRight() {
-    return (
       <BackTitle>
         Main
       </BackTitle>
     );
-  }
-
-  renderBackToReceiptsButton() {
-    //console.log('routerReeiptsbut', this.props.receiptDetail.num);
-    if (this.props.receiptDetail.num === 2) {
-      console.log('trips render');
-      return (
-        <BackToTrips>
-          Trips
-        </BackToTrips>
-      );
-    }
-      return (
-        <BackToReceipts>
-          Receipts
-        </BackToReceipts>
-      );
   }
 
   renderBackToCategoriesButton() {
@@ -162,6 +95,7 @@ class RouterComponent extends Component {
       navigationBarStyle={styles.headerStyle}
       renderTitle={() => <Header />}
       renderBackButton={() => this.renderMainButton()}
+      type={ActionConst.REPLACE}
       //onBack={() => console.log('no back')}
       //initial
     />
@@ -171,6 +105,7 @@ class RouterComponent extends Component {
       hideNavBar="true"
       component={Login}
       onBack={() => console.log('no back')}
+      type={ActionConst.REPLACE}
       //initial
     />
 
@@ -179,6 +114,7 @@ class RouterComponent extends Component {
       component={SignUp}
       hideNavBar="true"
       onBack={() => console.log('no back')}
+      type={ActionConst.REPLACE}
       //initial
     />
 
@@ -187,6 +123,7 @@ class RouterComponent extends Component {
       component={ErrorScreen}
       hideNavBar="true"
       animation="fade"
+      type={ActionConst.REPLACE}
       //duration="20000 "
     />
 
@@ -198,7 +135,8 @@ class RouterComponent extends Component {
       navigationBarStyle={styles.headerStyle}
       hideBackImage
       onBack={() => console.log('no back')}
-      //renderRightButton={() => this.renderMainButtonRight()}
+      renderRightButton={() => <MainRight />}
+      type={ActionConst.REPLACE}
     //  onRightTitle={() => console.log('right clicked')}
     />
 
@@ -209,9 +147,10 @@ class RouterComponent extends Component {
       navigationBarStyle={styles.headerStyle1}
       //hideBackImage
       renderTitle={() => <Header />}
-      renderRightButton={() => this.renderRightName(this.props.userName)}
+      renderRightButton={() => <RightNameTitle />}
       //renderBackButton={() => console.log('hi')}
       renderBackButton={() => this.renderLeftName()}
+      type={ActionConst.REPLACE}
     />
 
     <Scene
@@ -221,6 +160,7 @@ class RouterComponent extends Component {
       navigationBarStyle={styles.headerStyle}
       renderTitle={() => <Header />}
       renderBackButton={() => this.renderMainButton()}
+      type={ActionConst.REPLACE}
     />
 
     <Scene
@@ -230,6 +170,7 @@ class RouterComponent extends Component {
       navigationBarStyle={styles.headerStyle}
       renderTitle={() => <Header />}
       renderBackButton={() => this.renderMainButton()}
+      type={ActionConst.REPLACE}
     />
 
     <Scene
@@ -238,8 +179,9 @@ class RouterComponent extends Component {
       navigationBarStyle={styles.headerStyle}
       renderTitle={() => <Header />}
       component={ReceiptsListView}
-      renderRightButton={() => this.renderFilterButton(1)}
+      renderRightButton={() => <FilterTitle num={1} />}
       renderBackButton={() => this.renderMainButton()}
+      type={ActionConst.REPLACE}
       //hideBackImage
     />
 
@@ -249,7 +191,8 @@ class RouterComponent extends Component {
       navigationBarStyle={styles.headerStyle}
       renderTitle={() => <Header />}
       component={ReceiptInfo}
-      renderBackButton={() => this.renderBackToReceiptsButton()}
+      renderBackButton={() => <BackToReceipts />}
+      type={ActionConst.REPLACE}
       //initial
     />
 
@@ -260,6 +203,7 @@ class RouterComponent extends Component {
       renderTitle={() => <Header />}
       component={ProcessingDetail}
       renderBackButton={() => this.renderBackToProcessingButton()}
+      type={ActionConst.REPLACE}
       //initial
     />
 
@@ -269,7 +213,8 @@ class RouterComponent extends Component {
       navigationBarStyle={styles.headerStyle}
       renderTitle={() => <Header />}
       component={ReimbursableDetail}
-      renderBackButton={() => this.renderBackToReceiptsButton()}
+      renderBackButton={() => <BackToReceipts />}
+      type={ActionConst.REPLACE}
       //initial
     />
 
@@ -280,6 +225,7 @@ class RouterComponent extends Component {
       navigationBarStyle={styles.headerStyle}
       renderTitle={() => <Header />}
       renderBackButton={() => this.renderMainButton()}
+      type={ActionConst.REPLACE}
       //initial
     />
 
@@ -290,6 +236,7 @@ class RouterComponent extends Component {
       navigationBarStyle={styles.headerStyle}
       renderTitle={() => <Header />}
       renderBackButton={() => this.renderMainButton()}
+      type={ActionConst.REPLACE}
       //initial
     />
 
@@ -300,6 +247,7 @@ class RouterComponent extends Component {
       navigationBarStyle={styles.headerStyle}
       renderTitle={() => <Header />}
       renderBackButton={() => this.renderMainButton()}
+      type={ActionConst.REPLACE}
     />
 
     <Scene
@@ -308,6 +256,7 @@ class RouterComponent extends Component {
       hideNavBar={false}
       navigationBarStyle={styles.headerStyle}
       renderTitle={() => <Header />}
+      type={ActionConst.REPLACE}
       //onRight={() => SaveDoc.onPress.bind(SaveDoc)}
       //rightTitle='Save'
       //initial
@@ -321,6 +270,7 @@ class RouterComponent extends Component {
       renderTitle={() => <Header />}
       //renderRightButton={() => this.renderFilterButton(2)}
       renderBackButton={() => this.renderMainButton()}
+      type={ActionConst.REPLACE}
     />
 
     <Scene
@@ -331,6 +281,7 @@ class RouterComponent extends Component {
       renderTitle={() => <Header />}
       //renderRightButton={() => this.renderFilterButton(3)}
       renderBackButton={() => this.renderMainButton()}
+      type={ActionConst.REPLACE}
     />
 
     <Scene
@@ -339,7 +290,8 @@ class RouterComponent extends Component {
       hideNavBar={false}
       navigationBarStyle={styles.headerStyle}
       renderTitle={() => <Header />}
-      renderBackButton={() => this.renderBackToReceiptsButton()}
+      renderBackButton={() => <BackToReceipts />}
+      type={ActionConst.REPLACE}
     />
 
     <Scene
@@ -349,6 +301,7 @@ class RouterComponent extends Component {
       navigationBarStyle={styles.headerStyle}
       renderTitle={() => <Header />}
       renderBackButton={() => this.renderBackToCategoriesButton()}
+      type={ActionConst.REPLACE}
     />
 
     </Router>
@@ -375,66 +328,4 @@ const styles = {
   }
 };
 
-const mapStateToProps = ({ user, receipts }) => {
-  const {
-    userName,
-  } = user;
-  const {
-    processingCount,
-    reimbursableCount,
-    numOfReceipts,
-    categories,
-    receiptDetail
-  } = receipts;
-  return {
-    userName,
-    processingCount,
-    reimbursableCount,
-    numOfReceipts,
-    categories,
-    receiptDetail
-  };
-};
-
-export default connect(mapStateToProps, {
-})(RouterComponent);
-
-/*
-
-    <Scene
-      key="main"
-      component={MainNavigationList}
-      hideNavBar={false}
-      hideNavBar={false}
-      navigationBarStyle={{
-          backgroundColor: PRIMARY_COLOUR,
-          height: HEADER.height,
-          padding: 15,
-          shadowColor: SHADOW_COLOUR,
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.2, }}
-      renderTitle={() => <Header />}
-      //rightTitle=
-      //onRight={() Action.addAccount()}
-    />
-
-    <Scene key="receipts1">
-      <Scene
-        key="receiptsList"
-        component={Receipts}
-      />
-    </Scene>
-
-    <Scene
-      hideNavBar="true"
-      key="receiptList"
-      component={ReceiptsListView}
-      animation="fade"
-      initial
-      //duration="20000 "
-    />
-    //rightTitle={this.renderRightTitle.bind(this)}
-    //renderRightTitle={this.renderRightTitle.bind(this)}
-    //renderRightButton={this.renderName.bind(this.props)}
-    //hideBackImage
-    */
+export default RouterComponent;

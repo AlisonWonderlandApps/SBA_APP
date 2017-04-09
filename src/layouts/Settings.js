@@ -13,6 +13,7 @@ import {
   ScrollView,
   TouchableHighlight,
   Text,
+  TextInput,
   View,
   Linking,
   AsyncStorage,
@@ -45,21 +46,14 @@ import {
   imagesStr,
   termsURL,
   privacyURL,
-  faqURL
+  faqURL,
+  helpEmail
 } from './strings';
 
 class Settings extends Component {
 
-/*
-  shouldComponentUpdate(nextProps) {
-    if (this.props !== nextProps) {
-      console.log(nextProps);
-      return true;
-    }
-    return false;
-  } */
-
   render() {
+    console.log('render');
     return (
       <ScrollView style={{ backgroundColor: BACKGROUND_COLOUR, flex: 1 }}>
       <BackgroundView style={layoutStyles.settingsView}>
@@ -114,7 +108,7 @@ class Settings extends Component {
             >
               <View><FormText> {FAQStr} </FormText></View>
             </TouchableHighlight>
-          </CardSection>ß
+          </CardSection>
           <CardSection>
             <TouchableHighlight
               style={{ flex: 1, paddingTop: 5, paddingLeft: 5 }}
@@ -160,7 +154,7 @@ class Settings extends Component {
         <View style={styles.name}>
           <TextInput
             style={{ fontSize: FONT_SIZE_LARGE, paddingLeft: 3, color: PRIMARY_HIGHLIGHT_COLOUR }}
-            onChangeText={this.changeName.bind(this)}
+            onChangeText={(text) => this.changeName(text)}
             value={this.props.editableName}
             underlineColorAndroid={'transparent'}
             onSubmitEditing={() => this.submitNameChange()}
@@ -228,9 +222,9 @@ class Settings extends Component {
     //console.log('send email');
     //email(to, cc, bcc, subject, body)
     email(
-      ['help@team.shoeboxed.com.au'],
+      ['help@team.squirrelStreet.com.au'],
       null,
-      ['help@team.shoeboxed.com.au'],
+      ['help@team.squirrelStreet.com.au'],
       '[Feedback] Squirrel Street Mobile', null);
   }
 

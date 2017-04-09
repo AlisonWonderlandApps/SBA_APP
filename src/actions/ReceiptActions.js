@@ -65,7 +65,9 @@ import {
   SEARCH_RECEIPTS,
   SEARCH_PROCESSING,
   SEARCH_CATEGORY,
-  SET_FETCHING
+  SET_FETCHING,
+  REPROCESS_SUCCESS,
+  REPROCESS_FAIL
   //CATEGORY_SEARCH,
   //CATEGORY_SEARCH_SUCCESS,
   //CATEGORY_SEARCH_FAIL
@@ -200,7 +202,7 @@ export const fetchProcessing = (AuthStr, accountId) => {
           });
         });
     })
-    .catch((er) => {
+    .catch(() => {
       //console.log('no trips fetched', er);
       dispatch(fetchProcessingFail());
     });
@@ -359,18 +361,14 @@ const sortReceiptsByCategory = (AuthStr, accountId, categoryArray, k) => {
          },
           headers: { Authorization: AuthStr }
         }).then(response => {
-          //console.log('Category receipts', response.data.documents);
           const list = response.data.documents;
-          //console.log('list for', k, list);
           categoryDataObjArray[k] = list;
-          //console.log(categoryDataObjArray[k]);
-        }).catch((er) => {
-          //console.log('category fail', er);
+        }).catch(() => {
+          //????
         });
 };
 
 const addCategoryReceipt = (dataObj) => {
-  //console.log('addCategoryReceipt');
   return {
     type: RECEIPTS_BY_CATEGORY_ADD,
     payload: dataObj
@@ -408,7 +406,7 @@ export const deleteReceipt = (accId, receiptID) => {
         }
       });
     } catch (err) {
-      //console.log('token', err);
+      //??
     }
   };
 };
@@ -422,8 +420,7 @@ export const exportReceipt = (accId, receiptID) => {
         }
       });
     } catch (err) {
-      //console.log(err);
-      //Alert('Something went wrong!');
+      //???
     }
   };
 };
@@ -441,14 +438,11 @@ const exportDoc = (AuthStr, accountId, receiptID) => {
     Authorization: AuthStr,
     'Content-Type': 'application/json',
     }, JSON.stringify(jsonForRequest)).then((resp) => {
-      //console.log(resp);
       dispatch({
         type: RECEIPT_EXPORT,
         payload: resp
       });
-      //Alert('Receipts exported successfully.');
-    }).catch((err) => {
-      //console.log('export error', err);
+    }).catch(() => {
       Alert.alert(
         'Sorry',
         'An error occurred :(',
@@ -466,7 +460,6 @@ const exportDoc = (AuthStr, accountId, receiptID) => {
 3. Export receipt
 */
 export const newToken = (accountID, token, receiptID, newReceipt, num) => {
-  //console.log('updaterefreshtoken', accountID);
   return function (dispatch) {
    const data = {
      grant_type: ssAuthConfig.refreshTokenGrantType,
@@ -478,17 +471,16 @@ export const newToken = (accountID, token, receiptID, newReceipt, num) => {
      .then(response => {
        if (response !== null) {
          const AuthStr = 'Bearer '.concat(response.data.access_token);
-         //console.log('AuthStr', AuthStr, num);
-        // addItem(AuthStr, accountID, newReceipt);
         if (num === 1) {
-          //console.log('trashItem');
           dispatch(trashItem(AuthStr, accountID, receiptID));
         } else if (num === 2) {
-          //console.log('Add Item', AuthStr);
           dispatch(addItem(AuthStr, accountID, newReceipt));
         } else if (num === 3) {
-          //console.log('Export receipt', AuthStr);
           dispatch(exportDoc(AuthStr, accountID, receiptID));
+        } else if (num === 4) {
+          dispatch(reprocessDoc(AuthStr, accountID, receiptID));
+        } else if (num === 5) {
+          dispatch(loadImage(AuthStr, accountID, receiptID));
         }
        }
      }).catch((err) => {
@@ -505,7 +497,6 @@ export const newToken = (accountID, token, receiptID, newReceipt, num) => {
 };
 
 export const loadAReceipt = (dataObj) => {
-  //console.log('loadAReceipt', dataObj);
   return function (dispatch) {
     dispatch({
       type: LOAD_A_RECEIPT,
@@ -531,7 +522,6 @@ const trashItem = (AuthStr, accountId, receiptID) => {
               Authorization: AuthStr,
               'Content-Type': 'application/json',
                }, JSON.stringify(jsonToUpate)).then((resp) => {
-                 //console.log('success', resp);
                 dispatch(deleteSuccess(AuthStr, accountId));
                 dispatch(fetchReceipts(AuthStr, accountId));
                 //TODO: THIS NEEDS TO CHANGE!!!!
@@ -567,7 +557,6 @@ export const addReceiptFromImage = (AccountId, imageData, categs, date, note) =>
         }
       });
     } catch (err) {
-      //console.log('token', err);
       Alert('Error in addReceiptFromImage', err);
     }
   };
@@ -576,7 +565,6 @@ export const addReceiptFromImage = (AccountId, imageData, categs, date, note) =>
 const addItem = (AuthStr, accountId, receiptObj) => {
   return function (dispatch) {
   const requestUrl = ssApiQueryURL.accounts.concat(accountId).concat('/documents/');
-  //console.log('----->requestUrl : ', requestUrl, AuthStr, accountId);
   const id = (Platform.OS === 'ios') ? 'SSA_IOS_APP' : 'SSA_Android_APP';
   const source = {
     type: 'integration',
@@ -606,7 +594,6 @@ const addItem = (AuthStr, accountId, receiptObj) => {
      ]).then((resp) => {
        const respJSONData = JSON.parse(resp.data);
        const receiptId = respJSONData.id;
-       //console.log('--------->resp : ', JSON.stringify(resp), receiptId);
        Alert.alert(
          'Successfully added receipt!',
           null,
@@ -616,8 +603,7 @@ const addItem = (AuthStr, accountId, receiptObj) => {
          ]
        );
      }).catch((err) => {
-       Alert('Sorry, Could not add new receipt.');
-       //console.log('--------->err : ', JSON.stringify(err));
+       Alert('Sorry, Could not add new receipt.', err);
      });
    };
 };
@@ -638,14 +624,12 @@ export const noteChanged = (note) => {
 };
 
 const deleteSuccess = () => {
-  //Alert('Receipt Deleted');
   return {
     type: RECEIPT_DELETE_SUCCESS
   };
 };
 
 const deleteFailed = (er) => {
-  //console.log('deleteFailed', er);
   Alert.alert(
     'Error',
     'Receipt could not be deleted',
@@ -656,6 +640,94 @@ const deleteFailed = (er) => {
   return {
     type: RECEIPT_DELETE_FAIL,
     payload: er
+  };
+};
+
+export const loadReceiptImage = (curAcctID, docID) => {
+  return function (dispatch) {
+    dispatch ({
+      type: LOADING_IMAGE
+    });
+    try {
+      AsyncStorage.getItem('refreshToken').then((value) => {
+        if (value !== null) {
+          dispatch(newToken(curAcctID, value, docID, {}, 5));
+        }
+      });
+    } catch (err) {
+      //console.log('token', err);
+    }
+  };
+};
+
+const loadImage = (AuthStr, accID, docID) => {
+
+};
+
+export const reprocessDocument = (curAcctID, documentID) => {
+  return function (dispatch) {
+  //  dispatch({
+  //    type: REPROCESS_DOCUMENT
+  //  });
+  console.log(curAcctID, documentID);
+    try {
+      AsyncStorage.getItem('refreshToken').then((value) => {
+        if (value !== null) {
+          dispatch(newToken(curAcctID, value, documentID, {}, 4));
+        }
+      });
+    } catch (err) {
+      //console.log('token', err);
+    }
+  };
+};
+
+const reprocessDoc = (AuthStr, accountID, docID) => {
+  const updateURL = ssApiQueryURL.accounts.concat(accountID).concat('/documents/').concat(docID);
+  return function (dispatch) {
+  axios.get(updateURL, { headers: { Authorization: AuthStr } })
+    .then(response => {
+      const responseData = JSON.parse(JSON.stringify(response));
+      if (response.status === 200) {
+        const jsonToUpate = responseData.data;
+        jsonToUpate.processingState = 'NEEDS_SYSTEM_PROCESSING';
+
+        RNFetchBlob.fetch('PUT', updateURL, {
+            Authorization: AuthStr,
+            'Content-Type': 'application/json',
+             }, JSON.stringify(jsonToUpate)).then(() => {
+               dispatch(reprocessSuccess());
+             }).catch((err) => {
+               dispatch(reprocessFail(err));
+             });
+      } else {
+          dispatch(reprocessFail('No response'));
+      }
+    }).catch((error) => {
+        dispatch(reprocessFail(error));
+      });
+  };
+};
+
+const reprocessSuccess = () => {
+  return function (dispatch) {
+    dispatch({
+      type: REPROCESS_SUCCESS,
+    });
+    Alert.alert(
+      'Done',
+      'Receipt has been sent for reprocessing',
+      [
+        { text: 'OK', onPress: () => Actions.receipts(); }
+      ]
+    );
+  }
+};
+
+const reprocessFail = (error) => {
+  return {
+    type: REPROCESS_FAIL,
+    payload: error
   };
 };
 

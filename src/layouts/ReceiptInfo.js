@@ -20,7 +20,8 @@ import {
 import { HEADER } from '../global/margins';
 import { APP_GREY } from '../global/colours';
 import {
-  deleteReceipt
+  deleteReceipt,
+  reprocessDocument
  } from '../actions';
 
 class ReceiptInfo extends Component {
@@ -58,9 +59,19 @@ class ReceiptInfo extends Component {
           <View style={{ padding: 5, paddingTop: 15, flexDirection: 'row', width: null }}>
             <TouchableOpacity
               style={{ flex: 1, height: 40 }}
-              onPress={this.onReProcessClick.bind(this)}
+              onPress={() => this.onReProcessClick()}
             >
-              {this.renderReProcessButton()}
+            <Button
+              style={{
+                flex: 1,
+                width: 250,
+                alignSelf: 'center',
+                paddingTop: 5,
+                paddingBottom: 5 }}
+              onPress={() => this.onReProcessClick()}
+            >
+              re-process document
+            </Button>
             </TouchableOpacity>
           </View>
         </View>
@@ -187,7 +198,8 @@ class ReceiptInfo extends Component {
   }
 
   onReProcessClick() {
-    //console.log('reprocess doc');
+    console.log('reprocess doc', this.props.receiptDetail);
+    this.props.reprocessDocument(this.props.receiptDetail.accountId, this.props.receiptDetail.id);
   }
 
 }
@@ -216,7 +228,7 @@ const mapStateToProps = ({ accounts, receipts }) => {
 };
 
 export default connect(mapStateToProps, {
-  deleteReceipt
+  deleteReceipt, reprocessDocument
 })(ReceiptInfo);
 
 

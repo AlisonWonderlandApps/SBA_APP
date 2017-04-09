@@ -81,7 +81,7 @@ export const loadAccounts = (AuthStr) => {
 
 //calls function to get receipts too.
 export const setCurAccount = (accObj, id, index) => {
-  //console.log('curAccount', accObj);
+  console.log('curAccount', accObj, index);
   return function (dispatch) {
     dispatch({
       type: SET_CUR_ACCOUNT,
@@ -115,7 +115,6 @@ const sortAccounts = (accArray) => {
 };
 
 export const loadLabels = (accArr) => {
-  //console.log('load labels');
   let i;
   const labels = [];
   for (i = 0; i < accArr.length; i++) {
@@ -129,7 +128,6 @@ export const loadLabels = (accArr) => {
 };
 
 export const loadAccountsSuccess = (accs) => {
-  //console.log('loadaccsucc');
       return {
         type: LOAD_ACCOUNTS_SUCCESS,
         payload: accs
@@ -137,13 +135,7 @@ export const loadAccountsSuccess = (accs) => {
 };
 
 export const loadAccountsFail = (err) => {
-//calls function to get receipts too.
-//export const setCurAccountID = (accObj, id) => {
-  //AsyncStorage.setItem('curAccountId', id);
-
-//  console.log('curAccount', id);
   return function (dispatch) {
-    //console.log('fail');
     dispatch({
       type: RESET_PW
     });
@@ -222,9 +214,11 @@ export const setCurAccountName = (name) => {
 };
 
 export const setCurAccountIndex = (index) => {
-  return {
-    type: SET_CUR_ACCOUNT_INDEX,
-    payload: index
+  return function (dispatch) {
+    dispatch({
+      type: SET_CUR_ACCOUNT_INDEX,
+      payload: index
+    });
   };
 };
 

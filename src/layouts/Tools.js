@@ -4,7 +4,7 @@
 
 import React, { Component } from 'react';
 import {
-  TouchableHighlight,
+  TouchableOpacity,
   Text,
   Alert
 } from 'react-native';
@@ -44,7 +44,7 @@ class Tools extends Component {
         </Text>
         <CardView>
         <CardSection>
-          <TouchableHighlight
+          <TouchableOpacity
             style={{ flex: 1 }}
             onPress={this.onContactAddClick.bind(this)}
           >
@@ -57,7 +57,7 @@ class Tools extends Component {
             >
               Add To Contacts
             </Text>
-          </TouchableHighlight>
+          </TouchableOpacity>
         </CardSection>
         </CardView>
       </BackgroundView>
@@ -89,8 +89,23 @@ class Tools extends Component {
         });
       }
       if (permission === 'authorized') {
-        contacts.addContact(newContact, (error) => { console.log(error); });
-      }
+          contacts.addContact(newContact, (error) => {
+            Alert.alert(
+              'Ooopps',
+              'Could not add contact.'.concat(error),
+              [
+                { text: 'OK' }
+              ]
+            );
+          });
+          Alert.alert(
+            'Contact Added',
+            'Squirrel Street DropBox'.concat(this.props.dropBoxEmail),
+            [
+              { text: 'OK' },
+            ]
+          );
+        }
       if (permission === 'denied') {
         Alert.alert(
           'denied',
