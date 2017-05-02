@@ -21,7 +21,8 @@ import {
   receiptsFetch,
   saveImageData,
   addReceiptFromImage,
-  setFetching
+  setFetching,
+  setCurLocation
  } from '../actions';
 import { layoutStyles } from './styles';
 import { PRIMARY_HIGHLIGHT_COLOUR } from '../global/colours';
@@ -31,7 +32,7 @@ import {
   CardSection,
   NavListSectionTools,
   FAB,
-  Banner,
+  //Banner,
   TitleText,
   ColourText,
   FormText
@@ -52,10 +53,11 @@ class MainNavigationList extends Component {
   constructor(props) {
     super(props);
     self = this;
+    console.log(this.props);
   }
 
   shouldComponentUpdate(nextProps) {
-    //console.log('updateMain', nextProps);
+    console.log('updateMain', nextProps);
     if (this.props !== nextProps) {
       if (this.props.userName !== nextProps.userName) {
         return false;
@@ -153,7 +155,7 @@ class MainNavigationList extends Component {
           <View style={{ justifyContent: 'space-around', paddingTop: 10, paddingLeft: 5 }}>
             <TitleText>{ReceiptsStr}</TitleText>
             <ColourText style={mainStyles.text}>{this.props.rCost}</ColourText>
-            <ColourText style={mainStyles.text}>{this.props.rCategory}</ColourText>
+            <ColourText style={mainStyles.text}>{this.props.latestReceipt.vendor}</ColourText>
           </View>
           <View style={{ alignSelf: 'flex-end', paddingRight: 10 }} >
             <Icon name='ios-arrow-forward' size={50} />
@@ -288,8 +290,7 @@ class MainNavigationList extends Component {
   }
 
   tripsPressed() {
-    //console.log('trips', this.props);
-    Actions.trips2();
+    Actions.trips();
   }
 
   toolsPressed() {
@@ -371,5 +372,5 @@ const mapStateToProps = ({ user, accounts, receipts, trips }) => {
 };
 
 export default connect(mapStateToProps, {
-  receiptsFetch, addReceiptFromImage, saveImageData, setFetching
+  receiptsFetch, addReceiptFromImage, saveImageData, setFetching, setCurLocation
 })(MainNavigationList);

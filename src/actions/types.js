@@ -141,6 +141,12 @@ export const SET_FETCHING = 'set_fetching_flag';
 export const REPROCESS_DOCUMENT = 'reprocess_document';
 export const REPROCESS_SUCCESS = 'reprocess_success';
 export const REPROCESS_FAIL = 'reprocess_fail';
+export const LOAD_RECEIPT_IMAGE = 'load_receipt_image';
+export const LOAD_IMAGE_SUCCESS = 'load_image_success';
+export const LOAD_IMAGE_FAIL = 'load_image_fail';
+export const FETCH_PDF_SUCCESS = 'load_pdf_success';
+export const FETCH_PDF_FAIL = 'load_pdf_fail';
+export const UPDATE_EXPORT_OBJ = 'update_export_email_config';
 
 //PhotosActions
 export const PHOTO_ADD = 'add_a_photo';

@@ -14,12 +14,11 @@ import axios from 'axios';
 import PDFView from 'react-native-pdf-view';
 import RNFetchBlob from 'react-native-fetch-blob';
 import Querystring from 'querystring';
-import Moment from 'moment';
 import { ssApiQueryURL, ssAuthConfig } from '../config/auth';
 import { HEADER } from '../global/margins';
 
-var Mailer = require('NativeModules').RNMail;
-let dirs = RNFetchBlob.fs.dirs;
+//var Mailer = require('NativeModules').RNMail;
+//let dirs = RNFetchBlob.fs.dirs;
 
 let self;
 
@@ -252,29 +251,11 @@ renderPdfViewer() {
 	}
 
 	renderReceiptDetail(){
-		// let {receiptDetail} = this.state;
-		// return (
-		// 	<View style={styles.innerContainer}>
-		// 			<View style={styles.receiptDetailTextView}>
-		// 				<Text style={styles.receiptDetailText}>{receiptDetail.processingState}</Text>
-		// 			</View>
-		//
-		// 			<View style={styles.receiptDetailTextView}>
-		// 				<Text style={styles.receiptDetailText}>Date Submitted :  {receiptDetail.uploaded.toString()}</Text>
-		// 			</View>
-		//
-		// 			<View style={[styles.receiptDetailTextView,{borderBottomColor : 'white',borderBottomWidth : 0}]}>
-		// 				<Text style={styles.receiptDetailText}>Note : </Text>
-		// 				<Text style={styles.receiptDetailText}>{receiptDetail.note}</Text>
-		// 			</View>
-		// 	</View>
-		// );
-
 		return null;
 	}
 
 	render() {
-    const { receiptDetail } = this.state;
+    //const { receiptDetail } = this.state;
 		return (
 			<ScrollView style={styles.container}>
 

@@ -8,11 +8,12 @@ import {
   Alert,
   Text,
   View,
-  Image,
   TouchableHighlight
 } from 'react-native';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
+import PDFView from 'react-native-pdf-view';
+import RNFS from 'react-native-fs';
 import {
   BackgroundView,
   Button,
@@ -21,13 +22,15 @@ import {
 import { HEADER } from '../global/margins';
 import { APP_GREY } from '../global/colours';
 import {
-  deleteReceipt
+  deleteReceipt,
+  loadReceiptImage
  } from '../actions';
 
 class ProcessingDetail extends Component {
   constructor(props) {
     super(props);
     //console.log(this.props);
+    this.props.loadReceiptImage(this.props.curAccountID, this.props.receiptDetail.id);
   }
 
   shouldComponentUpdate(nextProps) {
@@ -55,20 +58,9 @@ class ProcessingDetail extends Component {
                 {this.props.receiptDetail.notes}
               </Text>
             </View>
-          <View style={{ padding: 5, paddingTop: 15, flexDirection: 'row', width: null }}>
-            <TouchableOpacity
-              style={{ flex: 1, height: 40 }}
-              onPress={this.onReProcessClick.bind(this)}
-            >
-              {this.renderReProcessButton()}
-            </TouchableOpacity>
-          </View>
         </View>
-        <View style={{ flex: 1, paddingBottom: 15, padding: 20, justifyContent: 'space-between' }} >
-          <Image
-            style={{ borderWidth: 1, flex: 1, resizeMode: 'cover', paddingBottom: 10 }}
-            source={{ uri: this.props.receiptDetail.imgURL }}
-          />
+        <View style={{ flex: 1, paddingTop: 5, paddingBottom: 5 }} >
+          {this.showReceiptPdf()}
         </View>
         <TouchableHighlight
           onPress={() => this.onDeletePress()}
@@ -89,6 +81,43 @@ class ProcessingDetail extends Component {
           </View>
         </TouchableHighlight>
       </BackgroundView>
+    );
+  }
+
+  showReceiptPdf() {
+  //  console.log(this.props.receiptImageURL);
+  //  console.log(this.props.pdfImage);
+    const path = RNFS.DocumentDirectoryPath.concat('/test.pdf');
+
+    if (this.props.receiptImageIsLoading) {
+      return (
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: 'grey',
+            padding: 15
+          }}
+        >
+          <Text style={{ fontSize: 18 }}> Loading... </Text>
+        </View>
+      );
+    }
+
+    return (
+        <PDFView
+          ref={(pdf) => { this.pdfView = pdf; }}
+          key='sop'
+          path={path}
+          onLoadComplete={(pageCount) => {
+                              this.pdfView.setNativeProps({
+                              zoom: 1.0
+                          });
+                console.log('load done', pageCount);
+                       }}
+          style={{ flex: 1, paddingTop: 5, backgroundColor: 'grey' }}
+        />
     );
   }
 
@@ -124,10 +153,6 @@ class ProcessingDetail extends Component {
     );
   }
 
-  onReProcessClick() {
-    //console.log('reprocess doc');
-  }
-
 }
 
 const mapStateToProps = ({ accounts, receipts }) => {
@@ -154,7 +179,7 @@ const mapStateToProps = ({ accounts, receipts }) => {
 };
 
 export default connect(mapStateToProps, {
-  deleteReceipt
+  deleteReceipt, loadReceiptImage
 })(ProcessingDetail);
 
 

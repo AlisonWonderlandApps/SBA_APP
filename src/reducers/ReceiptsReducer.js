@@ -36,7 +36,13 @@ import {
   SEARCH_CATEGORY,
   SET_FETCHING,
   REPROCESS_SUCCESS,
-  REPROCESS_FAIL
+  REPROCESS_FAIL,
+  LOAD_RECEIPT_IMAGE,
+  LOAD_IMAGE_SUCCESS,
+  LOAD_IMAGE_FAIL,
+  FETCH_PDF_SUCCESS,
+  FETCH_PDF_FAIL,
+  UPDATE_EXPORT_OBJ
   //CATEGORY_SEARCH,
   //CATEGORY_SEARCH_SUCCESS,
   //CATEGORY_SEARCH_FAIL
@@ -67,7 +73,10 @@ const INITIAL_STATE = {
   exportDoc: {},
   searchQuery: '',
   searchResults: {},
-  reprocessSuccess: false
+  reprocessSuccess: false,
+  receiptImageIsLoading: false,
+  pdfImage: {},
+  exportObj: { email: '', ccBcc: '', subject: '' }
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -271,6 +280,44 @@ export default (state = INITIAL_STATE, action) => {
         reprocessSuccess: false
       };
 
+    case LOAD_RECEIPT_IMAGE:
+      return {
+        ...state,
+        receiptImageIsLoading: true,
+        receiptImageURL: ''
+      };
+
+    case LOAD_IMAGE_SUCCESS:
+      return {
+        ...state,
+        receiptImageURL: action.payload
+      };
+
+    case FETCH_PDF_SUCCESS:
+      return {
+        ...state,
+        receiptImageIsLoading: false,
+        pdfImage: action.payload
+      };
+
+    case FETCH_PDF_FAIL:
+      return {
+        ...state,
+        receiptImageIsLoading: false,
+      };
+
+    case LOAD_IMAGE_FAIL:
+      return {
+        ...state,
+        receiptImageIsLoading: false
+      };
+
+    case UPDATE_EXPORT_OBJ:
+      return {
+        ...state,
+        exportObj: action.payload
+      };
+
     case SEARCH_TEXT_CHANGED:
       return {
         ...state,
@@ -316,7 +363,9 @@ export default (state = INITIAL_STATE, action) => {
         imageData: {},
         newReceiptCategory: '',
         receiptDetail: {},
-        exportDoc: {}
+        exportDoc: {},
+        receiptImageIsLoading: false,
+        exportObj: { email: '', ccBcc: '', subject: '' }
       };
 
     default:

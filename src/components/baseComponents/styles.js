@@ -38,6 +38,7 @@ export const baseStyles = {
     shadowOpacity: 0.1,
     shadowRadius: 2,
     height: 40,
+    padding: 10
   //  width: null
   },
   errorStyle: {

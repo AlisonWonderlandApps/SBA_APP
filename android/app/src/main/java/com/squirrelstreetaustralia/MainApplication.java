@@ -3,12 +3,15 @@ package com.squirrelstreetaustralia;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.rnfs.RNFSPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.react.rnspinkit.RNSpinkitPackage;
 import com.keyee.pdfview.PDFView;
 import com.airbnb.android.react.maps.MapsPackage;
+import com.chirag.RNMail.RNMail;
 import com.imagepicker.ImagePickerPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
+import com.reactlibrary.RNReactNativeDocViewerPackage;
 import com.rt2zz.reactnativecontacts.ReactNativeContacts;
 import com.lwansbrough.RCTCamera.RCTCameraPackage;
 import com.facebook.react.ReactNativeHost;
@@ -31,12 +34,15 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNFSPackage(),
             new VectorIconsPackage(),
             new RNSpinkitPackage(),
             new PDFView(),
             new MapsPackage(),
+            new RNMail(),
             new ImagePickerPackage(),
             new RNFetchBlobPackage(),
+            new RNReactNativeDocViewerPackage(),
             new ReactNativeContacts(),
             new RCTCameraPackage()
       );

@@ -43,13 +43,14 @@ class SaveDoc extends Component {
     //console.log('propsphoto', this.props);
     //console.log('uri', this.props.imageData);
     imgUri = this.props.imageData.source.uri;
-    //console.log(imgUri);
+    console.log(imgUri);
   }
 
   shouldComponentUpdate(nextProps) {
     //console.log('should', this.props, nextProps);
     if (this.props !== nextProps) {
       imgUri = this.props.imageData.source.uri;
+      console.log(imgUri);
       return true;
     }
     return false;
@@ -121,7 +122,7 @@ class SaveDoc extends Component {
 
   onSavePress() {
     //console.log('save', this.props);
-    if (this.props.newReceiptCategory === '') {
+  /*  if (this.props.newReceiptCategory === '') {
       Alert.alert(
         'Oops!!',
         'Please choose a category for your receipt!',
@@ -129,13 +130,18 @@ class SaveDoc extends Component {
           { text: 'OK' }
         ]
       );
-    } else {
+    } else { */
       const categories = [];
       const date = new Date();
       //console.log(date);
-      categories[0] = this.props.newReceiptCategory;
-      const submittedBy = 'Submitted by '.concat(this.props.email);
-      categories[1] = submittedBy;
+      if (this.props.newReceiptCategory === '') {
+        const submittedBy = 'Submitted by '.concat(this.props.email);
+        categories[0] = submittedBy;
+      } else {
+        categories[0] = this.props.newReceiptCategory;
+        const submittedBy = 'Submitted by '.concat(this.props.email);
+        categories[1] = submittedBy;
+      }
       //console.log(categories);
       this.props.setFetching();
       this.props.addReceiptFromImage(
@@ -145,7 +151,7 @@ class SaveDoc extends Component {
         date,
         this.props.newReceiptNote
       );
-    }
+  //  }
   }
 
   onNoteChanged(input) {

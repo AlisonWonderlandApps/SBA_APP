@@ -5,11 +5,14 @@ import {
   View,
   Text,
   TouchableHighlight,
-  ListView
+  ListView,
+  Platform
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import ActionButton from 'react-native-action-button';
+import ImagePicker from 'react-native-image-picker';
 
 import {
   BackgroundView,
@@ -25,7 +28,7 @@ import {
   BORDER_COLOUR,
   BRAND_COLOUR_GREEN
  } from '../global/colours';
-import { searchTextChanged, loadAReceipt } from '../actions';
+import { searchTextChanged, loadAReceipt, saveImageData } from '../actions';
 
 class Processing extends Component {
 
@@ -54,6 +57,10 @@ class Processing extends Component {
           <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             <TitleText> No Receipts </TitleText>
           </View>
+          <ActionButton
+            buttonColor={PRIMARY_HIGHLIGHT_COLOUR}
+            onPress={this.onPressFAB}
+          />
         </BackgroundView>
       );
     }
@@ -92,6 +99,10 @@ class Processing extends Component {
         <ListView
           dataSource={this.ds.cloneWithRows(this.props.processingReceipts)}
           renderRow={(data) => this.renderRow(data)}
+        />
+        <ActionButton
+          buttonColor={PRIMARY_HIGHLIGHT_COLOUR}
+          onPress={this.onPressFAB}
         />
       </BackgroundView>
     );
@@ -160,6 +171,40 @@ class Processing extends Component {
     return currency;
   }
 
+  onPressFAB() {
+    const options = {
+      title: 'Choose Photo Source',
+      storageOptions: {
+      skipBackup: true,
+      path: 'images'
+    }
+  };
+
+    ImagePicker.showImagePicker(options, (response) => {
+      //console.log('this.props.curAccountID', self.props.curAccountID);
+      //console.log('response', response);
+      if (response.didCancel) {
+        //console.log('User cancelled image picker');
+      } else if (response.error) {
+        Alert('Error in ImagePicker', response.error);
+      } else if (response.customButton) {
+        //console.log('User tapped custom button: ', response.customButton);
+      } else {
+        let image = '';
+        if (Platform.OS === 'ios') {
+          image = response.origURL;
+        } else {
+          image = response.path;
+        }
+        //console.log('image', image);
+        const source = { uri: response.uri };
+        //self.props.addReceiptFromImage(self.props.curAccountID, response, image, source);
+        self.props.saveImageData(response, image, source);
+        Actions.save();
+      }
+    });
+  }
+
   onSearchChange(text) {
     this.props.searchTextChanged(text);
   }
@@ -206,18 +251,6 @@ class Processing extends Component {
     Actions.processingDetail();
   }
 
-  onPressFAB() {
-    //console.log('FAB pressed');
-    Alert.alert(
-      'Choose Photo Source',
-      null,
-      [
-        { text: 'Camera', onPress: () => Actions.camera() },
-        { text: 'Photo Library', onPress: () => Actions.photos() },
-        { text: 'Cancel', onPress: () => console.log('cancel'), style: 'cancel' }
-      ]
-    );
-  }
 }
 
 const styles = {
@@ -313,5 +346,5 @@ const mapStateToProps = ({ receipts, searchIt }) => {
 
 
 export default connect(mapStateToProps, {
- searchTextChanged, loadAReceipt
+ searchTextChanged, loadAReceipt, saveImageData
 })(Processing);

@@ -18,8 +18,8 @@ import {
   CardView,
   CardSection,
   Button,
-  FacebookButton,
-  GoogleButton,
+  //FacebookButton,
+  //GoogleButton,
   CenterTextView,
   LinkText,
   FormText

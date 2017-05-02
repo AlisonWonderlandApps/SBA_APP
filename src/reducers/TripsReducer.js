@@ -27,15 +27,29 @@ const INITIAL_STATE = {
   isTripStarted: false,
   tripData: {},
   curLocation: {
-    latitude: 25,
-    longitude: 25
+    latitude: -33.8243,
+    longitude: 151.2001,
+    latitudeDelta: 0.002,
+    longitudeDelta: 0.002
   },
-  //TODO: fix the beloe shitty code into an object
+  tripStartLocation: {},
+  tripEndLocation: {},
+
+  //TODO: fix the below shitty code into an object
   tVendor: '', //string
   tDate: '', //string version
   tCategory: '', //if multiple in a string
   tCost: '',
   tDistance: ''
+  /*
+    newTripObj: {
+      vendor: '',
+      date: '',
+      category: '',
+      cost: '',
+      distance: ''
+    },
+    */
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -63,12 +77,13 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state, tVendor: action.payload };
 
     case TRIPS_START:
-      return { ...state, isTripStarted: true };
+      return { ...state, isTripStarted: true, tripStartLocation: action.payload };
 
     case TRIPS_END:
-      return { ...state, isTripStarted: false };
+      return { ...state, isTripStarted: false, tripEndLocation: action.payload };
 
     case SET_CURRENT_LOCATION:
+      console.log(action.payload);
       return { ...state, curLocation: action.payload };
 
     case SET_TRIP_DATA:
@@ -86,7 +101,7 @@ export default (state = INITIAL_STATE, action) => {
           tCategory: '', //if multiple in a string
           tCost: '',
           tDistance: '',
-          isTripsStarted: false,
+          isTripStarted: false,
           curLocation: {},
           tripData: {}
         };

@@ -1,23 +1,5 @@
 /*
 * All actions a user can take pertaining to receipts
-
-//1. Fetch Receipts
-    - fetch (sets loading screen)
-    - success (ends loading, fills receipts array)
-    - fail (ends loading, displays error msg)
-
-//2. Add a receipt
-    - add
-
-//3. Delete a receipt
-    - displays a check
-    - deletes on OK
-
-//4. Export a receipt
-    - send receipt to??
-
-//5. Display a receipt
-
 */
 
 import { AsyncStorage, Alert, Platform } from 'react-native';
@@ -25,6 +7,8 @@ import axios from 'axios';
 import { Actions } from 'react-native-router-flux';
 import Querystring from 'querystring';
 import RNFetchBlob from 'react-native-fetch-blob';
+import RNFS from 'react-native-fs';
+
 import { ssApiQueryURL, ssAuthConfig } from '../config/auth';
 
 import {
@@ -67,7 +51,13 @@ import {
   SEARCH_CATEGORY,
   SET_FETCHING,
   REPROCESS_SUCCESS,
-  REPROCESS_FAIL
+  REPROCESS_FAIL,
+  LOAD_RECEIPT_IMAGE,
+  LOAD_IMAGE_SUCCESS,
+  LOAD_IMAGE_FAIL,
+  FETCH_PDF_FAIL,
+  FETCH_PDF_SUCCESS,
+  UPDATE_EXPORT_OBJ
   //CATEGORY_SEARCH,
   //CATEGORY_SEARCH_SUCCESS,
   //CATEGORY_SEARCH_FAIL
@@ -76,6 +66,19 @@ import {
 
 const cats = [];
 let index = 0;
+
+export const updateExportObj = (email, cc, subject, body) => {
+  const obj = {
+    email,
+    ccBcc: cc,
+    subject,
+    body
+  };
+  return {
+    type: UPDATE_EXPORT_OBJ,
+    payload: obj
+  };
+};
 
 export const setFetching = () => {
   return {
@@ -92,14 +95,12 @@ export const addNewReceipt = (doc) => {
 
 //fetches order_by_desc to set latest receipt easily
 export const fetchReceipts = (AuthStr, accountId) => {
-  //console.log('fetch receipts');
   return function (dispatch) {
     dispatch({
       type: RECEIPTS_FETCH
     });
 
     const receiptsURL = (ssApiQueryURL.accounts).concat(accountId).concat('/documents');
-    //console.log('fetchURL', receiptsURL, AuthStr);
 
     axios.get(receiptsURL,
       { params: {
@@ -111,7 +112,6 @@ export const fetchReceipts = (AuthStr, accountId) => {
         headers: { Authorization: AuthStr }
       })
       .then(response => {
-        //console.log('RECEIPTSSSSS', response.data.documents);
         const length = response.data.totalCountFiltered;
 
         dispatch({
@@ -122,12 +122,10 @@ export const fetchReceipts = (AuthStr, accountId) => {
         dispatch(fetchTrips(AuthStr, accountId)); //fetch trips
         dispatch(fetchProcessing(AuthStr, accountId)); //fetch processing
         dispatch(fetchReimbursables(AuthStr, accountId)); //fetch reimburseablesß
-        //dispatch(setReceiptsList(AuthStr, accountId, response.data.documents));
         dispatch(setCategoriesLists(AuthStr, accountId, response.data.documents));
 
         if (length > 0) {
           let i = 0;
-          //console.log(response.data.documents);
 
           if (response.data.documents[i].categories === undefined) {
             //console.log('no categories for receipt', response.data.documents[i]);
@@ -165,7 +163,6 @@ const fetchReceiptsSuccess = (receipts) => {
 };
 
 const fetchReceiptsFail = (err) => {
-  //console.log('RECEIPTS ERROR', err);
   return {
     type: RECEIPTS_FETCH_FAIL,
     payload: err
@@ -173,7 +170,6 @@ const fetchReceiptsFail = (err) => {
 };
 
 export const fetchProcessing = (AuthStr, accountId) => {
-  //console.log('fetch processing', AuthStr, accountId);
   return function (dispatch) {
   dispatch({
     type: PROCESSING_FETCH
@@ -189,9 +185,7 @@ export const fetchProcessing = (AuthStr, accountId) => {
         { params: { processing_state: 'NEEDS_SYSTEM_PROCESSING', order_by_desc: 'uploaded' },
           headers: { Authorization: AuthStr }
         }).then(response2 => {
-          //console.log('processing2: ', response2);
           const processingArray = (response.data.documents).concat(response2.data.documents);
-          //console.log('processingArray: ', processingArray);
           dispatch({
             type: PROCESSING_FETCH_SUCCESS,
             payload: processingArray
@@ -203,7 +197,6 @@ export const fetchProcessing = (AuthStr, accountId) => {
         });
     })
     .catch(() => {
-      //console.log('no trips fetched', er);
       dispatch(fetchProcessingFail());
     });
   };
@@ -216,7 +209,6 @@ const fetchProcessingFail = () => {
 };
 
 export const fetchReimbursables = (AuthStr, AccountId) => {
-  //console.log('fetch Reimbursables');
   return function (dispatch) {
   const reimburseURL = (ssApiQueryURL.accounts).concat(AccountId).concat('/documents');
   axios.get(reimburseURL,
@@ -350,7 +342,6 @@ const setCost = (cost) => {
 const categoryDataObjArray = [];
 const sortReceiptsByCategory = (AuthStr, accountId, categoryArray, k) => {
   const receiptsURL = (ssApiQueryURL.accounts).concat(accountId).concat('/documents');
-      //console.log('catarray', categoryArray, categoryArray.length);
       axios.get(receiptsURL,
         { params: {
           type: 'receipt',
@@ -396,6 +387,7 @@ export const saveImageData = (response, image, source) => {
 
 export const deleteReceipt = (accId, receiptID) => {
   return function (dispatch) {
+    Actions.receipts();
     dispatch({
       type: RECEIPT_DELETE,
     });
@@ -411,12 +403,12 @@ export const deleteReceipt = (accId, receiptID) => {
   };
 };
 
-export const exportReceipt = (accId, receiptID) => {
+export const exportReceipt = (accId, receiptID, email) => {
   return function (dispatch) {
     try {
       AsyncStorage.getItem('refreshToken').then((value) => {
         if (value !== null) {
-          dispatch(newToken(accId, value, receiptID, {}, 3));
+          dispatch(newToken(accId, value, receiptID, email, 3));
         }
       });
     } catch (err) {
@@ -425,11 +417,11 @@ export const exportReceipt = (accId, receiptID) => {
   };
 };
 
-const exportDoc = (AuthStr, accountId, receiptID) => {
+const exportDoc = (AuthStr, accountId, receiptID, email) => {
   return function (dispatch) {
     const exportURL = ssApiQueryURL.accounts.concat(accountId).concat('/exports');
     const jsonForRequest = {
-      emails: ['alihaire900@gmail.com'],
+      emails: [{ email }],
       exportType: 'pdf',
       documents: [receiptID]
     };
@@ -458,6 +450,8 @@ const exportDoc = (AuthStr, accountId, receiptID) => {
 1. Delete receipt (trash receipt)
 2. Add receipt
 3. Export receipt
+4. Reprocess document
+5. Fetch Document pdf image
 */
 export const newToken = (accountID, token, receiptID, newReceipt, num) => {
   return function (dispatch) {
@@ -476,7 +470,8 @@ export const newToken = (accountID, token, receiptID, newReceipt, num) => {
         } else if (num === 2) {
           dispatch(addItem(AuthStr, accountID, newReceipt));
         } else if (num === 3) {
-          dispatch(exportDoc(AuthStr, accountID, receiptID));
+          //newReceipt is email in this case
+          dispatch(exportDoc(AuthStr, accountID, receiptID, newReceipt));
         } else if (num === 4) {
           dispatch(reprocessDoc(AuthStr, accountID, receiptID));
         } else if (num === 5) {
@@ -547,9 +542,6 @@ export const addReceiptFromImage = (AccountId, imageData, categs, date, note) =>
     note
   };
   return function (dispatch) {
-  /*  dispatch({
-      type: SAVE_IMAGE_DATA
-    }); */
     try {
       AsyncStorage.getItem('refreshToken').then((value) => {
         if (value !== null) {
@@ -645,8 +637,8 @@ const deleteFailed = (er) => {
 
 export const loadReceiptImage = (curAcctID, docID) => {
   return function (dispatch) {
-    dispatch ({
-      type: LOADING_IMAGE
+    dispatch({
+      type: LOAD_RECEIPT_IMAGE
     });
     try {
       AsyncStorage.getItem('refreshToken').then((value) => {
@@ -655,20 +647,58 @@ export const loadReceiptImage = (curAcctID, docID) => {
         }
       });
     } catch (err) {
-      //console.log('token', err);
+      console.log('token', err);
     }
   };
 };
 
 const loadImage = (AuthStr, accID, docID) => {
+  const requestURL = ssApiQueryURL.accounts.concat(accID).concat('/documents/').concat(docID);
+  return function (dispatch) {
+  axios.get(requestURL, { headers: { Authorization: AuthStr } })
+    .then(response => {
+      console.log(response);
+      dispatch(downloadPDF(AuthStr, response.data.attachment.url));
+      const url = response.data.attachment.url;//.concat('.pdf');
 
+      dispatch({
+        type: LOAD_IMAGE_SUCCESS,
+        payload: url
+      });
+    }).catch((err) => {
+      console.log('loadImage', err);
+      dispatch({
+        type: LOAD_IMAGE_FAIL
+      });
+    });
+  };
+};
+
+const downloadPDF = (AuthStr, imageURL) => {
+  //const DocumentDir = RNFetchBlob.fs.dirs.DocumentDir;
+  return function (dispatch) {
+    const pdfPath = RNFS.DocumentDirectoryPath.concat('/test.pdf');
+    const options = {
+      fromUrl: imageURL,
+      toFile: pdfPath
+    };
+    RNFS.downloadFile(options).promise.then(res => {
+      console.log('pdf', res);
+      dispatch({
+        type: FETCH_PDF_SUCCESS,
+        payload: res
+      });
+    }).catch(err => {
+      console.log(err);
+      dispatch({
+        type: FETCH_PDF_FAIL
+      });
+    });
+ };
 };
 
 export const reprocessDocument = (curAcctID, documentID) => {
   return function (dispatch) {
-  //  dispatch({
-  //    type: REPROCESS_DOCUMENT
-  //  });
   console.log(curAcctID, documentID);
     try {
       AsyncStorage.getItem('refreshToken').then((value) => {
@@ -718,10 +748,10 @@ const reprocessSuccess = () => {
       'Done',
       'Receipt has been sent for reprocessing',
       [
-        { text: 'OK', onPress: () => Actions.receipts(); }
+        { text: 'OK', onPress: () => Actions.receipts() }
       ]
     );
-  }
+  };
 };
 
 const reprocessFail = (error) => {

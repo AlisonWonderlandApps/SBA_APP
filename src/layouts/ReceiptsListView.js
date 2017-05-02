@@ -16,6 +16,7 @@ import { Actions } from 'react-native-router-flux';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Spinner from 'react-native-loading-spinner-overlay';
+import ActionButton from 'react-native-action-button';
 import ImagePicker from 'react-native-image-picker';
 import {
   PRIMARY_HIGHLIGHT_COLOUR,
@@ -35,7 +36,8 @@ import {
 	deleteReceipt,
 	loadAReceipt,
 	exportReceipt,
-	setFetching
+	setFetching,
+	saveImageData
 	} from '../actions';
 
 let self;
@@ -44,9 +46,7 @@ class ReceiptsListView extends Component {
 
 	constructor(props) {
 		super(props);
-
 		self = this;
-
 		//console.log(self.props.myReceipts);
 		//console.log(this.props.receiptList);
 		//console.log(this.props.categories);
@@ -112,50 +112,52 @@ class ReceiptsListView extends Component {
 						recalculateHiddenLayout
 						//previewFirstRow
 				/>
-				<FAB
-          onPress={this.onPressFAB}
-				/>
 				<Spinner
 					visible={this.props.isFetching}
 					textContent={''}
 					textStyle={{ color: 'white' }}
+				/>
+				<ActionButton
+					buttonColor={PRIMARY_HIGHLIGHT_COLOUR}
+					onPress={this.onPressFAB}
 				/>
 			</BackgroundView>
 		);
 	}
 
 	onPressFAB() {
-		const options = {
-			title: 'Choose Photo Source',
-			storageOptions: {
-				skipBackup: true,
-				path: 'images'
-			}
-		};
+    const options = {
+      title: 'Choose Photo Source',
+      storageOptions: {
+      skipBackup: true,
+      path: 'images'
+    }
+  };
 
-	ImagePicker.showImagePicker(options, (response) => {
-		//console.log('this.props.curAccountID', self.props.curAccountID);
-		//console.log('response', response);
-		//self.props.setFetching();
-			if (response.didCancel) {
-				//console.log('User cancelled image picker');
-			} else if (response.error) {
-				Alert('Error in ImagePicker', response.error);
-			} else if (response.customButton) {
-				//console.log('User tapped custom button: ', response.customButton);
-			} else {
-				let image = '';
-				if (Platform.OS === 'ios') {
-					image = response.origURL;
-				} else {
-					image = response.path;
-				}
-				//console.log('image', image);
-				const source = { uri: response.uri };
-				self.props.addReceiptFromImage(self.props.curAccountID, response, image, source);
-		}
-	});
-}
+    ImagePicker.showImagePicker(options, (response) => {
+      //console.log('this.props.curAccountID', self.props.curAccountID);
+      //console.log('response', response);
+      if (response.didCancel) {
+        //console.log('User cancelled image picker');
+      } else if (response.error) {
+        Alert('Error in ImagePicker', response.error);
+      } else if (response.customButton) {
+        //console.log('User tapped custom button: ', response.customButton);
+      } else {
+        let image = '';
+        if (Platform.OS === 'ios') {
+          image = response.origURL;
+        } else {
+          image = response.path;
+        }
+        //console.log('image', image);
+        const source = { uri: response.uri };
+        //self.props.addReceiptFromImage(self.props.curAccountID, response, image, source);
+        self.props.saveImageData(response, image, source);
+        Actions.save();
+      }
+    });
+  }
 
 	onSearchChange(text) {
 		this.props.searchTextChanged(text);
@@ -232,9 +234,10 @@ class ReceiptsListView extends Component {
 }
 
 	load(data, rowId) {
-		//console.log('load', data, rowId);
+		console.log('load', data, rowId);
 		this.props.loadAReceipt(data, rowId);
 		Actions.receiptInfo();
+		//Actions.receiptDetail();
 	}
 
 	renderHiddenRow(secId, rowId, rowMap) {
@@ -271,11 +274,11 @@ class ReceiptsListView extends Component {
 	}
 
 	exportItem(rowMap, secId, rowId) {
-		//console.log('secId', secId, 'rowId', rowId, 'rowMap', rowMap);
-		// this.props.exportReceipt(this.props.curAccountID, rowMap.id);
+		console.log('secId', secId, 'rowId', rowId, 'rowMap', rowMap);
+		//this.props.exportReceipt(this.props.curAccountID, rowMap.id);
 		//Actions.export();
-
-		Actions.exportReceipt();
+		this.props.loadAReceipt(rowMap, rowId);
+		Actions.export();
 	}
 
 }
@@ -399,5 +402,46 @@ const mapStateToProps = ({ accounts, receipts, searchIt }) => {
 };
 
 export default connect(mapStateToProps, {
-		searchTextChanged, deleteReceipt, loadAReceipt, exportReceipt, setFetching
+		searchTextChanged,
+		deleteReceipt,
+		loadAReceipt,
+		exportReceipt,
+		setFetching,
+		saveImageData
 })(ReceiptsListView);
+
+/*
+
+	onPressFAB() {
+		const options = {
+			title: 'Choose Photo Source',
+			storageOptions: {
+				skipBackup: true,
+				path: 'images'
+			}
+		};
+
+	ImagePicker.showImagePicker(options, (response) => {
+		//console.log('this.props.curAccountID', self.props.curAccountID);
+		//console.log('response', response);
+		//self.props.setFetching();
+			if (response.didCancel) {
+				//console.log('User cancelled image picker');
+			} else if (response.error) {
+				Alert('Error in ImagePicker', response.error);
+			} else if (response.customButton) {
+				//console.log('User tapped custom button: ', response.customButton);
+			} else {
+				let image = '';
+				if (Platform.OS === 'ios') {
+					image = response.origURL;
+				} else {
+					image = response.path;
+				}
+				//console.log('image', image);
+				const source = { uri: response.uri };
+				self.props.addReceiptFromImage(self.props.curAccountID, response, image, source);
+		}
+	});
+}
+*/

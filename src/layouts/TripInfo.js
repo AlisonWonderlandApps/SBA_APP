@@ -26,7 +26,7 @@ import {
   loadReceiptImage
  } from '../actions';
 
-class ReceiptInfo extends Component {
+class TripInfo extends Component {
 
   constructor(props) {
     super(props);
@@ -271,109 +271,4 @@ const mapStateToProps = ({ accounts, receipts }) => {
 
 export default connect(mapStateToProps, {
   deleteReceipt, reprocessDocument, loadReceiptImage
-})(ReceiptInfo);
-
-
-//saving a receipt
-//style={{ borderWidth: 1, backgroundColor: 'green', flex: 1, resizeMode: 'cover', paddingBottom: 10 }}
-//path={{ 'https://s3-ap-southeast-2.amazonaws.com/sba-render/1206780197%7Cdocument_58de1d9ce4b0f9e41ef4d4fa.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20170409T105046Z&X-Amz-SignedHeaders=host&X-Amz-Expires=900&X-Amz-Credential=AKIAJD3UILPK5DBPFNHA%2F20170409%2Fap-southeast-2%2Fs3%2Faws4_request&X-Amz-Signature=85cbcba32ab8ee62bbfe2281aa22dea1cbf6995a474ca2d27e044b30403bef09' }}
-
-/*
-<PDFView
-  ref={(pdf) => { this.pdfView = pdf; }}
-  path={this.props.receiptsURL}
-  onLoadComplete={(pageCount) => {
-                      this.pdfView.setNativeProps({
-                      zoom: 1.0
-                  });
-        console.log('load done', pageCount);
-               }}
-  style={{ borderWidth: 1, backgroundColor: 'green', flex: 1, paddingBottom: 10 }}
-/>
-<Image
-  style={{ borderWidth: 1, backgroundColor: 'green', flex: 1, paddingBottom: 10 }}
-  source={{ uri: this.props.receiptsURL }}
-/>
-*/
-/*
-<PDFView
-  ref={(pdf) => { this.pdfView = pdf; }}
-  src={this.props.receiptsURL}
-  onLoadComplete={(pageCount) => {
-                      this.pdfView.setNativeProps({
-                      zoom: 1.0
-                  });
-        console.log('load done', pageCount);
-               }}
-  style={{ flex: 1 }}
-/>
-*/
-/*
-<WebView
-  //source={{ uri: this.props.receiptDetail.attachment.url }}
-  source={{ uri: 'https://s3-ap-southeast-2.amazonaws.com/sba-render/1481900574%7Cdocument_58c2a374e4b04cd8325ff80a.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20170416T025306Z&X-Amz-SignedHeaders=host&X-Amz-Expires=900&X-Amz-Credential=AKIAJD3UILPK5DBPFNHA%2F20170416%2Fap-southeast-2%2Fs3%2Faws4_request&X-Amz-Signature=e3e5b76cad67ca5af9be4d88aa9929ff1ce9ec2d68e8d424261ae6b795e2847a.pdf' }}
-  style={{ flex: 1, marginTop: 20 }}
-/>
-<WebView
-  automaticallyAdjustContentInsets={false}
-  javaScriptEnabled
-  domStorageEnabled
-  decelerationRate="normal"
-  onNavigationStateChange={this.onNavigationStateChange}
-  startInLoadingState
-  startInLoadingState
-  style={{ flex: 1 }}
-  source={{ uri: 'http://docs.google.com/gview?embedded=true&url='+myuri }}
-/>
-
-/*
-<WebView
-  automaticallyAdjustContentInsets={false}
-  javaScriptEnabled
-  domStorageEnabled
-  decelerationRate="normal"
-  onNavigationStateChange={this.onNavigationStateChange}
-  startInLoadingState
-  startInLoadingState
-  style={{ flex: 1 }}
-  source={{ uri: 'http://docs.google.com/gview?embedded=true&url='+myuri }}
-/> */
-/*
-
-  showReceiptPdf() {
-    let AuthStr = '';
-    try {
-      AsyncStorage.getItem('refreshToken').then((value) => {
-        if (value !== null) {
-          const data = {
-            grant_type: ssAuthConfig.refreshTokenGrantType,
-            client_id: ssAuthConfig.clientId,
-            client_secret: ssAuthConfig.clientSecret,
-            refresh_token: value
-          };
-        axios.post(ssAuthConfig.tokenURL, Querystring.stringify(data))
-          .then(response => {
-            if (response !== null) {
-              AuthStr = 'Bearer '.concat(response.data.access_token);
-              const requestURL = ssApiQueryURL.accounts.concat(this.props.curAccountID)
-                .concat('/documents/').concat(this.props.receiptDetail.id);
-              axios.get(requestURL, { headers: { Authorization: AuthStr } })
-                .then(resp => {
-                  console.log(resp);
-                  imageURL = resp.data.attachment.url;//.concat('.pdf');
-                  console.log(imageURL);
-                  this.showPdf();
-                }).catch((err) => {
-                  console.log(err);
-                });
-            }
-          }).catch((err) => {
-            console.log(err);
-          });
-        }
-      });
-    } catch (err) {
-      //console.log('token', err);
-    }
-  }
-*/
+})(TripInfo);

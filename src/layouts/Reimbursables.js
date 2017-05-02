@@ -5,11 +5,14 @@ import {
   TextInput,
   View,
   TouchableHighlight,
-  ListView
+  ListView,
+  Platform
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import ActionButton from 'react-native-action-button';
+import ImagePicker from 'react-native-image-picker';
 
 import {
   BackgroundView,
@@ -23,7 +26,7 @@ import {
   SHADOW_COLOUR,
   BORDER_COLOUR
  } from '../global/colours';
-import { searchTextChanged, loadAReceipt } from '../actions';
+import { searchTextChanged, loadAReceipt, saveImageData } from '../actions';
 
 class Reimbursables extends Component {
 
@@ -48,6 +51,10 @@ class Reimbursables extends Component {
           <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             <TitleText> No Receipts </TitleText>
           </View>
+          <ActionButton
+            buttonColor={PRIMARY_HIGHLIGHT_COLOUR}
+            onPress={this.onPressFAB}
+          />
         </BackgroundView>
       );
     }
@@ -83,6 +90,10 @@ class Reimbursables extends Component {
         <ListView
           dataSource={this.ds.cloneWithRows(this.props.reimbursableReceipts)}
           renderRow={(data) => this.renderRow(data)}
+        />
+        <ActionButton
+          buttonColor={PRIMARY_HIGHLIGHT_COLOUR}
+          onPress={this.onPressFAB}
         />
       </BackgroundView>
     );
@@ -157,6 +168,47 @@ class Reimbursables extends Component {
 		}
 		//console.log(category);
 		return category;
+  }
+
+  renderSeller(data) {
+    if (data.vendor === 'undefined') {
+      return '';
+    }
+    return data.vendor;
+  }
+
+  onPressFAB() {
+    const options = {
+      title: 'Choose Photo Source',
+      storageOptions: {
+      skipBackup: true,
+      path: 'images'
+    }
+  };
+
+    ImagePicker.showImagePicker(options, (response) => {
+      //console.log('this.props.curAccountID', self.props.curAccountID);
+      //console.log('response', response);
+      if (response.didCancel) {
+        //console.log('User cancelled image picker');
+      } else if (response.error) {
+        Alert('Error in ImagePicker', response.error);
+      } else if (response.customButton) {
+        //console.log('User tapped custom button: ', response.customButton);
+      } else {
+        let image = '';
+        if (Platform.OS === 'ios') {
+          image = response.origURL;
+        } else {
+          image = response.path;
+        }
+        //console.log('image', image);
+        const source = { uri: response.uri };
+        //self.props.addReceiptFromImage(self.props.curAccountID, response, image, source);
+        self.props.saveImageData(response, image, source);
+        Actions.save();
+      }
+    });
   }
 
   onSearchChange(text) {
@@ -299,5 +351,5 @@ const mapStateToProps = ({ receipts, searchIt }) => {
 
 
 export default connect(mapStateToProps, {
- searchTextChanged, loadAReceipt
+ searchTextChanged, loadAReceipt, saveImageData
 })(Reimbursables);

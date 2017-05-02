@@ -20,8 +20,8 @@ const styles = {
     alignSelf: 'center',
     fontSize: FONT_SIZE_MEDIUM,
     fontWeight: '800',
-    paddingTop: 15,
-    paddingBottom: 10
+    //paddingTop: 15,
+    //paddingBottom: 10
   }
 };
 
