@@ -54,3 +54,10 @@ export const imagesStr = 'Save images to library';
 export const ReimCatStr = 'Reimbursable';
 export const DeducCatStr = 'Deductible';
 export const NotSureCatStr = 'Not Sure';
+
+//receipt detail
+export const creditcard = 'Credit Card';
+export const cash = 'Cash';
+export const check = 'Cheque';
+export const paypal = 'Paypal';
+export const other = 'Other/Unknown';

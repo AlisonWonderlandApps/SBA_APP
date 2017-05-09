@@ -51,9 +51,9 @@ class ProcessingDetail extends Component {
               <TitleText style={{ padding: 5, color: 'green' }}>
                 {this.props.receiptDetail.vendor}
               </TitleText>
-              <Text> {this.props.receiptDetail.date} </Text>
-              <Text> {this.props.receiptDetail.paymentType} </Text>
-              <Text> {this.props.receiptDetail.categories} </Text>
+              <Text> {this.renderDate()} </Text>
+              <Text> {this.renderPaymentType()} </Text>
+              <Text> {this.renderCategories()} </Text>
               <Text style={{ paddingTop: 20, paddingBottom: 20, paddingLeft: 5 }}>
                 {this.props.receiptDetail.notes}
               </Text>
@@ -83,6 +83,61 @@ class ProcessingDetail extends Component {
       </BackgroundView>
     );
   }
+
+
+    renderDate() {
+      const data = this.props.receiptDetail;
+      let date = '';
+      if (data.issued === undefined) {
+        const formattedDate = new Date(data.uploaded).toString();
+        const day = formattedDate.substring(8, 11);
+        const month = formattedDate.substring(4, 7);
+        let year = formattedDate.substring(11, 15);
+        year = ', '.concat(year);
+        date = day.concat(month).concat(year);
+      } else {
+        const formattedDate = new Date(data.issued).toString();
+        const day = formattedDate.substring(8, 11);
+        const month = formattedDate.substring(4, 7);
+        let year = formattedDate.substring(11, 15);
+        year = ', '.concat(year);
+        date = day.concat(month).concat(year);
+      }
+      return date;
+    }
+
+    renderCategories() {
+      const data = this.props.receiptDetail;
+      let category = '';
+      if (data.categories === undefined) {
+        category = 'No categories';
+      } else if (data.categories.length < 1) {
+        category = 'No categories';
+      } else {
+        let j = 0;
+        category = data.categories[j];
+        for (j = 1; j < data.categories.length; j++) {
+          category += ', '.concat(data.categories[j]);
+        }
+        return category;
+      }
+    }
+
+    renderPaymentType() {
+      const data = this.props.receiptDetail;
+        switch (data.paymentType.type) {
+          case 'credit-card':
+            return 'Credit Card';
+          case 'cash':
+            return 'Cash';
+          case 'check':
+            return 'Cheque';
+          case 'paypal':
+            return 'Paypal';
+          default:
+            return 'Other/Unknown';
+        }
+    }
 
   showReceiptPdf() {
   //  console.log(this.props.receiptImageURL);

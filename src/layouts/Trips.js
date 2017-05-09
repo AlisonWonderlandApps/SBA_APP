@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  //Alert,
+  Alert,
   Text,
   View,
   ListView,
@@ -27,7 +27,8 @@ import {
   isTripTracking,
   setCurLocation,
   startTrip,
-  endTrip
+  endTrip,
+  setTripData
  } from '../actions';
 
  let self;
@@ -136,8 +137,7 @@ class Trips extends Component {
     if (self.props.isTripStarted) {
       console.log('pressed', self.props.isTripStarted);
       this.endMyTrip(self.props.curLocation);
-    }
-    else if (!self.props.isTripStarted) {
+    } else if (!self.props.isTripStarted) {
       this.startMyTrip(self.props.curLocation);
       console.log('pressed', self.props.isTripStarted);
       console.log(self.props.curLocation);
@@ -147,11 +147,24 @@ class Trips extends Component {
 
   endMyTrip() {
     //TODO: check for network & geolocation settings!!
-    //get trip end point & send to action
+    //get trip end point
     console.log(this.props.curLocation);
     this.props.endTrip(self.props.curLocation);
     console.log('end', self.props.tripEndLocation);
-    //take snapshot of map!!
+
+    //take a photo of end location
+    const snapshot = this.refs.map.takeSnapshot({
+      format: 'png',
+      result: 'file'
+    });
+    snapshot.then((uri) => {
+      const imgData = {
+        uri
+      };
+      this.props.setTripData(imgData);
+    });
+    Actions.saveTrip();
+    //send to save screen
   }
 
   startMyTrip() {
@@ -175,6 +188,41 @@ class Trips extends Component {
       );
     }
 
+    if (!this.props.isTripStarted) {
+      //case 1: havent started a trip yet
+      return (
+          <View style={styles.mapContainer}>
+            <MapView
+              ref='map'
+              style={styles.map}
+              mapType='standard'
+              showsUserLocation
+              followsUserLocation
+              zoomEnabled
+              region={{
+                latitude: self.props.curLocation.latitude,
+                longitude: self.props.curLocation.longitude,
+                latitudeDelta: 0.002,
+                longitudeDelta: 0.002,
+              }}
+              //onRegionChangeComplete={(region) => this.onRegionChange(region)}
+            >
+              <MapView.Marker
+                ref='currentPos'
+                pinColor={'blue'}
+                coordinate={{
+                  latitude: self.props.curLocation.latitude,
+                  longitude: self.props.curLocation.longitude,
+                }}
+              />
+            </MapView>
+          </View>
+        );
+      }
+
+    if (this.props.isTripStarted) {
+    //case 2: trip in progress
+    console.log('trip started', this.props);
     return (
       <View style={styles.mapContainer}>
         <MapView
@@ -192,16 +240,27 @@ class Trips extends Component {
           }}
           //onRegionChangeComplete={(region) => this.onRegionChange(region)}
         >
-          <MapView.Marker
-            coordinate={{
-              latitude: self.props.curLocation.latitude,
-              longitude: self.props.curLocation.longitude,
-            }}
-          />
+        <MapView.Marker
+          ref='start'
+          pinColor={'green'}
+          coordinate={{
+            latitude: self.props.tripStartLocation.latitude,
+            longitude: self.props.tripStartLocation.longitude,
+          }}
+        />
+        <MapView.Marker
+          ref='currentPos'
+          pinColor={'blue'}
+          coordinate={{
+            latitude: self.props.curLocation.latitude,
+            longitude: self.props.curLocation.longitude,
+          }}
+        />
         </MapView>
       </View>
     );
   }
+}
 
   renderRow(data, secId, rowId) {
     return (
@@ -245,6 +304,7 @@ class Trips extends Component {
         longitudeDelta: 0.003,
       };
       this.props.setCurLocation(defaultPosition);
+      Alert.alert('GPS not found');
     },
     { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
     );
@@ -356,5 +416,5 @@ const mapStateToProps = ({ trips }) => {
 };
 
 export default connect(mapStateToProps, {
-  loadAReceipt, isTripTracking, setCurLocation, startTrip, endTrip
+  loadAReceipt, isTripTracking, setCurLocation, startTrip, endTrip, setTripData
 })(Trips);

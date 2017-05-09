@@ -40,6 +40,7 @@ import {
   LOAD_RECEIPT_IMAGE,
   LOAD_IMAGE_SUCCESS,
   LOAD_IMAGE_FAIL,
+  DELETE_RECEIPT_IMAGE,
   FETCH_PDF_SUCCESS,
   FETCH_PDF_FAIL,
   UPDATE_EXPORT_OBJ
@@ -291,6 +292,13 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         receiptImageURL: action.payload
+      };
+
+    case DELETE_RECEIPT_IMAGE:
+      return {
+        ...state,
+        receiptImageURL: '',
+        pdfImage: {}
       };
 
     case FETCH_PDF_SUCCESS:

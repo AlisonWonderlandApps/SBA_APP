@@ -131,14 +131,19 @@ class Processing extends Component {
     let date = '';
     if (data.issued === undefined) {
       const formattedDate = new Date(data.uploaded).toString();
+      console.log('dateformat', formattedDate);
+      const day = formattedDate.substring(8, 11);
+      const month = formattedDate.substring(4, 7);
       let year = formattedDate.substring(11, 15);
       year = ', '.concat(year);
-      date = formattedDate.substring(4, 10).concat(year);
+      date = day.concat(month).concat(year);
     } else {
       const formattedDate = new Date(data.issued).toString();
+      const day = formattedDate.substring(8, 11);
+      const month = formattedDate.substring(4, 7);
       let year = formattedDate.substring(11, 15);
       year = ', '.concat(year);
-      date = formattedDate.substring(4, 10).concat(year);
+      date = day.concat(month).concat(year);
     }
     return date;
   }
@@ -199,7 +204,7 @@ class Processing extends Component {
         //console.log('image', image);
         const source = { uri: response.uri };
         //self.props.addReceiptFromImage(self.props.curAccountID, response, image, source);
-        self.props.saveImageData(response, image, source);
+        this.props.saveImageData(response, image, source);
         Actions.save();
       }
     });
@@ -210,7 +215,6 @@ class Processing extends Component {
   }
 
   goToProcessingDetail(data) {
-    //console.log('processData', data);
     const formattedDate = new Date(data.uploaded).toString();
     let year = formattedDate.substring(11, 15);
     year = ', '.concat(year);
@@ -245,8 +249,6 @@ class Processing extends Component {
       categories,
       imgURL: data.attachment.url
     };
-    //console.log('data.notes', data.notes);
-    //console.log('processingDetail', receiptObj);
     this.props.loadAReceipt(receiptObj);
     Actions.processingDetail();
   }

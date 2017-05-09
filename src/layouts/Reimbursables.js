@@ -142,14 +142,18 @@ class Reimbursables extends Component {
 		let date = '';
 		if (data.issued === undefined) {
 			const formattedDate = new Date(data.uploaded).toString();
-			let year = formattedDate.substring(11, 15);
-			year = ' '.concat(year);
-			date = formattedDate.substring(4, 10).concat(year);
+      const day = formattedDate.substring(8, 11);
+      const month = formattedDate.substring(4, 7);
+      let year = formattedDate.substring(11, 15);
+      year = ', '.concat(year);
+      date = day.concat(month).concat(year);
 		} else {
 			const formattedDate = new Date(data.issued).toString();
-			let year = formattedDate.substring(11, 15);
-			year = ' '.concat(year);
-			date = formattedDate.substring(4, 10).concat(year);
+      const day = formattedDate.substring(8, 11);
+      const month = formattedDate.substring(4, 7);
+      let year = formattedDate.substring(11, 15);
+      year = ', '.concat(year);
+      date = day.concat(month).concat(year);
 		}
 		return date;
 	}

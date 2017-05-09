@@ -55,6 +55,7 @@ import {
   LOAD_RECEIPT_IMAGE,
   LOAD_IMAGE_SUCCESS,
   LOAD_IMAGE_FAIL,
+  DELETE_RECEIPT_IMAGE,
   FETCH_PDF_FAIL,
   FETCH_PDF_SUCCESS,
   UPDATE_EXPORT_OBJ
@@ -142,7 +143,8 @@ export const fetchReceipts = (AuthStr, accountId) => {
           dispatch(setVendor(response.data.documents[i].vendor));
           dispatch(setDate(response.data.documents[i].uploaded));
           dispatch(setCategory(response.data.documents[i].categories));
-          dispatch(setCost(response.data.documents[i].totalInPreferredCurrency));
+          dispatch(setCost(response.data.documents[i].currency,
+            response.data.documents[i].totalInPreferredCurrency));
           }
         } else {
           dispatch(fetchMostRecentReceipt(''));
@@ -299,9 +301,11 @@ const setVendor = (data) => {
 
 const setDate = (date) => {
   const formattedDate = new Date(date).toString();
+  const day = formattedDate.substring(8, 11);
+  const month = formattedDate.substring(4, 7);
   let year = formattedDate.substring(11, 15);
   year = ', '.concat(year);
-  const dateStr = formattedDate.substring(4, 10).concat(year);
+  const dateStr = day.concat(month).concat(year);
   return {
     type: SET_DATE,
     payload: dateStr
@@ -325,17 +329,23 @@ const setCategory = (data) => {
   };
 };
 
-const setCost = (cost) => {
-  let currency = '';
-  if (cost === undefined) {
-    currency = '$ --';
+const setCost = (currency, cost) => {
+  let price = '';
+  let money = '';
+  if (currency === undefined) {
+    money = '';
   } else {
-    currency = '$'.concat(cost.toFixed(2));
+    money = currency;
+  }
+  if (cost === undefined) {
+    price = money.concat('--');
+  } else {
+    price = money.concat(cost.toFixed(2));
     //console.log(currency);
   }
   return {
     type: SET_COST,
-    payload: currency
+    payload: price
   };
 };
 
@@ -598,6 +608,16 @@ const addItem = (AuthStr, accountId, receiptObj) => {
        Alert('Sorry, Could not add new receipt.', err);
      });
    };
+};
+
+export const deleteReceiptImage = () => {
+  return function (dispatch) {
+    dispatch(
+      {
+        type: DELETE_RECEIPT_IMAGE
+      }
+    );
+  };
 };
 
 const reloadReceipts = (AuthStr, accountId) => {

@@ -145,13 +145,21 @@ class TripInfo extends Component {
   renderCost() {
     const data = this.props.receiptDetail;
     let total = '';
+    let currency = '';
+    if (data.currency === undefined) {
+      currency = '';
+    } else {
+      console.log(data.currency);
+      currency = data.currency;
+    }
+
     if (data.total === undefined) {
-      total = '$ --';
+      total = ' --';
     }	else {
-      total = '$'.concat(data.total.toFixed(2));
+      total = data.total.toFixed(2);
     }
-      return total;
-    }
+      return currency.concat(total);
+  }
 
     renderDate() {
       const data = this.props.receiptDetail;

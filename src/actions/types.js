@@ -117,6 +117,7 @@ export const RESET_RECEIPTS = 'reset_receipts';
 export const LOAD_A_RECEIPT = 'load_a_receipt';
 export const LOAD_A_RECEIPT_SUCCESS = 'load_a_receipt_success';
 export const LOAD_A_RECEIPT_FAIL = 'load_a_receipt_fail';
+export const DELETE_RECEIPT_IMAGE = 'delete_receipt_image';
 export const SET_NEW_RECEIPT_CATEGORY = 'set_new_receipt_category';
 export const RESET_NEW_RECEIPT = 'reset_new_receipt_data';
 export const RECEIPT_EXPORT = 'export_receipt';

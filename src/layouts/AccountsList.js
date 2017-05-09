@@ -10,7 +10,8 @@ import { PRIMARY_HIGHLIGHT_COLOUR } from '../global/colours';
 import {
   setCurAccount,
   resetTrips,
-  resetReceipts
+  resetReceipts,
+  setCurLocation
 } from '../actions';
 
 let self = '';
@@ -112,6 +113,47 @@ class AccountsList extends Component {
       ]
     );
   }
+
+  getCurrentPosition() {
+    navigator.geolocation.getCurrentPosition((position) => {
+      const curPosition = {
+        latitude: parseFloat(position.coords.latitude),
+        longitude: parseFloat(position.coords.longitude),
+        latitudeDelta: 0.003,
+        longitudeDelta: 0.003,
+      //  current: true
+      };
+      this.props.setCurLocation(curPosition);
+    },
+    (error) => {
+      console.log(JSON.stringify(error));
+      const defaultPosition = {
+        latitude: -33.8243,
+        longitude: 151.2001,
+        latitudeDelta: 0.003,
+        longitudeDelta: 0.003,
+      //  current: false //check for previous coords before overwriting
+      };
+      this.props.setCurLocation(defaultPosition);
+    },
+    { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+    );
+    navigator.geolocation.watchPosition((position) => {
+      const newPosition = {
+        latitude: parseFloat(position.coords.latitude),
+        longitude: parseFloat(position.coords.longitude),
+        latitudeDelta: 0.003,
+        longitudeDelta: 0.003,
+      //  current: true
+      };
+      this.props.setCurLocation(newPosition);
+    },
+    (error) => {
+      console.log(error);
+    },
+    { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+    );
+  }
 }
 
 const mapStateToProps = ({ accounts, receipts }) => {
@@ -157,5 +199,5 @@ const styles = {
 };
 
 export default connect(mapStateToProps, {
- setCurAccount, resetTrips, resetReceipts
+ setCurAccount, resetTrips, resetReceipts, setCurLocation
 })(AccountsList);

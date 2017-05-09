@@ -23,7 +23,8 @@ import { APP_GREY } from '../global/colours';
 import {
   deleteReceipt,
   reprocessDocument,
-  loadReceiptImage
+  loadReceiptImage,
+  deleteReceiptImage
  } from '../actions';
 
 class ReceiptInfo extends Component {
@@ -42,6 +43,11 @@ class ReceiptInfo extends Component {
     return false;
   }
 
+  componentWillUmount() {
+    //delete the current picture
+    deleteReceiptImage();
+  }
+
   render() {
     console.log('rendering');
     return (
@@ -57,7 +63,7 @@ class ReceiptInfo extends Component {
               <Text> {this.renderCategories()} </Text>
             </View>
             <View>
-              <Text> AUD{this.renderCost()} </Text>
+              <Text> {this.renderCost()} </Text>
               <Text> {this.renderTax()} </Text>
             </View>
           </View>
@@ -145,27 +151,39 @@ class ReceiptInfo extends Component {
   renderCost() {
     const data = this.props.receiptDetail;
     let total = '';
+    let currency = '';
+    if (data.currency === undefined) {
+      currency = '';
+    } else {
+      console.log(data.currency);
+      currency = data.currency;
+    }
+
     if (data.total === undefined) {
-      total = '$ --';
+      total = ' --';
     }	else {
-      total = '$'.concat(data.total.toFixed(2));
+      total = data.total.toFixed(2);
     }
-      return total;
-    }
+      return currency.concat(total);
+  }
 
     renderDate() {
       const data = this.props.receiptDetail;
       let date = '';
       if (data.issued === undefined) {
         const formattedDate = new Date(data.uploaded).toString();
+        const day = formattedDate.substring(8, 11);
+        const month = formattedDate.substring(4, 7);
         let year = formattedDate.substring(11, 15);
-        year = ' '.concat(year);
-        date = formattedDate.substring(4, 10).concat(year);
+        year = ', '.concat(year);
+        date = day.concat(month).concat(year);
       } else {
         const formattedDate = new Date(data.issued).toString();
+        const day = formattedDate.substring(8, 11);
+        const month = formattedDate.substring(4, 7);
         let year = formattedDate.substring(11, 15);
-        year = ' '.concat(year);
-        date = formattedDate.substring(4, 10).concat(year);
+        year = ', '.concat(year);
+        date = day.concat(month).concat(year);
       }
       return date;
     }
@@ -189,12 +207,18 @@ class ReceiptInfo extends Component {
 
   renderPaymentType() {
     const data = this.props.receiptDetail;
-      if (data.paymentType === undefined) {
-        return 'No payment type';
-      } else if (data.type === undefined) {
-        return 'No payment type';
+      switch (data.paymentType.type) {
+        case 'credit-card':
+          return 'Credit Card';
+        case 'cash':
+          return 'Cash';
+        case 'check':
+          return 'Cheque';
+        case 'paypal':
+          return 'Paypal';
+        default:
+          return 'Other/Unknown';
       }
-      return data.paymentType.type;
   }
 
   renderTax() {

@@ -40,7 +40,8 @@ export const fetchTrips = (AuthStr, AccountId) => {
         if (response.data.documents.length > 0) {
           dispatch(fetchMostRecentTrips(response.data.documents[0]));
           dispatch(setDate(response.data.documents[0].uploaded));
-          dispatch(setCost(response.data.documents[0].totalInPreferredCurrency));
+          dispatch(setCost(response.data.documents[0].currency,
+            response.data.documents[0].totalInPreferredCurrency));
           dispatch(setVendor(response.data.documents[0].vendor));
         } else {
           dispatch(fetchMostRecentTrips('')); //'Start a Trip!'
@@ -70,8 +71,15 @@ const setDate = (date) => {
   };
 };
 
-const setCost = (cost) => {
-  const currency = '$'.concat(cost.toFixed(2));
+const setCost = (money, cost) => {
+  let currency = '';
+  if (money === undefined && cost === undefined) {
+    currency = '--';
+  } else if (money === undefined) {
+    currency = cost;
+  } else {
+    currency = money.concat(cost.toFixed(2));
+  }
   return {
     type: SET_TRIP_COST,
     payload: currency
@@ -136,7 +144,18 @@ export const endTrip = (endPos) => {
   };
 };
 
-export const setTripData = (tripData) => {
+export const setTripData = (data) => {
+  console.log(data);
+  return function (dispatch) {
+      dispatch({
+      type: SET_TRIP_DATA,
+      payload: data
+    });
+  };
+};
+
+/*
+export const setTripData1 = (tripData) => {
   return function (dispatch) {
     try {
       AsyncStorage.setItem('tripData', JSON.stringify(tripData))
@@ -151,6 +170,7 @@ export const setTripData = (tripData) => {
     }
   };
 };
+*/
 
 export const isTripTracking = () => {
   return function (dispatch) {

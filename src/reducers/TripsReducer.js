@@ -25,6 +25,7 @@ const INITIAL_STATE = {
   myTrips: [],
   latestTrip: {},
   isTripStarted: false,
+
   tripData: {},
   curLocation: {
     latitude: -33.8243,
@@ -34,6 +35,7 @@ const INITIAL_STATE = {
   },
   tripStartLocation: {},
   tripEndLocation: {},
+  tripInfo: {},
 
   //TODO: fix the below shitty code into an object
   tVendor: '', //string
@@ -87,7 +89,7 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state, curLocation: action.payload };
 
     case SET_TRIP_DATA:
-      return { ...state, isTripStarted: true, tripData: action.payload };
+      return { ...state, isTripStarted: false, tripData: action.payload };
 
     case RESET_TRIPS:
         return {

@@ -121,19 +121,8 @@ class SaveDoc extends Component {
   }
 
   onSavePress() {
-    //console.log('save', this.props);
-  /*  if (this.props.newReceiptCategory === '') {
-      Alert.alert(
-        'Oops!!',
-        'Please choose a category for your receipt!',
-        [
-          { text: 'OK' }
-        ]
-      );
-    } else { */
       const categories = [];
       const date = new Date();
-      //console.log(date);
       if (this.props.newReceiptCategory === '') {
         const submittedBy = 'Submitted by '.concat(this.props.email);
         categories[0] = submittedBy;
@@ -142,7 +131,6 @@ class SaveDoc extends Component {
         const submittedBy = 'Submitted by '.concat(this.props.email);
         categories[1] = submittedBy;
       }
-      //console.log(categories);
       this.props.setFetching();
       this.props.addReceiptFromImage(
         this.props.curAccountID,
@@ -151,7 +139,6 @@ class SaveDoc extends Component {
         date,
         this.props.newReceiptNote
       );
-  //  }
   }
 
   onNoteChanged(input) {

@@ -44,6 +44,7 @@ import Trips from './layouts/Trips';
 import ExportReceipt from './layouts/ExportReceipt';
 import ReceiptDetail from './layouts/ReceiptDetail';
 import TripInfo from './layouts/TripInfo';
+import SaveTrip from './layouts/SaveTrip';
 
 class RouterComponent extends Component {
 
@@ -167,6 +168,7 @@ class RouterComponent extends Component {
       renderBackButton={() => this.renderMainButton()}
       type={ActionConst.REPLACE}
       onBack={() => Actions.main()}
+      //initial
     />
 
     <Scene
@@ -285,6 +287,20 @@ class RouterComponent extends Component {
       renderTitle={() => <Header />}
       type={ActionConst.REPLACE}
       onBack={() => Actions.main()}
+      //onRight={() => SaveDoc.onPress.bind(SaveDoc)}
+      //rightTitle='Save'
+      //initial
+    />
+
+    <Scene
+      key="saveTrip"
+      component={SaveTrip}
+      hideNavBar={false}
+      navigationBarStyle={styles.headerStyle}
+      renderTitle={() => <Header />}
+      type={ActionConst.REPLACE}
+      onBack={() => Actions.main()}
+      renderBackButton={() => this.renderMainButton()}
       //onRight={() => SaveDoc.onPress.bind(SaveDoc)}
       //rightTitle='Save'
       //initial
