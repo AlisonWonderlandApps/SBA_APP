@@ -19,7 +19,8 @@ import RightNameTitle from './components/menuComponents/RightNameTitle';
 import MainRight from './components/menuComponents/MainRight';
 import FilterTitle from './components/menuComponents/FilterTitle';
 import BackToReceipts from './components/menuComponents/BackToReceipts';
-import BackToTrips from './components/menuComponents/BackToTrips';
+import GoToEdit from './components/menuComponents/GoToEdit';
+import SaveEdits from './components/menuComponents/SaveEdits';
 
 import ErrorScreen from './layouts/ErrorScreen';
 import SplashScreen from './layouts/SplashScreen'; //loadingScreen;
@@ -45,6 +46,9 @@ import ExportReceipt from './layouts/ExportReceipt';
 import ReceiptDetail from './layouts/ReceiptDetail';
 import TripInfo from './layouts/TripInfo';
 import SaveTrip from './layouts/SaveTrip';
+import ReceiptFullScreen from './layouts/ReceiptFullScreen';
+import EditReceipt from './layouts/EditReceipt';
+
 
 class RouterComponent extends Component {
 
@@ -190,9 +194,35 @@ class RouterComponent extends Component {
       navigationBarStyle={styles.headerStyle}
       renderTitle={() => <Header />}
       component={ReceiptInfo}
+      renderRightButton={() => <GoToEdit />}
       renderBackButton={() => <BackToReceipts />}
       type={ActionConst.REPLACE}
-      onBack={() => Actions.receipts()}
+      //onBack={() => Actions.receipts()}
+      //initial
+    />
+
+    <Scene
+      key="editReceipt"
+      hideNavBar={false}
+      navigationBarStyle={styles.headerStyle}
+      renderTitle={() => <Header />}
+      component={EditReceipt}
+      renderRightButton={() => <SaveEdits />}
+      renderBackButton={() => <BackToReceipts />}
+      type={ActionConst.REPLACE}
+      //onBack={() => Actions.receipts()}
+      //initial
+    />
+
+    <Scene
+      key="fullReceipt"
+      hideNavBar={false}
+      navigationBarStyle={styles.headerStyle}
+      renderTitle={() => <Header />}
+      component={ReceiptFullScreen}
+      //renderBackButton={() => <BackToReceipts />}
+      type={ActionConst.REPLACE}
+      //onBack={() => Actions.receipts()}
       //initial
     />
 

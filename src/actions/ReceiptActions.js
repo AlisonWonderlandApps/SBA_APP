@@ -58,7 +58,9 @@ import {
   DELETE_RECEIPT_IMAGE,
   FETCH_PDF_FAIL,
   FETCH_PDF_SUCCESS,
-  UPDATE_EXPORT_OBJ
+  UPDATE_EXPORT_OBJ,
+  RECEIPT_UPDATE_SUCCESS,
+  RECEIPT_UPDATE_FAIL,
   //CATEGORY_SEARCH,
   //CATEGORY_SEARCH_SUCCESS,
   //CATEGORY_SEARCH_FAIL
@@ -143,8 +145,7 @@ export const fetchReceipts = (AuthStr, accountId) => {
           dispatch(setVendor(response.data.documents[i].vendor));
           dispatch(setDate(response.data.documents[i].uploaded));
           dispatch(setCategory(response.data.documents[i].categories));
-          dispatch(setCost(response.data.documents[i].currency,
-            response.data.documents[i].totalInPreferredCurrency));
+          dispatch(setCost(response.data.documents[i]));
           }
         } else {
           dispatch(fetchMostRecentReceipt(''));
@@ -329,23 +330,31 @@ const setCategory = (data) => {
   };
 };
 
-const setCost = (currency, cost) => {
-  let price = '';
-  let money = '';
-  if (currency === undefined) {
-    money = '';
-  } else {
-    money = currency;
-  }
-  if (cost === undefined) {
-    price = money.concat('--');
-  } else {
-    price = money.concat(cost.toFixed(2));
-    //console.log(currency);
-  }
+const setCost = (data) => {
+    let currency = data.currency;
+		let returnString = '';
+
+		//case 1: currency & total are defined
+		if (currency !== undefined && data.total !== undefined) {
+			//case 1.1 currency is AUD
+			if (currency === 'AUD') {
+				returnString = ('$').concat(data.total.toFixed(2));
+			}
+			//case 1.2 currency NOT au$
+			currency = 'AUD$';
+			returnString = currency.concat(data.totalInPreferredCurrency.toFixed(2));
+		} else if (currency === undefined) {
+			//currency = 'AUD$';
+			if ((data.total === undefined) || (data.total === '')) {
+				returnString = ('$-.--');
+			}
+			returnString = ('$').concat(data.total);
+		} else {
+      returnString = ('$-.--');
+    }
   return {
     type: SET_COST,
-    payload: price
+    payload: returnString
   };
 };
 
@@ -409,6 +418,23 @@ export const deleteReceipt = (accId, receiptID) => {
       });
     } catch (err) {
       //??
+      console.log(err);
+    }
+  };
+};
+
+export const updateReceipt = (accId, receiptID, newData) => {
+  console.log('update receipt', newData);
+  return function (dispatch) {
+    try {
+      AsyncStorage.getItem('refreshToken').then((value) => {
+        if (value !== null) {
+          dispatch(newToken(accId, value, receiptID, newData, 6));
+        }
+      });
+    } catch (err) {
+      //??
+      console.log(err);
     }
   };
 };
@@ -423,6 +449,7 @@ export const exportReceipt = (accId, receiptID, email) => {
       });
     } catch (err) {
       //???
+      console.log(err);
     }
   };
 };
@@ -462,6 +489,7 @@ const exportDoc = (AuthStr, accountId, receiptID, email) => {
 3. Export receipt
 4. Reprocess document
 5. Fetch Document pdf image
+6. Update Document
 */
 export const newToken = (accountID, token, receiptID, newReceipt, num) => {
   return function (dispatch) {
@@ -486,6 +514,8 @@ export const newToken = (accountID, token, receiptID, newReceipt, num) => {
           dispatch(reprocessDoc(AuthStr, accountID, receiptID));
         } else if (num === 5) {
           dispatch(loadImage(AuthStr, accountID, receiptID));
+        } else if (num === 6) {
+          dispatch(updateThisDocument(AuthStr, accountID, receiptID, newReceipt));
         }
        }
      }).catch((err) => {
@@ -496,7 +526,7 @@ export const newToken = (accountID, token, receiptID, newReceipt, num) => {
            { text: 'OK' }
          ]
        ); */
-       //console.log('no auth token', err);
+       console.log('no auth token', err);
      });
   };
 };
@@ -540,6 +570,76 @@ const trashItem = (AuthStr, accountId, receiptID) => {
             dispatch(deleteFailed(error));
         });
     };
+};
+
+export const updateThisDocument = (AuthStr, accountId, receiptID, newData) => {
+  console.log('updateThisDocument', newData);
+  const modDate = new Date().toISOString();
+  const newDate = newData.date.toString();
+  const dateStr = newDate.concat('T00:00:00Z');
+  const paytype = {
+    type: newData.paytype,
+    lastFourDigits: ''
+  };
+  console.log(newData.total, paytype);
+  const requestUrl = ssApiQueryURL.accounts
+    .concat(accountId).concat('/documents/')
+    .concat(receiptID).concat('/');
+  return function (dispatch) {
+    axios.get(requestUrl, { headers: { Authorization: AuthStr } })
+      .then(response => {
+        const responseData = JSON.parse(JSON.stringify(response));
+
+        if (response.status === 200) {
+          const jsonToUpdate = responseData.data;
+          console.log(jsonToUpdate);
+          jsonToUpdate.modified = modDate;
+          jsonToUpdate.vendor = newData.vendor;
+          jsonToUpdate.issued = dateStr;
+          //jsonToUpdate.currency = newData.currency;
+          jsonToUpdate.total = newData.total;
+          //jsonToUpdate.tax = newData.tax;
+          //jsonToUpdate.paymentType = paytype;
+          //jsonToUpdate.categories = newData.categories;
+          jsonToUpdate.notes = newData.notes;
+
+          RNFetchBlob.fetch('PUT', requestUrl, {
+              Authorization: AuthStr,
+              'Content-Type': 'application/json',
+            }, JSON.stringify(jsonToUpdate)).then((resp) => {
+                dispatch(updateSuccess(AuthStr, accountId));
+                dispatch(fetchReceipts(AuthStr, accountId));
+                //TODO: THIS NEEDS TO CHANGE!!!!
+               }).catch((err) => {
+                 dispatch(updateFailed(err));
+               });
+        } else {
+          dispatch(updateFailed('No response status'));
+        }
+      }).catch((error) => {
+            dispatch(updateFailed(error));
+        });
+    };
+};
+
+const updateSuccess = () => {
+  return {
+    type: RECEIPT_UPDATE_SUCCESS
+  };
+};
+
+const updateFailed = (er) => {
+  Alert.alert(
+    'Error',
+    'Receipt could not be updated',
+    [
+      { text: 'Try again', onPress: () => console.log('reprocess') }
+    ]
+  );
+  return {
+    type: RECEIPT_UPDATE_FAIL,
+    payload: er
+  };
 };
 
 export const addReceiptFromImage = (AccountId, imageData, categs, date, note) => {
@@ -779,6 +879,10 @@ const reprocessFail = (error) => {
     type: REPROCESS_FAIL,
     payload: error
   };
+};
+
+export const saveReceiptEdits = (docDetail) => {
+  console.log(docDetail);
 };
 
 export const resetNewReceipt = () => {

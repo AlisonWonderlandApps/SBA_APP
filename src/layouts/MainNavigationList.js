@@ -10,6 +10,7 @@ import {
   View,
   TouchableHighlight,
   TouchableWithoutFeedback,
+  Text
  } from 'react-native';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
@@ -31,11 +32,10 @@ import {
   BackgroundView,
   CardSection,
   NavListSectionTools,
-  FAB,
-  //Banner,
-  TitleText,
   ColourText,
-  FormText
+  TitleText,
+  FormText,
+  FAB
 } from '../components';
 
 import {
@@ -124,8 +124,8 @@ class MainNavigationList extends Component {
         <CardSection style={mainStyles.cardSection}>
           <View style={{ justifyContent: 'space-around', paddingTop: 10, paddingLeft: 5 }}>
             <TitleText>{ReceiptsStr}</TitleText>
+            {this.renderTripCost()}
             <ColourText style={mainStyles.text}>{this.props.tDate}</ColourText>
-            <ColourText style={mainStyles.text}>{this.props.tCost}</ColourText>
           </View>
           <View style={{ alignSelf: 'flex-end', paddingRight: 10 }} >
             <Icon name='ios-arrow-forward' size={50} />
@@ -154,7 +154,7 @@ class MainNavigationList extends Component {
         <CardSection style={mainStyles.cardSection}>
           <View style={{ justifyContent: 'space-around', paddingTop: 10, paddingLeft: 5 }}>
             <TitleText>{ReceiptsStr}</TitleText>
-            <ColourText style={mainStyles.text}>{this.props.rCost}</ColourText>
+            {this.renderReceiptCost()}
             <ColourText style={mainStyles.text}>{this.props.latestReceipt.vendor}</ColourText>
           </View>
           <View style={{ alignSelf: 'flex-end', paddingRight: 10 }} >
@@ -187,8 +187,8 @@ class MainNavigationList extends Component {
       <CardSection style={mainStyles.cardSection}>
         <View style={{ justifyContent: 'space-around', paddingTop: 10, paddingLeft: 5 }}>
           <TitleText>{TripsStr}</TitleText>
+          {this.renderTripCost()}
           <ColourText style={mainStyles.text}>{this.props.tDate}</ColourText>
-          <ColourText style={mainStyles.text}>{this.props.tCost}</ColourText>
         </View>
         <View style={{ alignSelf: 'flex-end', paddingRight: 10 }} >
           <Icon name='ios-arrow-forward' size={50} />
@@ -238,6 +238,71 @@ class MainNavigationList extends Component {
         </TouchableWithoutFeedback>
       </CardSection>
     );
+  }
+
+  renderReceiptCost() {
+    const data = this.props.latestReceipt;
+    let currency = data.currency;
+    let returnString = '';
+
+    //case 1: currency & total are defined
+    if (currency !== undefined && data.total !== undefined) {
+      //case 1.1 currency is AUD
+      if (currency === 'AUD') {
+        returnString = ('$').concat(data.total.toFixed(2));
+        return <Text style={mainStyles.text}> {returnString} </Text>;
+      }
+      //case 1.2 currency NOT au$
+      currency = 'AUD$';
+      returnString = currency.concat(data.totalInPreferredCurrency.toFixed(2));
+      return (
+              <Text style={mainStyles.textItalic}>
+                {returnString}
+              </Text>
+            );
+    } else if (currency === undefined) {
+      //currency = 'AUD$';
+      if ((data.total === undefined) || (data.total === '')) {
+        returnString = ('$0.00');
+        return <Text style={mainStyles.text}> {returnString} </Text>;
+      }
+      returnString = ('$').concat(data.total);
+      return <Text style={mainStyles.text}> {returnString} </Text>;
+    }
+    returnString = ('$0.00');
+    return <Text style={mainStyles.text}> {returnString} </Text>;
+    }
+
+    renderTripCost() {
+        const data = this.props.latestTrip;
+        let currency = data.currency;
+        let returnString = '';
+
+        //case 1: currency & total are defined
+        if (currency !== undefined && data.total !== undefined) {
+          //case 1.1 currency is AUD
+          if (currency === 'AUD') {
+            returnString = ('$').concat(data.total.toFixed(2));
+            return <Text style={mainStyles.text}> {returnString} </Text>;
+          }
+          //case 1.2 currency NOT au$
+          returnString = ('$').concat(data.totalInPreferredCurrency.toFixed(2));
+          return (
+                  <Text style={mainStyles.textItalic}>
+                    {returnString}
+                  </Text>
+                );
+        } else if (currency === undefined) {
+          //currency = 'AUD$';
+          if ((data.total === undefined) || (data.total === '')) {
+            returnString = ('$0.00');
+            return <Text style={mainStyles.text}> {returnString} </Text>;
+          }
+          returnString = ('$').concat(data.total);
+          return <Text style={mainStyles.text}> {returnString} </Text>;
+        }
+        returnString = ('$0.00');
+        return <Text style={mainStyles.text}> {returnString} </Text>;
   }
 
   onPressFAB() {
@@ -309,6 +374,11 @@ const mainStyles = {
   text: {
     alignSelf: 'flex-start',
     paddingLeft: 0
+  },
+  textItalic: {
+    alignSelf: 'flex-start',
+    paddingLeft: 0,
+    fontStyle: 'italic'
   }
 };
 

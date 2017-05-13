@@ -43,7 +43,9 @@ import {
   DELETE_RECEIPT_IMAGE,
   FETCH_PDF_SUCCESS,
   FETCH_PDF_FAIL,
-  UPDATE_EXPORT_OBJ
+  UPDATE_EXPORT_OBJ,
+  RECEIPT_UPDATE_SUCCESS,
+  RECEIPT_UPDATE_FAIL,
   //CATEGORY_SEARCH,
   //CATEGORY_SEARCH_SUCCESS,
   //CATEGORY_SEARCH_FAIL
@@ -216,6 +218,18 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         isFetching: false
       };
+
+      case RECEIPT_UPDATE_SUCCESS:
+        return {
+          ...state,
+          isFetching: false
+        };
+
+      case RECEIPT_UPDATE_FAIL:
+        return {
+          ...state,
+          isFetching: false
+        };
 
     case RECEIPTS_BY_CATEGORY_ADD:
       return {

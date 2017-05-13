@@ -168,13 +168,35 @@ class Processing extends Component {
     return name;
   }
 
-  renderDataTotal(cost) {
-    if (cost === undefined) {
-      return '$ unknown';
+  renderCost(data) {
+    let currency = data.currency;
+    let returnString = '';
+
+    //case 1: currency & total are defined
+    if (currency !== undefined && data.total !== undefined) {
+      //case 1.1 currency is AUD
+      if (currency === 'AUD') {
+        returnString = ('$').concat(data.total.toFixed(2));
+        return <Text> {returnString} </Text>;
+      }
+      //case 1.2 currency NOT au$
+      currency = 'AUD$';
+      returnString = currency.concat(data.totalInPreferredCurrency.toFixed(2));
+      return (
+          <Text style={{ fontStyle: 'italic' }}>
+            {returnString}
+          </Text>
+        );
+      } else if (currency === undefined) {
+        if ((data.total === undefined) || (data.total === '')) {
+         returnString = ('$-.--');
+       }
+       returnString = ('$').concat(data.total);
+       return <Text> {returnString} </Text>;
+     }
+     returnString = ('$-.--');
+     return <Text> {returnString} </Text>;
     }
-    const currency = '$'.concat(cost.toFixed(2));
-    return currency;
-  }
 
   onPressFAB() {
     const options = {

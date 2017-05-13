@@ -110,7 +110,7 @@ class Reimbursables extends Component {
         <View>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }} >
             <Text> {this.renderName(data)} </Text>
-            <Text> {this.renderCost(data)} </Text>
+            {this.renderCost(data)}
           </View>
           <View>
             <Text> {this.renderDate(data)} </Text>
@@ -128,15 +128,37 @@ class Reimbursables extends Component {
 		return data.vendor;
 	}
 
-	renderCost(data) {
-		let total = '';
-		if (data.total === undefined) {
-			total = '$ --';
-		}	else {
-			total = '$'.concat(data.total.toFixed(2));
+renderCost(data) {
+    let currency = data.currency;
+		let returnString = '';
+
+		//case 1: currency & total are defined
+		if (currency !== undefined && data.total !== undefined) {
+			//case 1.1 currency is AUD
+			if (currency === 'AUD') {
+				returnString = ('$').concat(data.total.toFixed(2));
+				return <Text> {returnString} </Text>;
+			}
+			//case 1.2 currency NOT au$
+			currency = 'AUD$';
+				returnString = currency.concat(data.totalInPreferredCurrency.toFixed(2));
+			return (
+							<Text style={{ fontStyle: 'italic' }}>
+								{returnString}
+							</Text>
+						);
+		} else if (currency === undefined) {
+			//currency = 'AUD$';
+			if ((data.total === undefined) || (data.total === '')) {
+				returnString = ('$-.--');
+				return <Text> {returnString} </Text>;
+			}
+			returnString = ('$').concat(data.total);
+			return <Text> {returnString} </Text>;
 		}
-		return total;
-	}
+		returnString = ('$-.--');
+		return <Text> {returnString} </Text>;
+  }
 
 	renderDate(data) {
 		let date = '';

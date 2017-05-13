@@ -193,14 +193,36 @@ class ReceiptsListView extends Component {
 	}
 
 	renderCost(data) {
-		let total = '';
-		if (data.total === undefined) {
-			total = '$ --';
-		}	else {
-			total = '$'.concat(data.total.toFixed(2));
+		const currency = data.currency;
+		let returnString = '';
+
+		//case 1: currency & total are defined
+		if (currency !== undefined && data.total !== undefined) {
+			//case 1.1 currency is AUD
+			if (currency === 'AUD') {
+				returnString = ('$').concat(data.total.toFixed(2));
+				return <Text> {returnString} </Text>;
+			}
+			//case 1.2 currency NOT au$
+				returnString = ('$').concat(data.totalInPreferredCurrency.toFixed(2));
+			return (
+							<Text style={{ fontStyle: 'italic' }}>
+								{returnString}
+							</Text>
+						);
+		} else if (currency === undefined) {
+			//currency = 'AUD$';
+			if ((data.total === undefined) || (data.total === '')) {
+				returnString = ('$0.00');
+				return <Text> {returnString} </Text>;
+			}
+			returnString = ('$').concat(data.total);
+			return <Text> {returnString} </Text>;
 		}
-		return total;
+		returnString = ('$0.00');
+		return <Text> {returnString} </Text>;
 	}
+
 
 	renderDate(data) {
 		let date = '';

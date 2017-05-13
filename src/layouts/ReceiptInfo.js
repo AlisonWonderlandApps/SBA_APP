@@ -14,12 +14,13 @@ import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
 import PDFView from 'react-native-pdf-view';
 import RNFS from 'react-native-fs';
+import { Actions } from 'react-native-router-flux';
 import {
   BackgroundView,
   Button
 } from '../components';
 import { HEADER } from '../global/margins';
-import { APP_GREY } from '../global/colours';
+import { APP_GREY, CARD_BACKGROUND_COLOUR, PRIMARY_COLOUR } from '../global/colours';
 import {
   deleteReceipt,
   reprocessDocument,
@@ -32,6 +33,8 @@ class ReceiptInfo extends Component {
   constructor(props) {
     super(props);
     console.log(this.props);
+    this.pdfView = null;
+    this.pdfPath = RNFS.DocumentDirectoryPath.concat('/test.pdf');
     this.props.loadReceiptImage(this.props.curAccountID, this.props.receiptDetail.id);
   }
 
@@ -45,7 +48,7 @@ class ReceiptInfo extends Component {
 
   componentWillUmount() {
     //delete the current picture
-    deleteReceiptImage();
+    //deleteReceiptImage();
   }
 
   render() {
@@ -57,14 +60,17 @@ class ReceiptInfo extends Component {
         <View style={{ backgroundColor: 'white', padding: 5 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <View>
-              <Text> {this.props.receiptDetail.vendor} </Text>
+              <Text
+                style={{ fontSize: 18, color: PRIMARY_COLOUR }}
+              > {this.props.receiptDetail.vendor} </Text>
               <Text> {this.renderDate()} </Text>
               <Text> {this.renderPaymentType()} </Text>
-              <Text> {this.renderCategories()} </Text>
+              <Text style={{ fontSize: 16, fontWeight: 'bold' }}> {this.renderCategories()} </Text>
+              <Text style={{ paddingTop: 15 }}> {this.renderNotes()} </Text>
             </View>
             <View>
-              <Text> {this.renderCost()} </Text>
-              <Text> {this.renderTax()} </Text>
+              {this.renderCost()}
+              {this.renderTax()}
             </View>
           </View>
           <View style={{ padding: 5, paddingTop: 15, flexDirection: 'row', width: null }}>
@@ -86,9 +92,14 @@ class ReceiptInfo extends Component {
             </TouchableOpacity>
           </View>
         </View>
-        <View style={{ flex: 1, paddingTop: 5, paddingBottom: 5 }} >
-          {this.showReceiptPdf()}
-        </View>
+        <TouchableOpacity
+          style={{ flex: 1, paddingTop: 5, paddingBottom: 5 }}
+          onPress={() => this.showFullScreen()}
+        >
+          <View style={{ flex: 1 }} >
+            {this.showReceiptPdf()}
+          </View>
+        </TouchableOpacity>
         <TouchableHighlight
           onPress={() => this.onDeletePress()}
         >
@@ -111,23 +122,26 @@ class ReceiptInfo extends Component {
     );
   }
 
+  showFullScreen() {
+    Actions.fullReceipt();
+  }
+
   showReceiptPdf() {
-  //  console.log(this.props.receiptImageURL);
-  //  console.log(this.props.pdfImage);
-    const path = RNFS.DocumentDirectoryPath.concat('/test.pdf');
+    //const path = RNFS.DocumentDirectoryPath.concat('/test.pdf');
+    //console.log(path);
 
     if (this.props.receiptImageIsLoading) {
       return (
         <View
           style={{
             flex: 1,
+            padding: 20,
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: 'grey',
-            padding: 15
+            backgroundColor: CARD_BACKGROUND_COLOUR,
           }}
         >
-          <Text style={{ fontSize: 18 }}> Loading... </Text>
+          <Text> Loading... </Text>
         </View>
       );
     }
@@ -136,7 +150,7 @@ class ReceiptInfo extends Component {
         <PDFView
           ref={(pdf) => { this.pdfView = pdf; }}
           key='sop'
-          path={path}
+          path={this.pdfPath}
           onLoadComplete={(pageCount) => {
                               this.pdfView.setNativeProps({
                               zoom: 1.0
@@ -150,24 +164,36 @@ class ReceiptInfo extends Component {
 
   renderCost() {
     const data = this.props.receiptDetail;
-    let total = '';
-    let currency = '';
-    if (data.currency === undefined) {
-      currency = '';
-    } else {
-      console.log(data.currency);
-      currency = data.currency;
+		const currency = data.currency;
+		let returnString = '';
+
+    if (currency === 'AUD') {
+      //case 1: total undefined
+      if (data.total === '' || data.total === undefined) {
+        returnString = currency.concat('0.00');
+      } else {       //case 2: total known
+        returnString = currency.concat(data.total.toFixed(2));
+      }
+      return <Text style={{ fontSize: 18, color: PRIMARY_COLOUR }}> {returnString} </Text>;
+    } else if (currency === undefined || currency === '') {
+    //Currency is undefined
+      if (data.total === '' || data.total === undefined) {
+        returnString = 'AUD'.concat('0.00');
+      } else {       //case 2: total known
+        returnString = 'AUD'.concat(data.total.toFixed(2));
+      }
+      return <Text style={{ fontSize: 18, color: PRIMARY_COLOUR }}> {returnString} </Text>;
     }
 
-    if (data.total === undefined) {
-      total = ' --';
-    }	else {
-      total = data.total.toFixed(2);
+    if (data.total === '' || data.total === undefined) {
+      returnString = currency.concat('0.00');
+    } else {       //case 2: total known
+      returnString = currency.concat(data.total.toFixed(2));
     }
-      return currency.concat(total);
-  }
+    return <Text style={{ fontSize: 18, color: PRIMARY_COLOUR }}> {returnString} </Text>;
+	}
 
-    renderDate() {
+  renderDate() {
       const data = this.props.receiptDetail;
       let date = '';
       if (data.issued === undefined) {
@@ -186,9 +212,9 @@ class ReceiptInfo extends Component {
         date = day.concat(month).concat(year);
       }
       return date;
-    }
+  }
 
-    renderCategories() {
+  renderCategories() {
       const data = this.props.receiptDetail;
       let category = '';
       if (data.categories === undefined) {
@@ -205,28 +231,64 @@ class ReceiptInfo extends Component {
       }
   }
 
+  renderNotes() {
+    return this.props.receiptDetail.notes;
+  }
+
   renderPaymentType() {
-    const data = this.props.receiptDetail;
-      switch (data.paymentType.type) {
+    const data = this.props.receiptDetail.paymentType;
+    let digits = '';
+    console.log(data);
+    if (data.type === undefined) {
+      return 'Paid with Other/Unknown';
+    }
+      switch (data.type) {
         case 'credit-card':
-          return 'Credit Card';
+          digits = data.lastFourDigits;
+          if (digits === undefined || digits === '') {
+            return 'Paid with Card';
+          }
+          return 'Paid with Card xxxx-xxxx-xxxx-'.concat(digits);
         case 'cash':
-          return 'Cash';
+          return 'Paid with Cash';
         case 'check':
-          return 'Cheque';
+          return 'Paid with Cheque';
         case 'paypal':
-          return 'Paypal';
+          return 'Paid with Paypal';
         default:
-          return 'Other/Unknown';
+          return 'Paid with Other/Unknown';
       }
   }
 
   renderTax() {
-      if (this.props.receiptDetail.tax === undefined) {
-        return 'AUD$ --';
+    const data = this.props.receiptDetail;
+    const currency = data.currency;
+    let returnString = '';
+
+    if (currency === 'AUD') {
+      //case 1: tax undefined
+      if (data.tax === '' || data.tax === undefined) {
+          returnString = currency.concat('0.00tax');
+        } else {       //case 2: total known
+        returnString = currency.concat(data.tax.toFixed(2).concat('tax'));
       }
-      const tax = this.props.receiptDetail.tax;
-      return 'AUD$'.concat(tax.toFixed(2));
+      return <Text> {returnString} </Text>;
+    } else if (currency === undefined || currency === '') {
+      //Currency is undefined
+        if (data.tax === '' || data.tax === undefined) {
+          returnString = 'AUD'.concat('0.00tax');
+        } else {       //case 2: total known
+          returnString = 'AUD'.concat(data.tax.toFixed(2).concat('tax'));
+        }
+        return <Text> {returnString} </Text>;
+      }
+
+    if (data.tax === '' || data.tax === undefined) {
+      returnString = currency.concat('0.00tax');
+    } else {       //case 2: total known
+      returnString = currency.concat(data.tax.toFixed(2).concat('tax'));
+    }
+    return <Text> {returnString} </Text>;
   }
 
   onDeletePress() {
@@ -278,7 +340,8 @@ const mapStateToProps = ({ accounts, receipts }) => {
     imageData,
     receiptDetail,
     receiptImageIsLoading,
-    receiptImageURL
+    receiptImageURL,
+    pdfImage
   } = receipts;
   return {
     curAccountID,
@@ -289,115 +352,11 @@ const mapStateToProps = ({ accounts, receipts }) => {
     imageData,
     receiptDetail,
     receiptImageIsLoading,
-    receiptImageURL
+    receiptImageURL,
+    pdfImage
   };
 };
 
 export default connect(mapStateToProps, {
   deleteReceipt, reprocessDocument, loadReceiptImage
 })(ReceiptInfo);
-
-
-//saving a receipt
-//style={{ borderWidth: 1, backgroundColor: 'green', flex: 1, resizeMode: 'cover', paddingBottom: 10 }}
-//path={{ 'https://s3-ap-southeast-2.amazonaws.com/sba-render/1206780197%7Cdocument_58de1d9ce4b0f9e41ef4d4fa.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20170409T105046Z&X-Amz-SignedHeaders=host&X-Amz-Expires=900&X-Amz-Credential=AKIAJD3UILPK5DBPFNHA%2F20170409%2Fap-southeast-2%2Fs3%2Faws4_request&X-Amz-Signature=85cbcba32ab8ee62bbfe2281aa22dea1cbf6995a474ca2d27e044b30403bef09' }}
-
-/*
-<PDFView
-  ref={(pdf) => { this.pdfView = pdf; }}
-  path={this.props.receiptsURL}
-  onLoadComplete={(pageCount) => {
-                      this.pdfView.setNativeProps({
-                      zoom: 1.0
-                  });
-        console.log('load done', pageCount);
-               }}
-  style={{ borderWidth: 1, backgroundColor: 'green', flex: 1, paddingBottom: 10 }}
-/>
-<Image
-  style={{ borderWidth: 1, backgroundColor: 'green', flex: 1, paddingBottom: 10 }}
-  source={{ uri: this.props.receiptsURL }}
-/>
-*/
-/*
-<PDFView
-  ref={(pdf) => { this.pdfView = pdf; }}
-  src={this.props.receiptsURL}
-  onLoadComplete={(pageCount) => {
-                      this.pdfView.setNativeProps({
-                      zoom: 1.0
-                  });
-        console.log('load done', pageCount);
-               }}
-  style={{ flex: 1 }}
-/>
-*/
-/*
-<WebView
-  //source={{ uri: this.props.receiptDetail.attachment.url }}
-  source={{ uri: 'https://s3-ap-southeast-2.amazonaws.com/sba-render/1481900574%7Cdocument_58c2a374e4b04cd8325ff80a.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20170416T025306Z&X-Amz-SignedHeaders=host&X-Amz-Expires=900&X-Amz-Credential=AKIAJD3UILPK5DBPFNHA%2F20170416%2Fap-southeast-2%2Fs3%2Faws4_request&X-Amz-Signature=e3e5b76cad67ca5af9be4d88aa9929ff1ce9ec2d68e8d424261ae6b795e2847a.pdf' }}
-  style={{ flex: 1, marginTop: 20 }}
-/>
-<WebView
-  automaticallyAdjustContentInsets={false}
-  javaScriptEnabled
-  domStorageEnabled
-  decelerationRate="normal"
-  onNavigationStateChange={this.onNavigationStateChange}
-  startInLoadingState
-  startInLoadingState
-  style={{ flex: 1 }}
-  source={{ uri: 'http://docs.google.com/gview?embedded=true&url='+myuri }}
-/>
-
-/*
-<WebView
-  automaticallyAdjustContentInsets={false}
-  javaScriptEnabled
-  domStorageEnabled
-  decelerationRate="normal"
-  onNavigationStateChange={this.onNavigationStateChange}
-  startInLoadingState
-  startInLoadingState
-  style={{ flex: 1 }}
-  source={{ uri: 'http://docs.google.com/gview?embedded=true&url='+myuri }}
-/> */
-/*
-
-  showReceiptPdf() {
-    let AuthStr = '';
-    try {
-      AsyncStorage.getItem('refreshToken').then((value) => {
-        if (value !== null) {
-          const data = {
-            grant_type: ssAuthConfig.refreshTokenGrantType,
-            client_id: ssAuthConfig.clientId,
-            client_secret: ssAuthConfig.clientSecret,
-            refresh_token: value
-          };
-        axios.post(ssAuthConfig.tokenURL, Querystring.stringify(data))
-          .then(response => {
-            if (response !== null) {
-              AuthStr = 'Bearer '.concat(response.data.access_token);
-              const requestURL = ssApiQueryURL.accounts.concat(this.props.curAccountID)
-                .concat('/documents/').concat(this.props.receiptDetail.id);
-              axios.get(requestURL, { headers: { Authorization: AuthStr } })
-                .then(resp => {
-                  console.log(resp);
-                  imageURL = resp.data.attachment.url;//.concat('.pdf');
-                  console.log(imageURL);
-                  this.showPdf();
-                }).catch((err) => {
-                  console.log(err);
-                });
-            }
-          }).catch((err) => {
-            console.log(err);
-          });
-        }
-      });
-    } catch (err) {
-      //console.log('token', err);
-    }
-  }
-*/

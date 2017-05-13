@@ -57,8 +57,8 @@ class TripInfo extends Component {
               <Text> {this.renderCategories()} </Text>
             </View>
             <View>
-              <Text> AUD{this.renderCost()} </Text>
-              <Text> {this.renderTax()} </Text>
+              {this.renderCost()}
+              {this.renderTax()}
             </View>
           </View>
           <View style={{ padding: 5, paddingTop: 15, flexDirection: 'row', width: null }}>
@@ -144,21 +144,35 @@ class TripInfo extends Component {
 
   renderCost() {
     const data = this.props.receiptDetail;
-    let total = '';
-    let currency = '';
-    if (data.currency === undefined) {
-      currency = '';
-    } else {
-      console.log(data.currency);
-      currency = data.currency;
-    }
+    let currency = data.currency;
+		let returnString = '';
 
-    if (data.total === undefined) {
-      total = ' --';
-    }	else {
-      total = data.total.toFixed(2);
-    }
-      return currency.concat(total);
+		//case 1: currency & total are defined
+		if (currency !== undefined && data.total !== undefined) {
+			//case 1.1 currency is AUD
+			if (currency === 'AUD') {
+				returnString = ('$').concat(data.total.toFixed(2));
+				return <Text> {returnString} </Text>;
+			}
+			//case 1.2 currency NOT au$
+			currency = 'AUD$';
+				returnString = currency.concat(data.totalInPreferredCurrency.toFixed(2));
+			return (
+							<Text style={{ fontStyle: 'italic' }}>
+								{returnString}
+							</Text>
+						);
+		} else if (currency === undefined) {
+			//currency = 'AUD$';
+			if ((data.total === undefined) || (data.total === '')) {
+				returnString = ('$-.--');
+				return <Text> {returnString} </Text>;
+			}
+			returnString = ('$').concat(data.total);
+			return <Text> {returnString} </Text>;
+		}
+		returnString = ('$-.--');
+		return <Text> {returnString} </Text>;
   }
 
     renderDate() {
@@ -206,11 +220,35 @@ class TripInfo extends Component {
   }
 
   renderTax() {
-      if (this.props.receiptDetail.tax === undefined) {
-        return 'AUD$ --';
-      }
-      const tax = this.props.receiptDetail.tax;
-      return 'AUD$'.concat(tax.toFixed(2));
+    const data = this.props.receiptDetail;
+    let currency = data.currency;
+    let returnString = '';
+
+    //case 1: currency & total are defined
+    if (currency !== undefined && data.tax !== undefined) {
+    //case 1.1 currency is AUD
+    if (currency === 'AUD') {
+      returnString = ('$').concat(data.tax.toFixed(2));
+      return <Text> {returnString} </Text>;
+    }
+    //case 1.2 currency NOT au$
+    currency = 'AUD$';
+      returnString = currency.concat(data.taxInPreferredCurrency.toFixed(2));
+    return (
+            <Text style={{ fontStyle: 'italic' }}>
+              {returnString}
+            </Text>
+          );
+    } else if (currency === undefined) {
+    //currency = 'AUD$';
+    if ((data.tax === undefined) || (data.tax === '')) {
+      returnString = ('$--.--');
+      return <Text> {returnString} </Text>;
+    }
+    returnString = ('$').concat(data.tax);
+    return <Text> {returnString} </Text>;
+    }
+    returnString = ('$--.--');
   }
 
   onDeletePress() {

@@ -9,6 +9,7 @@ import TripReducer from './TripsReducer';
 import UserReducer from './UserReducer';
 import ReceiptsReducer from './ReceiptsReducer';
 import SearchReducer from './SearchReducer';
+import EditReducer from './EditReducer';
 
 //'wire up' the reducer
 export default combineReducers({
@@ -19,5 +20,6 @@ export default combineReducers({
   trips: TripReducer,
   user: UserReducer,
   receipts: ReceiptsReducer,
-  searchIt: SearchReducer
+  searchIt: SearchReducer,
+  edit: EditReducer
 });

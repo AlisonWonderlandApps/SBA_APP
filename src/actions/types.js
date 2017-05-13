@@ -185,3 +185,18 @@ export const SEARCH_DATA = 'search_data';
 export const SEARCH_RECEIPTS = 'search_receipts';
 export const SEARCH_PROCESSING = 'search_processing';
 export const SEARCH_CATEGORY = 'search_category';
+
+//Edit Actions
+export const VENDOR_CHANGED = 'vendor_changed';
+export const DATE_CHANGED = 'date_changed';
+export const CURRENCY_CHANGED = 'currency_changed';
+export const TOTAL_CHANGED = 'total_changed';
+export const PREFERRED_CHANGED = 'preferred_changed';
+export const TAX_CHANGED = 'tax_changed';
+export const PREFTAX_CHANGED = 'pref_tax_changed';
+export const PAYTYPE_CHANGED = 'paytype_changed';
+export const CATEGORIES_CHANGED = 'categories_change';
+export const NOTES_CHANGED = 'notes_changed';
+export const EDIT_DOC_DETAIL = 'get_document_to_edit';
+export const RECEIPT_UPDATE_SUCCESS = 'receipt_update_success';
+export const RECEIPT_UPDATE_FAIL = 'receipt_update_fail';

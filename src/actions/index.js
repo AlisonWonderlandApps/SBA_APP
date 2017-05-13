@@ -7,3 +7,4 @@ export * from './AccountActions';
 export * from './ReceiptActions';
 export * from './RouterActions';
 export * from './TripActions';
+export * from './EditActions';
