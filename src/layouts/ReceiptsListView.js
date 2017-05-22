@@ -47,7 +47,7 @@ class ReceiptsListView extends Component {
 	constructor(props) {
 		super(props);
 		self = this;
-		//console.log(self.props.myReceipts);
+		console.log(self.props.myReceipts);
 		//console.log(this.props.receiptList);
 		//console.log(this.props.categories);
 		this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });

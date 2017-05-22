@@ -9,9 +9,11 @@ import {
   Text,
   View,
   TouchableHighlight,
+  Dimensions
 } from 'react-native';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Pdf from 'react-native-pdf';
 import PDFView from 'react-native-pdf-view';
 import RNFS from 'react-native-fs';
 import { Actions } from 'react-native-router-flux';
@@ -49,24 +51,62 @@ class ReceiptInfo extends Component {
   componentWillUmount() {
     //delete the current picture
     //deleteReceiptImage();
+    this.pdfView = null;
   }
 
   render() {
     console.log('rendering');
+    const wwidth = Dimensions.get('window').width;
     return (
       <BackgroundView
         style={{ padding: 0, flex: 1, justifyContent: 'flex-start', paddingTop: HEADER.height }}
       >
-        <View style={{ backgroundColor: 'white', padding: 5 }}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <View
+          style={{
+            width: wwidth,
+            backgroundColor: 'white',
+            paddingLeft: 20,
+            paddingRight: 20 }}
+        >
+          <View
+            style={{
+              padding: 5,
+              paddingLeft: 25,
+              paddingRight: 25,
+              flexDirection: 'row',
+              justifyContent: 'space-around' }}
+          >
             <View>
               <Text
-                style={{ fontSize: 18, color: PRIMARY_COLOUR }}
+                style={{ fontSize: 18, color: PRIMARY_COLOUR, textAlign: 'left' }}
+                numberOfLines={1}
+                ellipsizeMode='tail'
               > {this.props.receiptDetail.vendor} </Text>
-              <Text> {this.renderDate()} </Text>
-              <Text> {this.renderPaymentType()} </Text>
-              <Text style={{ fontSize: 16, fontWeight: 'bold' }}> {this.renderCategories()} </Text>
-              <Text style={{ paddingTop: 15 }}> {this.renderNotes()} </Text>
+              <Text
+                style={{ paddingTop: 2, textAlign: 'left' }}
+                numberOfLines={1}
+                ellipsizeMode='tail'
+              > {this.renderDate()} </Text>
+              <Text
+                style={{ paddingTop: 2 }}
+                numberOfLines={1}
+                ellipsizeMode='tail'
+              > {this.renderPaymentType()} </Text>
+              <Text
+                style={{
+                  width: wwidth - 20,
+                  fontSize: 16,
+                  fontWeight: 'bold',
+                  paddingTop: 2
+                }}
+                numberOfLines={2}
+                ellipsizeMode='tail'
+              > {this.renderCategories()} </Text>
+              <Text
+                style={{ paddingTop: 15 }}
+                numberOfLines={3}
+                ellipsizeMode='tail'
+              > {this.renderNotes()} </Text>
             </View>
             <View>
               {this.renderCost()}
@@ -174,7 +214,7 @@ class ReceiptInfo extends Component {
       } else {       //case 2: total known
         returnString = currency.concat(data.total.toFixed(2));
       }
-      return <Text style={{ fontSize: 18, color: PRIMARY_COLOUR }}> {returnString} </Text>;
+      return <Text style={style.costText}> {returnString} </Text>;
     } else if (currency === undefined || currency === '') {
     //Currency is undefined
       if (data.total === '' || data.total === undefined) {
@@ -182,7 +222,7 @@ class ReceiptInfo extends Component {
       } else {       //case 2: total known
         returnString = 'AUD'.concat(data.total.toFixed(2));
       }
-      return <Text style={{ fontSize: 18, color: PRIMARY_COLOUR }}> {returnString} </Text>;
+      return <Text style={style.costText}> {returnString} </Text>;
     }
 
     if (data.total === '' || data.total === undefined) {
@@ -190,7 +230,7 @@ class ReceiptInfo extends Component {
     } else {       //case 2: total known
       returnString = currency.concat(data.total.toFixed(2));
     }
-    return <Text style={{ fontSize: 18, color: PRIMARY_COLOUR }}> {returnString} </Text>;
+    return <Text style={style.costText}> {returnString} </Text>;
 	}
 
   renderDate() {
@@ -272,7 +312,7 @@ class ReceiptInfo extends Component {
         } else {       //case 2: total known
         returnString = currency.concat(data.tax.toFixed(2).concat('tax'));
       }
-      return <Text> {returnString} </Text>;
+      return <Text style={{ paddingTop: 2 }}> {returnString} </Text>;
     } else if (currency === undefined || currency === '') {
       //Currency is undefined
         if (data.tax === '' || data.tax === undefined) {
@@ -280,7 +320,7 @@ class ReceiptInfo extends Component {
         } else {       //case 2: total known
           returnString = 'AUD'.concat(data.tax.toFixed(2).concat('tax'));
         }
-        return <Text> {returnString} </Text>;
+        return <Text style={{ paddingTop: 2 }}> {returnString} </Text>;
       }
 
     if (data.tax === '' || data.tax === undefined) {
@@ -288,7 +328,7 @@ class ReceiptInfo extends Component {
     } else {       //case 2: total known
       returnString = currency.concat(data.tax.toFixed(2).concat('tax'));
     }
-    return <Text> {returnString} </Text>;
+    return <Text style={{ paddingTop: 2 }}> {returnString} </Text>;
   }
 
   onDeletePress() {
@@ -327,6 +367,15 @@ class ReceiptInfo extends Component {
   }
 
 }
+
+const style = {
+  costText: {
+    fontSize: 18,
+    color: PRIMARY_COLOUR,
+    width: null,
+    textAlign: 'right'
+  }
+};
 
 const mapStateToProps = ({ accounts, receipts }) => {
   const {

@@ -35,6 +35,7 @@
     "react-native-mailer": "^1.0.5",
     "react-native-maps": "^0.12.5",
     "react-native-material-design-searchbar": "^1.0.11",
+    "react-native-pdf": "^1.0.7",
     "react-native-pdf-view": "^0.3.2",
     "react-native-router-flux": "^3.37.0",
     "react-native-simple-modal": "^4.0.1",

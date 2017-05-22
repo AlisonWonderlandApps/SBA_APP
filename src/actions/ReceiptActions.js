@@ -596,10 +596,10 @@ export const updateThisDocument = (AuthStr, accountId, receiptID, newData) => {
           jsonToUpdate.modified = modDate;
           jsonToUpdate.vendor = newData.vendor;
           jsonToUpdate.issued = dateStr;
-          //jsonToUpdate.currency = newData.currency;
+          jsonToUpdate.currency = newData.currency;
           jsonToUpdate.total = newData.total;
-          //jsonToUpdate.tax = newData.tax;
-          //jsonToUpdate.paymentType = paytype;
+          jsonToUpdate.tax = newData.tax;
+          jsonToUpdate.paymentType = paytype;
           //jsonToUpdate.categories = newData.categories;
           jsonToUpdate.notes = newData.notes;
 
@@ -623,8 +623,11 @@ export const updateThisDocument = (AuthStr, accountId, receiptID, newData) => {
 };
 
 const updateSuccess = () => {
-  return {
-    type: RECEIPT_UPDATE_SUCCESS
+  Alert.alert('Receipt Edits Saved');
+  return function (dispatch) {
+    dispatch({
+      type: RECEIPT_UPDATE_SUCCESS
+    });
   };
 };
 

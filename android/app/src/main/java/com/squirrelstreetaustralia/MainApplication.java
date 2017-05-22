@@ -3,6 +3,7 @@ package com.squirrelstreetaustralia;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import org.wonday.pdf.RCTPdfView;
 import com.rnfs.RNFSPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.react.rnspinkit.RNSpinkitPackage;
@@ -34,6 +35,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RCTPdfView(),
             new RNFSPackage(),
             new VectorIconsPackage(),
             new RNSpinkitPackage(),

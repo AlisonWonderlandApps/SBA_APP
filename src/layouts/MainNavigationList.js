@@ -57,7 +57,6 @@ class MainNavigationList extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    console.log('updateMain', nextProps);
     if (this.props !== nextProps) {
       if (this.props.userName !== nextProps.userName) {
         return false;

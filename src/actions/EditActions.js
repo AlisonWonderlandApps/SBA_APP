@@ -114,6 +114,7 @@ export const currencyChanged = (curr) => {
   };
 };
 export const totalChanged = (tot) => {
+  console.log(tot);
   return function (dispatch) {
     dispatch({
       type: TOTAL_CHANGED,
@@ -130,6 +131,7 @@ export const preferredChanged = (tot) => {
   };
 };
 export const taxChanged = (tax) => {
+  console.log(tax);
   return function (dispatch) {
     dispatch({
       type: TAX_CHANGED,

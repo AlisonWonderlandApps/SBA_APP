@@ -111,13 +111,6 @@ class EditReceipt extends Component {
     } else {
       date = data.issued;
     }
-  /*  if (date !== undefined) {
-      console.log(date);
-      date = new Date(date);
-      console.log(date);
-      date = date.toISOString();
-      console.log(date);
-    } */
     console.log(date);
 
     return (
@@ -138,7 +131,6 @@ class EditReceipt extends Component {
             alignSelf: 'flex-end',
             justifyContent: 'center'
           }
-          // ... You can check the source to find the other keys.
         }}
         onDateChange={(datec) => this.props.dateChanged(datec)}
       />
